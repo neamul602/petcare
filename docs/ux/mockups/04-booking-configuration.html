@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>PetCare — Booking Configuration</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Source+Serif+4:wght@400;600&display=swap" rel="stylesheet" />
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+  tailwind.config = {
+    theme: {
+      extend: {
+        fontFamily: { sans: ['Inter', 'system-ui', 'sans-serif'], editorial: ['"Source Serif 4"', 'Georgia', 'serif'] },
+        colors: {
+          background: 'hsl(38 35% 97%)',
+          foreground: 'hsl(30 12% 14%)',
+          muted: 'hsl(36 18% 92%)',
+          'muted-foreground': 'hsl(30 8% 38%)',
+          card: 'hsl(0 0% 100%)',
+          'card-foreground': 'hsl(30 12% 14%)',
+          border: 'hsl(34 14% 86%)',
+          input: 'hsl(34 14% 90%)',
+          primary: 'hsl(150 32% 32%)',
+          'primary-foreground': 'hsl(38 35% 97%)',
+          'primary-soft': 'hsl(150 22% 92%)',
+          'primary-soft-foreground': 'hsl(150 38% 22%)',
+          'info-soft': 'hsl(212 56% 94%)',
+          'warning-soft': 'hsl(36 78% 94%)',
+        },
+      },
+    },
+  };
+</script>
+<style>
+  body { font-family: 'Inter', system-ui, sans-serif; background: hsl(38 35% 97%); color: hsl(30 12% 14%); }
+  .tabular { font-variant-numeric: tabular-nums; }
+  .phone-frame { width: 390px; min-height: 844px; background: hsl(38 35% 97%); }
+</style>
+</head>
+<body>
+  <div class="phone-frame mx-auto my-8 border-[14px] border-foreground/90 rounded-[40px] shadow-xl overflow-hidden">
+    <div class="h-11 flex items-center justify-between px-6 text-xs text-foreground/70">
+      <span class="tabular">9:41</span><span class="font-medium">Care Configuration</span><span class="tabular">●●● 4G</span>
+    </div>
+
+    <!-- Header with step indicator -->
+    <div class="px-5 py-4 border-b border-border bg-background">
+      <div class="flex items-center gap-3">
+        <button class="text-muted-foreground text-base">←</button>
+        <div class="flex-1">
+          <p class="text-xs text-muted-foreground">Rashid M. · Gulshan</p>
+          <h1 class="text-base font-semibold mt-0.5">Care for Tito</h1>
+        </div>
+        <button class="text-xs font-medium text-muted-foreground">Save</button>
+      </div>
+
+      <!-- Step indicator -->
+      <div class="mt-4 flex items-center gap-2">
+        <div class="flex items-center gap-1.5">
+          <div class="w-6 h-6 rounded-full bg-primary text-primary-foreground grid place-items-center text-xs font-medium tabular">1</div>
+          <span class="text-xs font-medium">Dates</span>
+        </div>
+        <div class="flex-1 h-px bg-primary"></div>
+        <div class="flex items-center gap-1.5">
+          <div class="w-6 h-6 rounded-full bg-primary text-primary-foreground grid place-items-center text-xs font-medium tabular">2</div>
+          <span class="text-xs font-medium">Pet</span>
+        </div>
+        <div class="flex-1 h-px bg-primary"></div>
+        <div class="flex items-center gap-1.5">
+          <div class="w-6 h-6 rounded-full bg-primary text-primary-foreground grid place-items-center text-xs font-medium tabular">3</div>
+          <span class="text-xs font-medium">Care</span>
+        </div>
+        <div class="flex-1 h-px bg-border"></div>
+        <div class="flex items-center gap-1.5">
+          <div class="w-6 h-6 rounded-full bg-muted border border-border text-muted-foreground grid place-items-center text-xs font-medium tabular">4</div>
+          <span class="text-xs font-medium text-muted-foreground">Review</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Care Configuration form -->
+    <div class="px-5 py-6 space-y-8">
+
+      <!-- Dates section -->
+      <section>
+        <h2 class="text-lg font-semibold mb-1">Stay dates</h2>
+        <p class="text-sm text-muted-foreground mb-4">Pickup and drop-off at Rashid's Gulshan home.</p>
+        <div class="flex gap-2">
+          <div class="flex-1 bg-input rounded-md border border-border px-4 h-12 flex items-center justify-between">
+            <div>
+              <p class="text-[10px] uppercase tracking-wide text-muted-foreground">From</p>
+              <p class="tabular text-base font-medium">Mar 28, 9:00 AM</p>
+            </div>
+          </div>
+        </div>
+        <div class="flex gap-2 mt-2">
+          <div class="flex-1 bg-input rounded-md border border-border px-4 h-12 flex items-center justify-between">
+            <div>
+              <p class="text-[10px] uppercase tracking-wide text-muted-foreground">To</p>
+              <p class="tabular text-base font-medium">Apr 05, 6:00 PM</p>
+            </div>
+          </div>
+        </div>
+        <p class="text-xs text-muted-foreground mt-2 tabular">8 nights · 9 days</p>
+      </section>
+
+      <!-- Pet section — pre-filled -->
+      <section>
+        <h2 class="text-lg font-semibold mb-1">Tito</h2>
+        <p class="text-sm text-muted-foreground mb-4">Pre-filled from Tito's care history. Edit if anything's changed.</p>
+        <div class="bg-card border border-border rounded-lg p-4 flex items-center gap-3">
+          <div class="w-12 h-12 rounded-full bg-muted grid place-items-center text-2xl">🐶</div>
+          <div class="flex-1">
+            <p class="font-semibold text-sm">Tito (Shih Tzu, 6 yrs)</p>
+            <p class="text-xs text-muted-foreground mt-0.5">Diabetic · Anxious · Sleeps with the blue blanket</p>
+          </div>
+          <button class="text-xs font-medium text-primary underline underline-offset-2">Edit</button>
+        </div>
+      </section>
+
+      <!-- Food & dietary -->
+      <section>
+        <h2 class="text-lg font-semibold mb-1">Food & dietary</h2>
+        <p class="text-sm text-muted-foreground mb-4">What Tito eats, how often, and any sensitivities.</p>
+        <label class="text-xs font-medium text-muted-foreground tracking-wide uppercase">Primary food</label>
+        <div class="mt-2 h-12 rounded-md border border-border bg-input px-4 flex items-center justify-between">
+          <span class="text-base">Royal Canin — Diabetic formula</span>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-muted-foreground"><path d="m6 9 6 6 6-6"/></svg>
+        </div>
+        <label class="text-xs font-medium text-muted-foreground tracking-wide uppercase mt-4 block">Meal schedule</label>
+        <div class="mt-2 h-24 rounded-md border border-border bg-input px-4 py-3">
+          <p class="text-sm leading-relaxed">7 AM and 7 PM, 1/2 cup per meal. Strict schedule — insulin is dosed 30 min after meals.</p>
+        </div>
+      </section>
+
+      <!-- Medication — emphasized -->
+      <section>
+        <h2 class="text-lg font-semibold mb-1">Medication</h2>
+        <div class="bg-warning-soft border border-warning/30 rounded-md px-3 py-2 mb-4">
+          <p class="text-xs text-foreground/80 leading-snug flex items-start gap-1.5">
+            <span class="text-warning-foreground">⚠</span>
+            <span>Insulin and medication schedules matter. Be specific — Rashid will follow this exactly.</span>
+          </p>
+        </div>
+
+        <div class="bg-card border border-border rounded-lg p-4">
+          <div class="flex items-center justify-between">
+            <div>
+              <p class="font-semibold text-sm">Insulin — Caninsulin</p>
+              <p class="text-xs text-muted-foreground mt-0.5">2 units, twice daily (7 AM, 7 PM)</p>
+            </div>
+            <span class="bg-primary-soft text-primary-soft-foreground text-xs px-2 py-1 rounded-full font-medium">Critical</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- Care flags -->
+      <section>
+        <h2 class="text-lg font-semibold mb-1">Care flags</h2>
+        <p class="text-sm text-muted-foreground mb-4">Multi-select what applies to Tito.</p>
+        <div class="flex flex-wrap gap-2">
+          <span class="inline-flex items-center gap-1.5 rounded-full bg-primary text-primary-foreground px-3 py-1.5 text-xs font-medium">
+            ✓ Diabetic
+          </span>
+          <span class="inline-flex items-center gap-1.5 rounded-full bg-primary text-primary-foreground px-3 py-1.5 text-xs font-medium">
+            ✓ Anxious
+          </span>
+          <span class="inline-flex items-center gap-1.5 rounded-full border border-border bg-card text-foreground/70 px-3 py-1.5 text-xs font-medium">
+            Senior
+          </span>
+          <span class="inline-flex items-center gap-1.5 rounded-full border border-border bg-card text-foreground/70 px-3 py-1.5 text-xs font-medium">
+            Allergies
+          </span>
+          <span class="inline-flex items-center gap-1.5 rounded-full border border-border bg-card text-foreground/70 px-3 py-1.5 text-xs font-medium">
+            Post-surgery
+          </span>
+          <span class="inline-flex items-center gap-1.5 rounded-full border border-border bg-card text-foreground/70 px-3 py-1.5 text-xs font-medium">
+            Heat-sensitive
+          </span>
+        </div>
+      </section>
+
+      <!-- Free-text instructions -->
+      <section>
+        <h2 class="text-lg font-semibold mb-1">Free-text instructions</h2>
+        <p class="text-sm text-muted-foreground mb-4">Tricks, quirks, the small things.</p>
+        <div class="bg-input rounded-md border border-border min-h-32 p-4">
+          <p class="text-sm leading-relaxed">Tito sleeps with the small blue blanket — please keep it with him at night. Don't run the vacuum after 6 PM; he gets anxious and shakes. He likes short morning walks around the garden, not the road.</p>
+        </div>
+        <p class="text-xs text-muted-foreground mt-2 tabular">142 / 1000 characters</p>
+      </section>
+
+      <!-- Vet reference -->
+      <section class="bg-card border border-border rounded-lg p-4">
+        <p class="text-xs font-medium text-muted-foreground uppercase tracking-wide">Reference for Rashid</p>
+        <p class="text-sm mt-1 leading-relaxed">Your regular vet?</p>
+        <div class="mt-3 h-12 rounded-md border border-border bg-input px-4 flex items-center justify-between">
+          <div>
+            <p class="text-base font-medium">Gulshan Pet Clinic</p>
+            <p class="text-xs text-muted-foreground">Dr. Khan · 0.8 km away</p>
+          </div>
+          <button class="text-xs font-medium text-primary">Change</button>
+        </div>
+      </section>
+
+    </div>
+
+    <!-- Sticky CTA -->
+    <div class="sticky bottom-0 bg-background border-t border-border p-4">
+      <button class="w-full h-12 rounded-md bg-primary text-primary-foreground font-medium text-base">Review & confirm stay →</button>
+      <p class="text-xs text-muted-foreground text-center mt-2 leading-relaxed">Payment is authorized on confirmation, captured only when Rashid accepts.</p>
+    </div>
+  </div>
+</body>
+</html>

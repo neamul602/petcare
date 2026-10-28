@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>PetCare — 3.6 Daily Update Composer (Provider · Photo + Care Log)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Source+Serif+4:wght@400;600&display=swap" rel="stylesheet" />
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+  tailwind.config = {
+    theme: {
+      extend: {
+        fontFamily: { sans: ['Inter', 'system-ui', 'sans-serif'], editorial: ['"Source Serif 4"', 'Georgia', 'serif'] },
+        colors: {
+          background: 'hsl(38 35% 97%)',
+          foreground: 'hsl(30 12% 14%)',
+          muted: 'hsl(36 18% 92%)',
+          'muted-foreground': 'hsl(30 8% 38%)',
+          card: 'hsl(0 0% 100%)',
+          'card-foreground': 'hsl(30 12% 14%)',
+          border: 'hsl(34 14% 86%)',
+          input: 'hsl(34 14% 90%)',
+          ring: 'hsl(150 32% 32%)',
+          primary: 'hsl(150 32% 32%)',
+          'primary-foreground': 'hsl(38 35% 97%)',
+          'primary-soft': 'hsl(150 22% 92%)',
+          'primary-soft-foreground': 'hsl(150 38% 22%)',
+          accent: 'hsl(14 64% 56%)',
+          'accent-foreground': 'hsl(38 35% 97%)',
+          'accent-soft': 'hsl(14 70% 94%)',
+          'accent-soft-foreground': 'hsl(14 64% 32%)',
+          destructive: 'hsl(0 62% 48%)',
+          'destructive-foreground': 'hsl(38 35% 97%)',
+          'destructive-soft': 'hsl(0 62% 94%)',
+          'destructive-soft-foreground': 'hsl(0 62% 28%)',
+          success: 'hsl(150 32% 32%)',
+          'success-soft': 'hsl(150 22% 92%)',
+          'success-soft-foreground': 'hsl(150 38% 22%)',
+          warning: 'hsl(36 78% 46%)',
+          'warning-soft': 'hsl(36 78% 94%)',
+          'warning-soft-foreground': 'hsl(36 78% 26%)',
+          info: 'hsl(212 56% 48%)',
+          'info-soft': 'hsl(212 56% 94%)',
+          'info-soft-foreground': 'hsl(212 56% 28%)',
+        },
+      },
+    },
+  };
+</script>
+<style>
+  body { font-family: 'Inter', system-ui, sans-serif; background: hsl(38 35% 97%); color: hsl(30 12% 14%); }
+  .tabular { font-variant-numeric: tabular-nums; }
+  .phone-frame { width: 390px; min-height: 844px; background: hsl(38 35% 97%); }
+  .mic-pulse { animation: micPulse 1.2s ease-in-out infinite; }
+  @keyframes micPulse {
+    0%, 100% { transform: scale(1); opacity: 1; }
+    50% { transform: scale(1.15); opacity: 0.7; }
+  }
+</style>
+</head>
+<body class="min-h-screen">
+<div class="bg-emerald-50 border-b border-emerald-200 px-6 py-2 text-xs text-emerald-900 text-center">
+  <strong>FIT EVIDENCE GENERATOR</strong> · FR-15 / FR-26 / FR-43 · Per Scenario 03 / 3.6 spec · Under 60 sec to post
+</div>
+
+<div class="phone-frame mx-auto my-6 border-[14px] border-foreground/90 rounded-[40px] shadow-xl overflow-hidden">
+
+  <!-- Status bar -->
+  <div class="h-11 flex items-center justify-between px-6 text-xs text-foreground/70 bg-card">
+    <span class="tabular">9:41</span>
+    <span class="font-medium">Post daily update</span>
+    <span class="tabular">●●● 4G</span>
+  </div>
+
+  <!-- Back nav -->
+  <header class="flex items-center justify-between px-5 py-3 bg-card border-b border-border">
+    <a href="#" class="flex items-center gap-1 text-sm text-muted-foreground">
+      <span aria-hidden="true">←</span> Tito's stay
+    </a>
+    <span class="text-xs text-muted-foreground tabular">Day 4 of 9</span>
+  </header>
+
+  <!-- Body -->
+  <div class="bg-background px-5 py-5 space-y-5 overflow-y-auto" style="max-height: 600px;">
+
+    <!-- D1: Day context strip -->
+    <div class="bg-muted border border-border rounded-md px-4 py-2 flex items-center justify-between">
+      <p class="text-xs font-medium tabular">Day 4 of 9 · Today</p>
+      <p class="text-xs text-muted-foreground">11:42pm · Eid-4</p>
+    </div>
+
+    <!-- D2: Photo upload zone -->
+    <section>
+      <div class="flex items-center justify-between mb-2">
+        <h2 class="text-sm font-semibold">Photo <span class="text-destructive">*</span></h2>
+        <span class="text-[10px] text-muted-foreground tabular">2 of 4 · under 5MB each</span>
+      </div>
+      <div class="grid grid-cols-4 gap-2">
+        <!-- Filled -->
+        <div class="aspect-square rounded-md bg-gradient-to-br from-primary-soft to-warning-soft grid place-items-center text-3xl relative">
+          🐕
+          <button aria-label="Remove photo 1" class="absolute top-1 right-1 w-5 h-5 rounded-full bg-foreground/70 text-background text-xs grid place-items-center">×</button>
+        </div>
+        <div class="aspect-square rounded-md bg-gradient-to-br from-accent-soft to-primary-soft grid place-items-center text-3xl relative">
+          🍽
+          <button aria-label="Remove photo 2" class="absolute top-1 right-1 w-5 h-5 rounded-full bg-foreground/70 text-background text-xs grid place-items-center">×</button>
+        </div>
+        <!-- Empty slot -->
+        <button aria-label="Add photo 3 of 4" class="aspect-square rounded-md border-2 border-dashed border-border bg-card grid place-items-center text-muted-foreground hover:border-primary">
+          <div class="flex flex-col items-center gap-0.5">
+            <span class="text-2xl">+</span>
+            <span class="text-[10px]">Tap to add</span>
+          </div>
+        </button>
+        <button aria-label="Add photo 4 of 4" class="aspect-square rounded-md border-2 border-dashed border-border bg-card grid place-items-center text-muted-foreground hover:border-primary">
+          <div class="flex flex-col items-center gap-0.5">
+            <span class="text-2xl">+</span>
+            <span class="text-[10px]">Tap to add</span>
+          </div>
+        </button>
+      </div>
+    </section>
+
+    <!-- D3: Care log -->
+    <section class="bg-card border border-border rounded-lg overflow-hidden">
+      <header class="px-4 py-3 border-b border-border">
+        <h2 class="text-sm font-semibold">Care log</h2>
+      </header>
+
+      <div class="divide-y divide-border">
+
+        <!-- Insulin -->
+        <fieldset class="px-4 py-3">
+          <legend class="text-xs font-medium mb-2 flex items-center gap-1.5">
+            <span aria-hidden="true">💉</span> Insulin
+          </legend>
+          <div class="flex gap-2">
+            <label class="flex-1 text-center px-2 py-1.5 rounded-md border-2 border-primary bg-primary-soft cursor-pointer">
+              <input type="radio" name="insulin" checked class="sr-only" />
+              <span class="text-xs font-medium text-primary-soft-foreground">Given</span>
+            </label>
+            <label class="flex-1 text-center px-2 py-1.5 rounded-md border border-border bg-card cursor-pointer">
+              <input type="radio" name="insulin" class="sr-only" />
+              <span class="text-xs">Skipped</span>
+            </label>
+            <label class="flex-1 text-center px-2 py-1.5 rounded-md border border-border bg-card cursor-pointer">
+              <input type="radio" name="insulin" class="sr-only" />
+              <span class="text-xs">Partial</span>
+            </label>
+          </div>
+          <div class="mt-2 flex items-center gap-2 text-xs">
+            <span class="text-muted-foreground">Time:</span>
+            <input type="time" value="20:00" class="bg-muted border border-border rounded-md px-2 py-1 tabular text-foreground focus:outline-none focus:ring-2 focus:ring-ring" />
+            <span class="text-muted-foreground text-[10px]">· 2u</span>
+          </div>
+        </fieldset>
+
+        <!-- Kibble portion -->
+        <div class="px-4 py-3">
+          <label class="text-xs font-medium mb-2 flex items-center gap-1.5">
+            <span aria-hidden="true">🥗</span> Kibble portion
+          </label>
+          <input type="text" value="½ cup at 8am + ½ cup at 8pm" placeholder="e.g. ½ cup at 8am + ½ cup at 8pm" class="w-full bg-muted border border-border rounded-md px-3 py-2 text-xs focus:outline-none focus:ring-2 focus:ring-ring" />
+          <p class="text-[10px] text-muted-foreground mt-1">Suggestions from past updates ↓</p>
+        </div>
+
+        <!-- Behaviour -->
+        <fieldset class="px-4 py-3">
+          <legend class="text-xs font-medium mb-2 flex items-center gap-1.5">
+            <span aria-hidden="true">💭</span> Behaviour
+          </legend>
+          <div class="flex flex-wrap gap-2">
+            <button role="checkbox" aria-checked="true" class="px-3 py-1 rounded-full bg-primary-soft border border-primary text-primary-soft-foreground text-xs font-medium">
+              ✓ Calm
+            </button>
+            <button role="checkbox" aria-checked="true" class="px-3 py-1 rounded-full bg-primary-soft border border-primary text-primary-soft-foreground text-xs font-medium">
+              ✓ Active
+            </button>
+            <button role="checkbox" aria-checked="false" class="px-3 py-1 rounded-full bg-card border border-border text-xs">
+              Anxious
+            </button>
+          </div>
+        </fieldset>
+
+        <!-- Concerns -->
+        <fieldset class="px-4 py-3">
+          <legend class="text-xs font-medium mb-2 flex items-center gap-1.5">
+            <span aria-hidden="true">⚠</span> Any concerns
+          </legend>
+          <label class="flex items-center gap-2 text-xs mb-2">
+            <input type="checkbox" checked class="accent-primary" /> <span>None — all good</span>
+          </label>
+          <div class="relative">
+            <textarea rows="2" disabled placeholder="What's on your mind?" class="w-full bg-muted border border-border rounded-md px-3 py-2 text-xs leading-relaxed opacity-50 cursor-not-allowed"></textarea>
+            <button aria-label="Voice input" aria-pressed="false" disabled class="absolute right-2 w-7 h-7 rounded-full bg-card border border-border grid place-items-center opacity-50 cursor-not-allowed">
+              <span aria-hidden="true" class="text-sm">🎙</span>
+            </button>
+          </div>
+        </fieldset>
+
+      </div>
+    </section>
+
+    <!-- D4: Glucose observation -->
+    <section class="bg-card border border-border rounded-lg p-4">
+      <h2 class="text-sm font-semibold mb-2 flex items-center gap-1.5">
+        <span aria-hidden="true">📊</span> Glucose observation
+      </h2>
+      <fieldset class="grid grid-cols-2 gap-2">
+        <label class="flex items-center gap-2 px-3 py-2 rounded-md border-2 border-primary bg-primary-soft cursor-pointer">
+          <input type="radio" name="glucose" checked class="sr-only" /> <span class="text-xs font-medium text-primary-soft-foreground">Normal</span>
+        </label>
+        <label class="flex items-center gap-2 px-3 py-2 rounded-md border border-border bg-card cursor-pointer">
+          <input type="radio" name="glucose" class="sr-only" /> <span class="text-xs">Slight drop</span>
+        </label>
+        <label class="flex items-center gap-2 px-3 py-2 rounded-md border border-border bg-card cursor-pointer">
+          <input type="radio" name="glucose" class="sr-only" /> <span class="text-xs">Slight rise</span>
+        </label>
+        <label class="flex items-center gap-2 px-3 py-2 rounded-md border border-destructive/40 bg-destructive-soft/30 cursor-pointer">
+          <input type="radio" name="glucose" class="sr-only" /> <span class="text-xs text-destructive-soft-foreground">Concerning</span>
+        </label>
+      </fieldset>
+      <p class="text-[10px] text-muted-foreground mt-2 italic">If concerning, see <a href="57-acute-event-trigger.html" class="text-primary underline underline-offset-2">acute-event runbook</a>. You can still post this update.</p>
+    </section>
+
+    <!-- D5: Preview toggle -->
+    <details class="bg-muted border border-border rounded-lg">
+      <summary class="px-4 py-3 cursor-pointer flex items-center justify-between">
+        <span class="text-sm font-medium">Preview (what Bibi sees)</span>
+        <span class="text-xs text-primary underline underline-offset-2">tap to expand</span>
+      </summary>
+      <div class="px-4 pb-3">
+        <article class="bg-card border border-border rounded-md overflow-hidden">
+          <div class="flex items-center justify-between px-3 py-2 border-b border-border">
+            <p class="text-[10px] font-medium tabular">Day 4 · 11:42pm</p>
+            <span class="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-full bg-success-soft text-success-soft-foreground text-[9px] font-semibold">NORMAL</span>
+          </div>
+          <div class="grid grid-cols-2 gap-0.5">
+            <div class="aspect-square bg-gradient-to-br from-primary-soft to-warning-soft grid place-items-center text-2xl">🐕</div>
+            <div class="aspect-square bg-gradient-to-br from-accent-soft to-primary-soft grid place-items-center text-2xl">🍽</div>
+          </div>
+          <div class="p-3 text-xs">
+            <p class="italic font-editorial">"Insulin given at 8pm. Calm + active today."</p>
+          </div>
+        </article>
+      </div>
+    </details>
+
+    <!-- D6: Helper line -->
+    <p class="text-xs text-muted-foreground text-center leading-relaxed">
+      Takes <strong class="text-foreground">30 sec</strong> · helps Bibi stay informed · builds your <strong class="text-foreground">demonstrated-Fit</strong>
+    </p>
+
+  </div>
+
+  <!-- D7: Sticky Action Bar -->
+  <footer class="sticky bottom-0 z-10 bg-card border-t border-border px-5 py-3 backdrop-blur space-y-2">
+    <button class="w-full h-12 rounded-md bg-primary text-primary-foreground text-base font-medium hover:bg-primary/90">
+      Post update →
+    </button>
+    <button class="w-full h-9 rounded-md text-xs font-medium text-muted-foreground underline underline-offset-4">
+      Save as draft
+    </button>
+  </footer>
+
+</div>
+
+</body>
+</html>

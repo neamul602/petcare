@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>PetCare — Acute Event</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Source+Serif+4:wght@400;600&display=swap" rel="stylesheet" />
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+  tailwind.config = {
+    theme: {
+      extend: {
+        fontFamily: { sans: ['Inter', 'system-ui', 'sans-serif'], editorial: ['"Source Serif 4"', 'Georgia', 'serif'] },
+        colors: {
+          background: 'hsl(38 35% 97%)',
+          foreground: 'hsl(30 12% 14%)',
+          muted: 'hsl(36 18% 92%)',
+          'muted-foreground': 'hsl(30 8% 38%)',
+          card: 'hsl(0 0% 100%)',
+          'card-foreground': 'hsl(30 12% 14%)',
+          border: 'hsl(34 14% 86%)',
+          input: 'hsl(34 14% 90%)',
+          primary: 'hsl(150 32% 32%)',
+          'primary-foreground': 'hsl(38 35% 97%)',
+          'primary-soft': 'hsl(150 22% 92%)',
+          'primary-soft-foreground': 'hsl(150 38% 22%)',
+          accent: 'hsl(14 64% 56%)',
+          'accent-foreground': 'hsl(38 35% 97%)',
+          'accent-soft': 'hsl(14 70% 94%)',
+          'accent-soft-foreground': 'hsl(14 64% 32%)',
+          destructive: 'hsl(0 62% 48%)',
+          'destructive-soft': 'hsl(0 62% 94%)',
+        },
+      },
+    },
+  };
+</script>
+<style>
+  body { font-family: 'Inter', system-ui, sans-serif; background: hsl(38 35% 97%); color: hsl(30 12% 14%); }
+  .tabular { font-variant-numeric: tabular-nums; }
+  .phone-frame { width: 390px; min-height: 844px; background: hsl(38 35% 97%); }
+</style>
+</head>
+<body>
+  <div class="phone-frame mx-auto my-8 border-[14px] border-foreground/90 rounded-[40px] shadow-xl overflow-hidden">
+    <div class="h-11 flex items-center justify-between px-6 text-xs text-foreground/70">
+      <span class="tabular">9:41</span><span class="font-medium">Acute Event · Rashid</span><span class="tabular">●●● 4G</span>
+    </div>
+
+    <!-- Acute Event banner -->
+    <div class="bg-accent-soft border-b border-accent/30 px-5 py-4">
+      <div class="flex items-start gap-3">
+        <div class="w-10 h-10 rounded-full bg-accent text-accent-foreground grid place-items-center text-xl flex-shrink-0">!</div>
+        <div class="flex-1">
+          <p class="text-sm font-semibold text-accent-soft-foreground">Acute Event reported</p>
+          <p class="text-xs text-foreground/80 mt-1 leading-relaxed">Senior dog, sudden lethargy and diarrhea. Vet contacted. Payout frozen for review.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Booking state pill — Disputed -->
+    <div class="px-5 py-3 bg-card border-b border-border flex items-center justify-between">
+      <div class="flex items-center gap-2">
+        <span class="text-xs text-muted-foreground">Booking state</span>
+        <span class="inline-flex items-center gap-1.5 rounded-full border border-destructive/30 bg-destructive-soft px-3 py-1 text-xs font-semibold text-destructive tracking-wide">
+          <span class="w-1.5 h-1.5 rounded-full bg-destructive"></span>
+          DISPUTED
+        </span>
+      </div>
+      <p class="text-xs text-muted-foreground tabular">14m ago</p>
+    </div>
+
+    <!-- Form: structured trigger -->
+    <div class="px-5 py-5 space-y-6 bg-background">
+      <section>
+        <h2 class="text-lg font-semibold mb-1">Report an acute event</h2>
+        <p class="text-sm text-muted-foreground mb-4 leading-relaxed">Tito's caregiver — Rashid — will surface this to PetCare and the Owner. Be specific. The Admin sees what you submit.</p>
+      </section>
+
+      <!-- Event type chips -->
+      <section>
+        <label class="text-xs font-medium text-muted-foreground tracking-wide uppercase">Event type</label>
+        <div class="mt-2 grid grid-cols-2 gap-2">
+          <button class="h-12 rounded-md border border-border bg-card text-sm font-medium">Illness</button>
+          <button class="h-12 rounded-md border-2 border-accent bg-accent-soft text-accent-soft-foreground text-sm font-medium">✓ Injury</button>
+          <button class="h-12 rounded-md border border-border bg-card text-sm font-medium">Allergic reaction</button>
+          <button class="h-12 rounded-md border border-border bg-card text-sm font-medium">Behavioral</button>
+          <button class="h-12 rounded-md border border-border bg-card text-sm font-medium">Other</button>
+        </div>
+      </section>
+
+      <!-- Severity -->
+      <section>
+        <label class="text-xs font-medium text-muted-foreground tracking-wide uppercase">Severity</label>
+        <div class="mt-2 grid grid-cols-3 gap-2">
+          <button class="h-12 rounded-md border border-border bg-card text-sm font-medium">Mild</button>
+          <button class="h-12 rounded-md border-2 border-accent bg-accent-soft text-accent-soft-foreground text-sm font-medium">Moderate</button>
+          <button class="h-12 rounded-md border border-border bg-card text-sm font-medium">Severe</button>
+        </div>
+      </section>
+
+      <!-- Immediate action -->
+      <section>
+        <label class="text-xs font-medium text-muted-foreground tracking-wide uppercase">Immediate action taken</label>
+        <div class="mt-2 h-24 rounded-md border border-border bg-input px-4 py-3">
+          <p class="text-sm leading-relaxed">Separated Tito from the other dogs. Withheld food for 4 hours. Monitored water intake. He's resting now and alert when I approach.</p>
+        </div>
+        <p class="text-xs text-muted-foreground mt-2 tabular">118 / 500 characters</p>
+      </section>
+
+      <!-- Vet contacted -->
+      <section>
+        <label class="text-xs font-medium text-muted-foreground tracking-wide uppercase">Vet contacted?</label>
+        <div class="mt-2 space-y-2">
+          <div class="bg-card border-2 border-primary rounded-lg p-4">
+            <div class="flex items-start gap-3">
+              <div class="w-6 h-6 rounded-full bg-primary text-primary-foreground grid place-items-center text-xs">✓</div>
+              <div class="flex-1">
+                <p class="font-semibold text-sm">Yes · Gulshan Pet Clinic</p>
+                <p class="text-xs text-muted-foreground mt-0.5 tabular">Dr. Khan · 0.8 km · +880 1700-123456</p>
+                <p class="text-xs text-foreground/70 mt-2 leading-snug">Advised fasting and observation. Bring in if symptoms persist past 24h or worsen.</p>
+              </div>
+            </div>
+          </div>
+          <button class="w-full h-12 rounded-md border border-dashed border-border text-sm font-medium text-muted-foreground">+ Add another vet contact</button>
+        </div>
+      </section>
+
+      <!-- Vet Directory -->
+      <section class="bg-card border border-border rounded-xl p-4">
+        <div class="flex items-center justify-between mb-3">
+          <p class="text-xs font-semibold text-muted-foreground uppercase tracking-wide">Vet Directory · Gulshan</p>
+          <span class="text-xs text-muted-foreground">3 nearest</span>
+        </div>
+
+        <div class="space-y-2">
+          <div class="flex items-start gap-3 p-3 border border-border rounded-md bg-card">
+            <div class="w-10 h-10 rounded-md bg-primary-soft text-primary-soft-foreground grid place-items-center text-lg">+</div>
+            <div class="flex-1">
+              <p class="font-semibold text-sm">Gulshan Pet Clinic</p>
+              <p class="text-xs text-muted-foreground">Dr. Khan · 0.8 km · Open until 10 PM</p>
+              <a href="tel:+8801700123456" class="text-xs font-medium text-primary mt-1 inline-block">📞 +880 1700-123456</a>
+            </div>
+          </div>
+
+          <div class="flex items-start gap-3 p-3 border border-border rounded-md bg-card">
+            <div class="w-10 h-10 rounded-md bg-muted grid place-items-center text-lg">+</div>
+            <div class="flex-1">
+              <p class="font-semibold text-sm">Banani Animal Care</p>
+              <p class="text-xs text-muted-foreground">Dr. Rahman · 2.4 km · Open until 9 PM</p>
+              <a href="tel:+8801800123456" class="text-xs font-medium text-primary mt-1 inline-block">📞 +880 1800-123456</a>
+            </div>
+          </div>
+
+          <div class="flex items-start gap-3 p-3 border border-border rounded-md bg-card">
+            <div class="w-10 h-10 rounded-md bg-muted grid place-items-center text-lg">+</div>
+            <div class="flex-1">
+              <p class="font-semibold text-sm">Dhanmondi Veterinary Hospital</p>
+              <p class="text-xs text-muted-foreground">24h emergency · 5.1 km</p>
+              <a href="tel:+8801900123456" class="text-xs font-medium text-primary mt-1 inline-block">📞 +880 1900-123456</a>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Pet context — care-relevant recap -->
+      <section class="bg-card border border-border rounded-xl p-4">
+        <p class="text-xs font-semibold text-muted-foreground uppercase tracking-wide mb-3">Care context for Tito</p>
+        <div class="flex items-start gap-3">
+          <div class="w-10 h-10 rounded-full bg-muted grid place-items-center text-lg">🐶</div>
+          <div class="flex-1">
+            <p class="font-semibold text-sm">Tito · Shih Tzu · 6 yrs</p>
+            <p class="text-xs text-muted-foreground mt-1 leading-relaxed">Diabetic (insulin 7am/7pm) · Anxious · Sleeps with the blue blanket.</p>
+            <p class="text-xs text-warning font-medium mt-2">⚠ Diabetic — relevant to lethargy symptoms</p>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <!-- Footer actions -->
+    <div class="sticky bottom-0 bg-background border-t border-border p-4 space-y-2">
+      <button class="w-full h-12 rounded-md bg-accent text-accent-foreground font-medium text-base">Submit Acute Event report</button>
+      <p class="text-xs text-muted-foreground text-center leading-relaxed">Owner will be notified on next visit. Admin reviews immediately. Payout frozen.</p>
+    </div>
+  </div>
+</body>
+</html>

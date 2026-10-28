@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>PetCare — Booking Confirmation</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Source+Serif+4:wght@400;600&display=swap" rel="stylesheet" />
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+  tailwind.config = {
+    theme: {
+      extend: {
+        fontFamily: { sans: ['Inter', 'system-ui', 'sans-serif'], editorial: ['"Source Serif 4"', 'Georgia', 'serif'] },
+        colors: {
+          background: 'hsl(38 35% 97%)',
+          foreground: 'hsl(30 12% 14%)',
+          muted: 'hsl(36 18% 92%)',
+          'muted-foreground': 'hsl(30 8% 38%)',
+          card: 'hsl(0 0% 100%)',
+          'card-foreground': 'hsl(30 12% 14%)',
+          border: 'hsl(34 14% 86%)',
+          primary: 'hsl(150 32% 32%)',
+          'primary-foreground': 'hsl(38 35% 97%)',
+          'primary-soft': 'hsl(150 22% 92%)',
+          'primary-soft-foreground': 'hsl(150 38% 22%)',
+          'accent': 'hsl(14 64% 56%)',
+          'accent-foreground': 'hsl(38 35% 97%)',
+          'accent-soft': 'hsl(14 70% 94%)',
+          'accent-soft-foreground': 'hsl(14 64% 32%)',
+        },
+      },
+    },
+  };
+</script>
+<style>
+  body { font-family: 'Inter', system-ui, sans-serif; background: hsl(38 35% 97%); color: hsl(30 12% 14%); }
+  .tabular { font-variant-numeric: tabular-nums; }
+  .phone-frame { width: 390px; min-height: 844px; background: hsl(38 35% 97%); }
+</style>
+</head>
+<body>
+  <div class="phone-frame mx-auto my-8 border-[14px] border-foreground/90 rounded-[40px] shadow-xl overflow-hidden">
+    <div class="h-11 flex items-center justify-between px-6 text-xs text-foreground/70">
+      <span class="tabular">9:41</span><span class="font-medium">Booking #PC-2847</span><span class="tabular">●●● 4G</span>
+    </div>
+
+    <!-- Hero confirmation -->
+    <div class="bg-card border-b border-border px-5 py-8 text-center">
+      <div class="w-16 h-16 rounded-full bg-primary-soft text-primary-soft-foreground mx-auto grid place-items-center text-3xl">✓</div>
+      <h1 class="font-editorial text-2xl mt-4 leading-tight">Tito's stay is confirmed.</h1>
+      <p class="text-sm text-muted-foreground mt-2 leading-relaxed">Rashid has accepted. We'll send daily updates starting Mar 28.</p>
+
+      <!-- Booking State pill — "Captured" -->
+      <div class="mt-5 inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary-soft px-4 py-1.5">
+        <span class="w-2 h-2 rounded-full bg-primary"></span>
+        <span class="text-xs font-semibold text-primary-soft-foreground tracking-wide uppercase">Captured · Confirmed</span>
+      </div>
+    </div>
+
+    <!-- Booking summary card -->
+    <div class="px-5 py-5">
+      <div class="bg-card border border-border rounded-xl shadow-md overflow-hidden">
+
+        <!-- Header with Provider -->
+        <div class="p-4 flex items-center gap-3 border-b border-border">
+          <div class="w-12 h-12 rounded-full bg-muted grid place-items-center text-lg">RM</div>
+          <div class="flex-1">
+            <div class="flex items-center gap-2">
+              <p class="font-semibold text-sm">Rashid M.</p>
+              <span class="inline-flex items-center gap-1 rounded-full border-2 border-primary bg-primary-soft px-2 py-0.5 text-[10px] font-semibold text-primary-soft-foreground tracking-wide">Tier-A</span>
+            </div>
+            <p class="text-xs text-muted-foreground mt-0.5">Gulshan, Dhaka</p>
+          </div>
+        </div>
+
+        <!-- Stay details -->
+        <div class="p-4 space-y-3 border-b border-border">
+          <div class="flex items-center justify-between text-sm">
+            <span class="text-muted-foreground">Stay dates</span>
+            <span class="font-medium tabular">Mar 28 – Apr 05</span>
+          </div>
+          <div class="flex items-center justify-between text-sm">
+            <span class="text-muted-foreground">Duration</span>
+            <span class="font-medium tabular">8 nights · 9 days</span>
+          </div>
+          <div class="flex items-center justify-between text-sm">
+            <span class="text-muted-foreground">Pet</span>
+            <span class="font-medium">Tito (Shih Tzu)</span>
+          </div>
+          <div class="flex items-center justify-between text-sm">
+            <span class="text-muted-foreground">Booking ID</span>
+            <span class="font-medium tabular">PC-2847</span>
+          </div>
+        </div>
+
+        <!-- Care confirmation recap -->
+        <div class="p-4 border-b border-border">
+          <p class="text-xs font-semibold text-muted-foreground uppercase tracking-wide mb-2">Care confirmed</p>
+          <div class="space-y-1.5 text-sm">
+            <p class="leading-snug">✓ Insulin schedule — 7 AM, 7 PM, 2 units</p>
+            <p class="leading-snug">✓ Diabetic care — Royal Canin formula</p>
+            <p class="leading-snug">✓ Anxious — no vacuum after 6 PM</p>
+            <p class="leading-snug">✓ Sleeps with the blue blanket</p>
+          </div>
+        </div>
+
+        <!-- Payment summary -->
+        <div class="p-4">
+          <p class="text-xs font-semibold text-muted-foreground uppercase tracking-wide mb-3">Payment</p>
+          <div class="space-y-1.5 text-sm">
+            <div class="flex items-center justify-between">
+              <span class="text-muted-foreground">Stay (8 nights)</span>
+              <span class="tabular">৳ 5,600</span>
+            </div>
+            <div class="flex items-center justify-between">
+              <span class="text-muted-foreground">Service fee</span>
+              <span class="tabular">৳ 280</span>
+            </div>
+            <div class="flex items-center justify-between pt-2 border-t border-border mt-2">
+              <span class="font-semibold">Total · captured</span>
+              <span class="font-semibold tabular text-base">৳ 5,880</span>
+            </div>
+          </div>
+          <div class="mt-3 inline-flex items-center gap-2 bg-primary-soft text-primary-soft-foreground rounded-md px-3 py-1.5 text-xs font-medium">
+            <span class="w-1.5 h-1.5 rounded-full bg-primary"></span>
+            Paid via bKash · capture confirmed
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Acute Event preset -->
+    <div class="px-5 pb-5">
+      <div class="bg-accent-soft border border-accent/30 rounded-xl p-4">
+        <p class="text-xs font-semibold text-accent-soft-foreground uppercase tracking-wide">If anything happens</p>
+        <p class="text-sm mt-1.5 leading-relaxed text-foreground/80">If Rashid reports an acute event during the stay, we'll surface it here with the vet directory. The payout freezes until reviewed.</p>
+        <button class="mt-3 text-sm font-medium text-accent-soft-foreground underline underline-offset-2">See the vet directory →</button>
+      </div>
+    </div>
+
+    <!-- Action grid -->
+    <div class="px-5 pb-8">
+      <p class="text-xs font-semibold text-muted-foreground uppercase tracking-wide mb-3">Next</p>
+      <div class="grid grid-cols-2 gap-3">
+        <button class="bg-card border border-border rounded-lg p-4 text-left">
+          <p class="text-2xl">💬</p>
+          <p class="font-semibold text-sm mt-2">Chat with Rashid</p>
+          <p class="text-xs text-muted-foreground mt-1">Booking-scoped</p>
+        </button>
+        <button class="bg-card border border-border rounded-lg p-4 text-left">
+          <p class="text-2xl">📋</p>
+          <p class="font-semibold text-sm mt-2">Daily updates</p>
+          <p class="text-xs text-muted-foreground mt-1">Starting Mar 28</p>
+        </button>
+      </div>
+      <button class="w-full mt-3 h-12 rounded-md border border-border text-sm font-medium">View all bookings</button>
+    </div>
+  </div>
+</body>
+</html>

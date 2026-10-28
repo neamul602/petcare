@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>PetCare — 2.1 Care History View (Owner · Moat Proof)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Source+Serif+4:wght@400;600&display=swap" rel="stylesheet" />
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+  tailwind.config = {
+    theme: {
+      extend: {
+        fontFamily: { sans: ['Inter', 'system-ui', 'sans-serif'], editorial: ['"Source Serif 4"', 'Georgia', 'serif'] },
+        colors: {
+          background: 'hsl(38 35% 97%)',
+          foreground: 'hsl(30 12% 14%)',
+          muted: 'hsl(36 18% 92%)',
+          'muted-foreground': 'hsl(30 8% 38%)',
+          card: 'hsl(0 0% 100%)',
+          'card-foreground': 'hsl(30 12% 14%)',
+          border: 'hsl(34 14% 86%)',
+          input: 'hsl(34 14% 90%)',
+          ring: 'hsl(150 32% 32%)',
+          primary: 'hsl(150 32% 32%)',
+          'primary-foreground': 'hsl(38 35% 97%)',
+          'primary-soft': 'hsl(150 22% 92%)',
+          'primary-soft-foreground': 'hsl(150 38% 22%)',
+          accent: 'hsl(14 64% 56%)',
+          'accent-foreground': 'hsl(38 35% 97%)',
+          'accent-soft': 'hsl(14 70% 94%)',
+          'accent-soft-foreground': 'hsl(14 64% 32%)',
+          destructive: 'hsl(0 62% 48%)',
+          'destructive-soft': 'hsl(0 62% 94%)',
+          'destructive-soft-foreground': 'hsl(0 62% 28%)',
+          success: 'hsl(150 32% 32%)',
+          'success-soft': 'hsl(150 22% 92%)',
+          'success-soft-foreground': 'hsl(150 38% 22%)',
+          warning: 'hsl(36 78% 46%)',
+          'warning-soft': 'hsl(36 78% 94%)',
+          'warning-soft-foreground': 'hsl(36 78% 26%)',
+          info: 'hsl(212 56% 48%)',
+          'info-soft': 'hsl(212 56% 94%)',
+          'info-soft-foreground': 'hsl(212 56% 28%)',
+        },
+      },
+    },
+  };
+</script>
+<style>
+  body { font-family: 'Inter', system-ui, sans-serif; background: hsl(38 35% 97%); color: hsl(30 12% 14%); }
+  .tabular { font-variant-numeric: tabular-nums; }
+  .phone-frame { width: 390px; min-height: 844px; background: hsl(38 35% 97%); }
+</style>
+</head>
+<body class="min-h-screen">
+<div class="bg-emerald-50 border-b border-emerald-200 px-6 py-2 text-xs text-emerald-900 text-center">
+  <strong>THE MOAT PROOF</strong> · FR-10 Care History persistence · Per Scenario 02 / 2.1 spec
+</div>
+
+<div class="phone-frame mx-auto my-6 border-[14px] border-foreground/90 rounded-[40px] shadow-xl overflow-hidden">
+
+  <!-- Status bar -->
+  <div class="h-11 flex items-center justify-between px-6 text-xs text-foreground/70 bg-card">
+    <span class="tabular">9:41</span>
+    <span class="font-medium">Tito's care history</span>
+    <span class="tabular">●●● 4G</span>
+  </div>
+
+  <!-- Back nav -->
+  <header class="flex items-center justify-between px-5 py-3 bg-card border-b border-border">
+    <a href="#" class="flex items-center gap-1 text-sm text-muted-foreground">
+      <span aria-hidden="true">←</span> Pets
+    </a>
+    <a href="#" class="text-xs text-primary underline underline-offset-2">Edit profile</a>
+  </header>
+
+  <!-- Body -->
+  <div class="bg-background px-5 py-5 space-y-5 overflow-y-auto" style="max-height: 600px;">
+
+    <!-- D2: Pet header -->
+    <section class="bg-muted rounded-lg p-4 border border-border">
+      <div class="flex items-center gap-3">
+        <div class="w-14 h-14 rounded-lg bg-card grid place-items-center text-3xl">🐕</div>
+        <div class="flex-1">
+          <p class="font-editorial text-xl font-semibold leading-tight">Tito</p>
+          <p class="text-xs text-muted-foreground mt-0.5 tabular">Shih Tzu · 7 yrs · 5.2 kg · Diabetic</p>
+          <div class="mt-2 flex items-center gap-1.5 flex-wrap">
+            <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-warning-soft text-warning-soft-foreground text-[10px] font-semibold border border-warning/30">DIABETIC</span>
+            <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-warning-soft text-warning-soft-foreground text-[10px] font-semibold border border-warning/30">ANXIETY</span>
+            <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-muted text-muted-foreground text-[10px] font-medium border border-border">SENIOR</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Quick stats -->
+    <section class="grid grid-cols-3 gap-2 text-center">
+      <div class="bg-card border border-border rounded-md p-3">
+        <p class="tabular text-lg font-editorial font-semibold text-primary">3</p>
+        <p class="text-[10px] text-muted-foreground mt-0.5">prior stays</p>
+      </div>
+      <div class="bg-card border border-border rounded-md p-3">
+        <p class="tabular text-lg font-editorial font-semibold text-primary">1</p>
+        <p class="text-[10px] text-muted-foreground mt-0.5">provider</p>
+      </div>
+      <div class="bg-card border border-border rounded-md p-3">
+        <p class="tabular text-lg font-editorial font-semibold text-primary">27</p>
+        <p class="text-[10px] text-muted-foreground mt-0.5">days on platform</p>
+      </div>
+    </section>
+
+    <!-- D3: Care-history sections (collapsible) -->
+    <section class="bg-card border border-border rounded-lg overflow-hidden">
+
+      <header class="px-4 py-3 border-b border-border">
+        <h2 class="text-sm font-semibold">Care history · 3 sections</h2>
+        <p class="text-xs text-muted-foreground mt-0.5">Pre-fills future bookings automatically.</p>
+      </header>
+
+      <!-- Care: Insulin -->
+      <details class="group border-b border-border" open>
+        <summary class="px-4 py-3 flex items-center justify-between cursor-pointer list-none">
+          <div class="flex items-center gap-2">
+            <span aria-hidden="true" class="text-base">💉</span>
+            <span class="text-xs font-medium">Insulin schedule</span>
+          </div>
+          <span class="text-xs text-muted-foreground">BID · 2u × 7am/7pm</span>
+        </summary>
+        <div class="px-4 pb-3 text-xs text-muted-foreground leading-relaxed">
+          Caninsulin 2 units subcutaneously at 7am and 7pm. Glucose check before evening dose if behaviour changes. Vet contact: Dr. Rahman · Gulshan Vet.
+        </div>
+      </details>
+
+      <!-- Care: Diet -->
+      <details class="group border-b border-border" open>
+        <summary class="px-4 py-3 flex items-center justify-between cursor-pointer list-none">
+          <div class="flex items-center gap-2">
+            <span aria-hidden="true" class="text-base">🍽</span>
+            <span class="text-xs font-medium">Diet</span>
+          </div>
+          <span class="text-xs text-muted-foreground">Low-carb kibble</span>
+        </summary>
+        <div class="px-4 pb-3 text-xs text-muted-foreground leading-relaxed">
+          Hill's w/d · ½ cup at 7am and 7pm. No treats outside meal times. Fresh water always.
+        </div>
+      </details>
+
+      <!-- Care: Anxiety -->
+      <details class="group border-b border-border">
+        <summary class="px-4 py-3 flex items-center justify-between cursor-pointer list-none">
+          <div class="flex items-center gap-2">
+            <span aria-hidden="true" class="text-base">😰</span>
+            <span class="text-xs font-medium">Anxiety triggers</span>
+          </div>
+          <span class="text-xs text-muted-foreground">2 noted</span>
+        </summary>
+        <div class="px-4 pb-3 text-xs text-muted-foreground leading-relaxed">
+          No vacuum after 6pm. Quiet TV volume. Tito sleeps with small blue blanket — keep it in his crate.
+        </div>
+      </details>
+
+      <!-- Care: Vet -->
+      <details class="group">
+        <summary class="px-4 py-3 flex items-center justify-between cursor-pointer list-none">
+          <div class="flex items-center gap-2">
+            <span aria-hidden="true" class="text-base">🏥</span>
+            <span class="text-xs font-medium">Vet contact</span>
+          </div>
+          <span class="text-xs text-muted-foreground">Dr. Rahman · Gulshan Vet</span>
+        </summary>
+        <div class="px-4 pb-3 text-xs text-muted-foreground leading-relaxed">
+          +880-2-XXX-XXXX · open until midnight · 1.2 km from Gulshan home boarder.
+        </div>
+      </details>
+
+    </section>
+
+    <!-- D4: Past booking -->
+    <section>
+      <h2 class="text-sm font-semibold mb-3">Past stay · Rashid · Gulshan</h2>
+      <article class="bg-card border border-border rounded-lg overflow-hidden">
+        <div class="aspect-[16/10] bg-gradient-to-br from-primary-soft to-accent-soft grid place-items-center">
+          <span class="text-4xl">🐕</span>
+        </div>
+        <div class="p-3">
+          <div class="flex items-center justify-between">
+            <p class="text-xs font-medium tabular">28 Mar – 5 Apr 2026 · 8 nights</p>
+            <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-success-soft text-success-soft-foreground text-[10px] font-semibold border border-success/30">COMPLETED</span>
+          </div>
+          <p class="font-editorial text-sm leading-snug mt-2 text-foreground italic">"Tito came home happy, calm, and exactly on schedule. Rashid's daily photos made the whole week worry-free. Booking again for Eid."</p>
+          <p class="text-xs text-muted-foreground mt-1">— Bibi · Verified review · ★ 5.0</p>
+        </div>
+      </article>
+    </section>
+
+  </div>
+
+  <!-- Sticky action bar (Book again CTA) -->
+  <footer class="sticky bottom-0 z-10 bg-card border-t border-border px-5 py-3 backdrop-blur">
+    <div class="flex items-center justify-between gap-3">
+      <div>
+        <p class="text-xs text-muted-foreground">Last stay · Rashid</p>
+        <p class="text-sm font-medium tabular">BDT 6,300 · 8 nights</p>
+      </div>
+      <div class="flex items-center gap-2">
+        <a href="#" class="text-xs text-primary underline underline-offset-2 whitespace-nowrap">Different provider</a>
+        <a href="22-book-again-path.html" class="h-10 px-4 rounded-md bg-primary text-primary-foreground text-sm font-medium hover:bg-primary/90">Book again</a>
+      </div>
+    </div>
+  </footer>
+
+</div>
+
+</body>
+</html>

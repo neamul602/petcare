@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>PetCare — 1.5 Pet Profile Management (Owner · Moat Seed)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Source+Serif+4:wght@400;600&display=swap" rel="stylesheet" />
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+  tailwind.config = {
+    theme: {
+      extend: {
+        fontFamily: { sans: ['Inter', 'system-ui', 'sans-serif'], editorial: ['"Source Serif 4"', 'Georgia', 'serif'] },
+        colors: {
+          background: 'hsl(38 35% 97%)',
+          foreground: 'hsl(30 12% 14%)',
+          muted: 'hsl(36 18% 92%)',
+          'muted-foreground': 'hsl(30 8% 38%)',
+          card: 'hsl(0 0% 100%)',
+          'card-foreground': 'hsl(30 12% 14%)',
+          border: 'hsl(34 14% 86%)',
+          input: 'hsl(34 14% 90%)',
+          ring: 'hsl(150 32% 32%)',
+          primary: 'hsl(150 32% 32%)',
+          'primary-foreground': 'hsl(38 35% 97%)',
+          'primary-soft': 'hsl(150 22% 92%)',
+          'primary-soft-foreground': 'hsl(150 38% 22%)',
+          accent: 'hsl(14 64% 56%)',
+          'accent-foreground': 'hsl(38 35% 97%)',
+          'accent-soft': 'hsl(14 70% 94%)',
+          'accent-soft-foreground': 'hsl(14 64% 32%)',
+          destructive: 'hsl(0 62% 48%)',
+          'destructive-foreground': 'hsl(38 35% 97%)',
+          'destructive-soft': 'hsl(0 62% 94%)',
+          'destructive-soft-foreground': 'hsl(0 62% 28%)',
+          success: 'hsl(150 32% 32%)',
+          'success-soft': 'hsl(150 22% 92%)',
+          'success-soft-foreground': 'hsl(150 38% 22%)',
+          warning: 'hsl(36 78% 46%)',
+          'warning-soft': 'hsl(36 78% 94%)',
+          'warning-soft-foreground': 'hsl(36 78% 26%)',
+          info: 'hsl(212 56% 48%)',
+          'info-soft': 'hsl(212 56% 94%)',
+          'info-soft-foreground': 'hsl(212 56% 28%)',
+        },
+      },
+    },
+  };
+</script>
+<style>
+  body { font-family: 'Inter', system-ui, sans-serif; background: hsl(38 35% 97%); color: hsl(30 12% 14%); }
+  .tabular { font-variant-numeric: tabular-nums; }
+  .phone-frame { width: 390px; min-height: 844px; background: hsl(38 35% 97%); }
+  details > summary { list-style: none; }
+  details > summary::-webkit-details-marker { display: none; }
+  details[open] .chevron { transform: rotate(90deg); }
+</style>
+</head>
+<body class="min-h-screen">
+<div class="bg-emerald-50 border-b border-emerald-200 px-6 py-2 text-xs text-emerald-900 text-center">
+  <strong>THE MOAT SEED</strong> · FR-6/7/8/10/48 · Per Scenario 01 / 1.5 spec · Saves to platform (not WhatsApp)
+</div>
+
+<div class="phone-frame mx-auto my-6 border-[14px] border-foreground/90 rounded-[40px] shadow-xl overflow-hidden">
+
+  <!-- Status bar -->
+  <div class="h-11 flex items-center justify-between px-6 text-xs text-foreground/70 bg-card">
+    <span class="tabular">9:41</span>
+    <span class="font-medium">Tito's profile</span>
+    <span class="tabular">●●● 4G</span>
+  </div>
+
+  <!-- Back nav -->
+  <header class="flex items-center justify-between px-5 py-3 bg-card border-b border-border">
+    <a href="#" class="flex items-center gap-1 text-sm text-muted-foreground">
+      <span aria-hidden="true">←</span> Book Rashid
+    </a>
+    <a href="#" class="text-xs text-muted-foreground underline underline-offset-2">Discard</a>
+  </header>
+
+  <!-- Body -->
+  <div class="bg-background px-5 py-5 space-y-4 overflow-y-auto" style="max-height: 580px;">
+
+    <!-- D2: Page title + moat explanation -->
+    <section>
+      <h1 class="font-editorial text-2xl font-semibold leading-tight">Pet profile</h1>
+      <p class="text-sm text-muted-foreground mt-2 leading-relaxed">
+        Tito's profile is saved to the platform. Future bookings will pre-fill from this — no re-typing insulin schedules in WhatsApp every Eid.
+      </p>
+    </section>
+
+    <!-- D3: Identity block -->
+    <details class="group bg-card border border-border rounded-lg" open>
+      <summary class="px-4 py-3 flex items-center justify-between cursor-pointer">
+        <h2 class="text-sm font-semibold">Identity</h2>
+        <span class="chevron text-muted-foreground transition-transform text-xs">▶</span>
+      </summary>
+      <div class="px-4 pb-4 space-y-3">
+        <div class="bg-muted rounded-md p-4 flex items-center gap-4">
+          <div class="w-20 h-20 rounded-md bg-card grid place-items-center text-4xl border border-border">🐕</div>
+          <div class="flex-1">
+            <p class="font-editorial text-lg font-semibold leading-tight">Tito</p>
+            <p class="text-xs text-muted-foreground mt-1 tabular">Dog · Shih Tzu · 4y · 7kg</p>
+            <p class="text-[10px] text-success mt-1">✓ 1 photo uploaded</p>
+          </div>
+        </div>
+        <div class="flex items-center gap-2">
+          <button class="text-xs text-primary underline underline-offset-2">Change photo</button>
+          <span class="text-xs text-muted-foreground">·</span>
+          <button class="text-xs text-primary underline underline-offset-2">Add photos (max 5)</button>
+        </div>
+      </div>
+    </details>
+
+    <!-- D4: Basic info -->
+    <details class="group bg-card border border-border rounded-lg" open>
+      <summary class="px-4 py-3 flex items-center justify-between cursor-pointer">
+        <h2 class="text-sm font-semibold">Basic info</h2>
+        <span class="chevron text-muted-foreground transition-transform text-xs">▶</span>
+      </summary>
+      <div class="px-4 pb-4 space-y-3 text-sm">
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs text-muted-foreground mb-1">Species</label>
+            <div class="bg-muted border border-border rounded-md px-3 py-2 text-foreground/70 flex items-center justify-between">
+              <span>Dog</span>
+              <span aria-hidden="true" class="text-[10px]">🔒</span>
+            </div>
+          </div>
+          <div>
+            <label class="block text-xs text-muted-foreground mb-1">Sex</label>
+            <select class="w-full bg-card border border-border rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring">
+              <option>Male · Neutered</option>
+            </select>
+          </div>
+        </div>
+        <div>
+          <label class="block text-xs text-muted-foreground mb-1">Breed</label>
+          <input type="text" value="Shih Tzu" class="w-full bg-card border border-border rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring" />
+        </div>
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs text-muted-foreground mb-1">Age</label>
+            <div class="flex items-center gap-2">
+              <input type="number" value="4" class="w-16 bg-card border border-border rounded-md px-3 py-2 text-sm tabular focus:outline-none focus:ring-2 focus:ring-ring" />
+              <span class="text-xs text-muted-foreground">years</span>
+            </div>
+          </div>
+          <div>
+            <label class="block text-xs text-muted-foreground mb-1">Weight</label>
+            <div class="flex items-center gap-2">
+              <input type="number" value="7" step="0.1" class="w-16 bg-card border border-border rounded-md px-3 py-2 text-sm tabular focus:outline-none focus:ring-2 focus:ring-ring" />
+              <span class="text-xs text-muted-foreground">kg</span>
+            </div>
+          </div>
+        </div>
+        <div>
+          <label class="block text-xs text-muted-foreground mb-2">Vaccinations</label>
+          <fieldset class="space-y-1.5">
+            <label class="flex items-center gap-2 text-sm">
+              <input type="radio" name="vacc" class="accent-primary" /> <span>Up to date</span>
+            </label>
+            <label class="flex items-center gap-2 text-sm">
+              <input type="radio" name="vacc" checked class="accent-primary" /> <span>Not known</span>
+            </label>
+            <label class="flex items-center gap-2 text-sm">
+              <input type="radio" name="vacc" class="accent-primary" /> <span>Not up to date</span>
+            </label>
+            <label class="flex items-center gap-2 text-sm">
+              <input type="radio" name="vacc" class="accent-primary" /> <span>N/A</span>
+            </label>
+          </fieldset>
+        </div>
+        <div>
+          <label class="block text-xs text-muted-foreground mb-1">Microchip <span class="text-[10px]">(optional)</span></label>
+          <input type="text" placeholder="15-digit ID" class="w-full bg-card border border-border rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring" />
+        </div>
+      </div>
+    </details>
+
+    <!-- D5: Behaviour -->
+    <details class="group bg-card border border-border rounded-lg">
+      <summary class="px-4 py-3 flex items-center justify-between cursor-pointer">
+        <h2 class="text-sm font-semibold">Behaviour</h2>
+        <span class="chevron text-muted-foreground transition-transform text-xs">▶</span>
+      </summary>
+      <div class="px-4 pb-4 space-y-3 text-sm">
+        <div>
+          <label class="block text-xs text-muted-foreground mb-2">Energy level</label>
+          <fieldset class="flex gap-2">
+            <label class="flex-1 text-center px-3 py-2 rounded-md border border-border bg-card cursor-pointer hover:border-muted-foreground">
+              <input type="radio" name="energy" class="sr-only" /> Calm
+            </label>
+            <label class="flex-1 text-center px-3 py-2 rounded-md border-2 border-primary bg-primary-soft cursor-pointer">
+              <input type="radio" name="energy" checked class="sr-only" /> <span class="text-primary-soft-foreground font-medium">Moderate</span>
+            </label>
+            <label class="flex-1 text-center px-3 py-2 rounded-md border border-border bg-card cursor-pointer hover:border-muted-foreground">
+              <input type="radio" name="energy" class="sr-only" /> High
+            </label>
+          </fieldset>
+        </div>
+        <div>
+          <label class="block text-xs text-muted-foreground mb-2">Good with</label>
+          <div class="flex flex-wrap gap-2">
+            <button role="checkbox" aria-checked="true" class="px-3 py-1 rounded-full bg-primary-soft border border-primary text-primary-soft-foreground text-xs font-medium">
+              ✓ Other small dogs
+            </button>
+            <button role="checkbox" aria-checked="false" class="px-3 py-1 rounded-full bg-card border border-border text-xs">
+              Cats
+            </button>
+            <button role="checkbox" aria-checked="false" class="px-3 py-1 rounded-full bg-card border border-border text-xs">
+              Children
+            </button>
+            <button role="checkbox" aria-checked="false" class="px-3 py-1 rounded-full bg-card border border-border text-xs">
+              Strangers
+            </button>
+          </div>
+        </div>
+        <div>
+          <label class="block text-xs text-muted-foreground mb-1">Known triggers</label>
+          <div class="flex items-center gap-2 flex-wrap">
+            <span class="inline-flex items-center gap-1.5 px-2 py-1 rounded-full bg-muted text-xs">
+              "Wary of larger dogs"
+              <button aria-label="Remove trigger" class="text-muted-foreground hover:text-foreground">×</button>
+            </span>
+            <button class="text-xs text-primary underline underline-offset-2">+ Add trigger</button>
+          </div>
+        </div>
+      </div>
+    </details>
+
+    <!-- D6: Medical conditions (the special-care marker) -->
+    <details class="group bg-card border-2 border-accent/40 rounded-lg" open>
+      <summary class="px-4 py-3 flex items-center justify-between cursor-pointer">
+        <div class="flex items-center gap-2">
+          <span aria-hidden="true" class="text-accent">⚠</span>
+          <h2 class="text-sm font-semibold">Medical conditions</h2>
+          <span class="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-full bg-accent-soft text-accent-soft-foreground text-[9px] font-bold tracking-wide">SPECIAL CARE</span>
+        </div>
+        <span class="chevron text-muted-foreground transition-transform text-xs">▶</span>
+      </summary>
+      <div class="px-4 pb-4 space-y-3">
+
+        <!-- Active condition: Diabetes -->
+        <article class="bg-accent-soft/30 border border-accent/30 rounded-md p-3">
+          <div class="flex items-start justify-between">
+            <div class="flex-1">
+              <p class="text-sm font-semibold">Diabetes · 8 months</p>
+              <p class="text-[10px] text-muted-foreground mt-0.5">Added 8 months ago</p>
+            </div>
+            <button class="text-xs text-destructive underline underline-offset-2">Remove</button>
+          </div>
+          <fieldset class="mt-3">
+            <legend class="text-xs text-muted-foreground mb-1">Severity</legend>
+            <div class="flex gap-2">
+              <label class="flex-1 text-center px-2 py-1.5 rounded-md border border-border bg-card text-xs cursor-pointer">
+                <input type="radio" name="sev-diabetes" class="sr-only" /> Mild
+              </label>
+              <label class="flex-1 text-center px-2 py-1.5 rounded-md border-2 border-warning bg-warning-soft text-warning-soft-foreground text-xs font-medium cursor-pointer">
+                <input type="radio" name="sev-diabetes" checked class="sr-only" /> Moderate
+              </label>
+              <label class="flex-1 text-center px-2 py-1.5 rounded-md border border-border bg-card text-xs cursor-pointer">
+                <input type="radio" name="sev-diabetes" class="sr-only" /> Severe
+              </label>
+            </div>
+          </fieldset>
+          <div class="mt-3 space-y-2">
+            <div>
+              <label class="block text-[10px] text-muted-foreground mb-1">Vet contact <span class="text-destructive">*</span></label>
+              <div class="grid grid-cols-3 gap-2">
+                <input type="text" value="Dr. Rahman" placeholder="Dr. name" class="col-span-1 bg-card border border-border rounded-md px-2 py-1.5 text-xs focus:outline-none focus:ring-2 focus:ring-ring" />
+                <input type="text" value="Gulshan Vet" placeholder="Clinic" class="col-span-1 bg-card border border-border rounded-md px-2 py-1.5 text-xs focus:outline-none focus:ring-2 focus:ring-ring" />
+                <input type="tel" value="+880-2-XXX-XXXX" placeholder="Phone" class="col-span-1 bg-card border border-border rounded-md px-2 py-1.5 text-xs tabular focus:outline-none focus:ring-2 focus:ring-ring" />
+              </div>
+            </div>
+            <div>
+              <label class="block text-[10px] text-muted-foreground mb-1">Daily notes</label>
+              <textarea rows="2" class="w-full bg-card border border-border rounded-md px-2 py-1.5 text-xs leading-relaxed focus:outline-none focus:ring-2 focus:ring-ring">Glucose curve stable; insulin BID. Watch for lethargy or excessive thirst.</textarea>
+            </div>
+          </div>
+        </article>
+
+        <button class="w-full h-9 rounded-md border border-dashed border-border bg-card text-xs font-medium text-primary hover:border-primary">
+          + Add another condition
+        </button>
+      </div>
+    </details>
+
+    <!-- D7: Medication -->
+    <details class="group bg-card border border-border rounded-lg">
+      <summary class="px-4 py-3 flex items-center justify-between cursor-pointer">
+        <h2 class="text-sm font-semibold">Medication</h2>
+        <span class="chevron text-muted-foreground transition-transform text-xs">▶</span>
+      </summary>
+      <div class="px-4 pb-4 space-y-3">
+        <article class="bg-muted border border-border rounded-md p-3">
+          <div class="flex items-start justify-between">
+            <p class="text-sm font-semibold">Insulin · 2 units</p>
+            <button class="text-xs text-destructive underline underline-offset-2">Remove</button>
+          </div>
+          <div class="mt-2 grid grid-cols-2 gap-2 text-xs">
+            <div>
+              <span class="text-muted-foreground">Frequency</span>
+              <p class="font-medium">Twice daily · 8am + 8pm</p>
+            </div>
+            <div>
+              <span class="text-muted-foreground">Route</span>
+              <p class="font-medium">Injection</p>
+            </div>
+          </div>
+          <p class="mt-2 text-xs text-muted-foreground leading-relaxed"><strong class="text-foreground">Notes:</strong> Keep refrigerated; cooler pack for travel.</p>
+        </article>
+        <button class="w-full h-9 rounded-md border border-dashed border-border bg-card text-xs font-medium text-primary hover:border-primary">
+          + Add medication
+        </button>
+      </div>
+    </details>
+
+    <!-- D8: Diet -->
+    <details class="group bg-card border border-border rounded-lg">
+      <summary class="px-4 py-3 flex items-center justify-between cursor-pointer">
+        <h2 class="text-sm font-semibold">Diet</h2>
+        <span class="chevron text-muted-foreground transition-transform text-xs">▶</span>
+      </summary>
+      <div class="px-4 pb-4 space-y-3 text-sm">
+        <div>
+          <label class="block text-xs text-muted-foreground mb-2">Food type</label>
+          <fieldset class="grid grid-cols-2 gap-1.5">
+            <label class="flex items-center gap-2 px-3 py-2 rounded-md border-2 border-primary bg-primary-soft cursor-pointer">
+              <input type="radio" name="food" checked class="sr-only" /> <span class="text-xs font-medium text-primary-soft-foreground">Low-carb kibble</span>
+            </label>
+            <label class="flex items-center gap-2 px-3 py-2 rounded-md border border-border bg-card cursor-pointer">
+              <input type="radio" name="food" class="sr-only" /> <span class="text-xs">Wet food</span>
+            </label>
+            <label class="flex items-center gap-2 px-3 py-2 rounded-md border border-border bg-card cursor-pointer">
+              <input type="radio" name="food" class="sr-only" /> <span class="text-xs">Raw</span>
+            </label>
+            <label class="flex items-center gap-2 px-3 py-2 rounded-md border border-border bg-card cursor-pointer">
+              <input type="radio" name="food" class="sr-only" /> <span class="text-xs">Home-cooked</span>
+            </label>
+          </fieldset>
+        </div>
+        <div>
+          <label class="block text-xs text-muted-foreground mb-1">Brand</label>
+          <input list="brands-list" placeholder="Type or pick" class="w-full bg-card border border-border rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring" value="Hill's w/d" />
+          <datalist id="brands-list">
+            <option>Hill's w/d</option>
+            <option>Royal Canin Diabetic</option>
+            <option>Acana</option>
+            <option>Orijen</option>
+          </datalist>
+        </div>
+        <div>
+          <label class="block text-xs text-muted-foreground mb-1">Schedule</label>
+          <input type="text" value="2/day · 8am + 8pm" class="w-full bg-card border border-border rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring" />
+        </div>
+        <div>
+          <label for="treats" class="block text-xs text-muted-foreground mb-1">Treats <span class="text-[10px]">(200 char)</span></label>
+          <textarea id="treats" rows="2" maxlength="200" class="w-full bg-card border border-border rounded-md px-3 py-2 text-xs leading-relaxed focus:outline-none focus:ring-2 focus:ring-ring">Only vet-approved diabetic treats. No table food.</textarea>
+          <p class="text-[10px] text-muted-foreground text-right tabular">45 / 200</p>
+        </div>
+        <div>
+          <label class="block text-xs text-muted-foreground mb-2">Allergies</label>
+          <fieldset class="grid grid-cols-3 gap-1.5">
+            <label class="flex items-center gap-1.5 px-2 py-1.5 rounded-md border-2 border-primary bg-primary-soft cursor-pointer">
+              <input type="radio" name="allergy" checked class="sr-only" /> <span class="text-xs font-medium text-primary-soft-foreground">None known</span>
+            </label>
+            <label class="flex items-center gap-1.5 px-2 py-1.5 rounded-md border border-border bg-card cursor-pointer">
+              <input type="radio" name="allergy" class="sr-only" /> <span class="text-xs">Chicken</span>
+            </label>
+            <label class="flex items-center gap-1.5 px-2 py-1.5 rounded-md border border-border bg-card cursor-pointer">
+              <input type="radio" name="allergy" class="sr-only" /> <span class="text-xs">Beef</span>
+            </label>
+            <label class="flex items-center gap-1.5 px-2 py-1.5 rounded-md border border-border bg-card cursor-pointer">
+              <input type="radio" name="allergy" class="sr-only" /> <span class="text-xs">Grain</span>
+            </label>
+            <label class="flex items-center gap-1.5 px-2 py-1.5 rounded-md border border-border bg-card cursor-pointer">
+              <input type="radio" name="allergy" class="sr-only" /> <span class="text-xs">Dairy</span>
+            </label>
+            <label class="flex items-center gap-1.5 px-2 py-1.5 rounded-md border border-border bg-card cursor-pointer">
+              <input type="radio" name="allergy" class="sr-only" /> <span class="text-xs">Other</span>
+            </label>
+          </fieldset>
+        </div>
+      </div>
+    </details>
+
+    <!-- D9: Special-attention -->
+    <details class="group bg-card border border-border rounded-lg">
+      <summary class="px-4 py-3 flex items-center justify-between cursor-pointer">
+        <h2 class="text-sm font-semibold">Special attention</h2>
+        <span class="chevron text-muted-foreground transition-transform text-xs">▶</span>
+      </summary>
+      <div class="px-4 pb-4 space-y-3 text-xs">
+        <div>
+          <label class="block text-xs text-muted-foreground mb-1">Anxiety triggers</label>
+          <textarea rows="2" class="w-full bg-card border border-border rounded-md px-3 py-2 leading-relaxed focus:outline-none focus:ring-2 focus:ring-ring">Loud fireworks (Eid week is rough). Vacuum after 6pm. Loud TV.</textarea>
+        </div>
+        <div>
+          <label class="block text-xs text-muted-foreground mb-1">Comfort items</label>
+          <textarea rows="2" class="w-full bg-card border border-border rounded-md px-3 py-2 leading-relaxed focus:outline-none focus:ring-2 focus:ring-ring">His small blue blanket — keep in his crate at all times.</textarea>
+        </div>
+        <div>
+          <label class="block text-xs text-muted-foreground mb-1">Exercise needs</label>
+          <textarea rows="2" class="w-full bg-card border border-border rounded-md px-3 py-2 leading-relaxed focus:outline-none focus:ring-2 focus:ring-ring">Short leash walk morning + evening. Avoid midday heat.</textarea>
+        </div>
+      </div>
+    </details>
+
+    <!-- Persistence reassurance -->
+    <div class="bg-info-soft border-l-4 border-info rounded-r-md p-3">
+      <p class="text-xs text-info-soft-foreground leading-relaxed">
+        <strong>Pet profile is saved to Tito's record.</strong> Future bookings will pre-fill from this — you won't need to retype insulin schedules for every provider.
+      </p>
+    </div>
+
+  </div>
+
+  <!-- D10: Sticky CTA -->
+  <footer class="sticky bottom-0 z-10 bg-card border-t border-border px-5 py-3 backdrop-blur space-y-2">
+    <button class="w-full h-12 rounded-md bg-primary text-primary-foreground text-base font-medium hover:bg-primary/90">
+      Save Tito's profile & continue →
+    </button>
+    <button class="w-full h-9 rounded-md text-xs font-medium text-muted-foreground underline underline-offset-4">
+      Save as draft
+    </button>
+  </footer>
+
+</div>
+
+</body>
+</html>

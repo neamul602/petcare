@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>PetCare — UX Mockups Index</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Source+Serif+4:wght@400;600&display=swap" rel="stylesheet" />
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+  tailwind.config = {
+    theme: {
+      extend: {
+        fontFamily: { sans: ['Inter', 'system-ui', 'sans-serif'], editorial: ['"Source Serif 4"', 'Georgia', 'serif'] },
+        colors: {
+          background: 'hsl(38 35% 97%)',
+          foreground: 'hsl(30 12% 14%)',
+          muted: 'hsl(36 18% 92%)',
+          'muted-foreground': 'hsl(30 8% 38%)',
+          card: 'hsl(0 0% 100%)',
+          border: 'hsl(34 14% 86%)',
+          primary: 'hsl(150 32% 32%)',
+          'primary-foreground': 'hsl(38 35% 97%)',
+          'primary-soft': 'hsl(150 22% 92%)',
+          'primary-soft-foreground': 'hsl(150 38% 22%)',
+          accent: 'hsl(14 64% 56%)',
+          warning: 'hsl(36 78% 46%)',
+          destructive: 'hsl(0 62% 48%)',
+        },
+      },
+    },
+  };
+</script>
+<style>
+  body { font-family: 'Inter', system-ui, sans-serif; background: hsl(38 35% 97%); color: hsl(30 12% 14%); }
+  .tabular { font-variant-numeric: tabular-nums; }
+</style>
+</head>
+<body class="min-h-screen">
+
+  <div class="max-w-7xl mx-auto px-6 py-12">
+
+    <header class="mb-12">
+      <div class="flex items-center gap-3 mb-4">
+        <div class="w-10 h-10 rounded-full bg-primary text-primary-foreground grid place-items-center font-semibold">P</div>
+        <span class="font-semibold text-lg tracking-tight">PetCare</span>
+      </div>
+      <h1 class="font-editorial text-5xl leading-tight mb-4">Curated Dhaka. Special-care-strong. Pet-first.</h1>
+      <p class="text-lg text-foreground/80 max-w-3xl leading-relaxed">
+        Launch-blocking surfaces for the PetCare curated pet-care marketplace. Each mockup is a self-contained HTML file produced via WDS Phase 4 [H] Design-Delivery · 2026-08-31.
+      </p>
+      <div class="mt-6 flex items-center gap-3 text-sm text-muted-foreground flex-wrap">
+        <span class="px-3 py-1.5 rounded-full bg-primary-soft text-primary-soft-foreground font-medium">9 of 10 launch-critical surfaces shipped</span>
+        <span class="px-3 py-1.5 rounded-full bg-muted font-medium">Owner · Provider · Admin</span>
+        <span class="px-3 py-1.5 rounded-full bg-muted font-medium">English-first · Bangla-ready</span>
+        <span class="px-3 py-1.5 rounded-full bg-accent/10 text-accent font-medium">R-10 · 4.2 + 5.7 acute-event runbook</span>
+      </div>
+    </header>
+
+    <!-- OWNER · Mobile -->
+    <section class="mb-12">
+      <div class="flex items-baseline justify-between mb-6">
+        <h2 class="text-xl font-semibold">Owner · Mobile</h2>
+        <span class="text-xs text-muted-foreground">5 surfaces · 390px</span>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+
+        <a href="15-pet-profile-management.html" class="bg-card border border-border rounded-xl overflow-hidden hover:shadow-lg transition-shadow block">
+          <div class="aspect-[9/16] bg-muted grid place-items-center p-6">
+            <div class="text-center">
+              <p class="text-3xl mb-2">🐕</p>
+              <p class="text-sm font-semibold text-foreground">Tito's profile</p>
+              <p class="text-xs text-muted-foreground mt-1">Identity · Basic · Behaviour · Medical · Medication · Diet · Special-attention</p>
+            </div>
+          </div>
+          <div class="p-4">
+            <p class="text-xs text-muted-foreground uppercase tracking-wide">1.5 · Moat Seed</p>
+            <p class="font-semibold text-base mt-1">Pet Profile Management</p>
+            <p class="text-xs text-muted-foreground mt-1 leading-relaxed">Captures Tito's full care profile. Saves to platform (not WhatsApp). Seeds FR-10 care-history persistence.</p>
+          </div>
+        </a>
+
+        <a href="17-booking-submission-payment.html" class="bg-card border border-border rounded-xl overflow-hidden hover:shadow-lg transition-shadow block">
+          <div class="aspect-[9/16] bg-muted grid place-items-center p-6">
+            <div class="text-center">
+              <p class="text-3xl mb-2">📋</p>
+              <p class="text-sm font-semibold text-foreground">Review + Authorize</p>
+              <p class="text-xs text-muted-foreground mt-1 tabular">BDT 19,800 · hold (not capture)</p>
+            </div>
+          </div>
+          <div class="p-4">
+            <p class="text-xs text-muted-foreground uppercase tracking-wide">1.7 · Commit Moment</p>
+            <p class="font-semibold text-base mt-1">Booking Submission + Payment</p>
+            <p class="text-xs text-muted-foreground mt-1 leading-relaxed">Authorization hold (not capture) until provider confirms. Plain-language authorize vs. charge distinction. bKash default.</p>
+          </div>
+        </a>
+
+        <a href="21-care-history-view.html" class="bg-card border border-border rounded-xl overflow-hidden hover:shadow-lg transition-shadow block">
+          <div class="aspect-[9/16] bg-muted grid place-items-center p-6">
+            <div class="text-center">
+              <p class="text-3xl mb-2">📖</p>
+              <p class="text-sm font-semibold text-foreground">Care history</p>
+              <p class="text-xs text-muted-foreground mt-1">3 prior stays · 1 provider · 27 days</p>
+            </div>
+          </div>
+          <div class="p-4">
+            <p class="text-xs text-muted-foreground uppercase tracking-wide">2.1 · Moat Proof</p>
+            <p class="font-semibold text-base mt-1">Care History View</p>
+            <p class="text-xs text-muted-foreground mt-1 leading-relaxed">Tito's platform-owned care history. Pre-fills future bookings. Verified review visible. Book Again CTA prominent.</p>
+          </div>
+        </a>
+
+        <a href="22-book-again-path.html" class="bg-card border border-border rounded-xl overflow-hidden hover:shadow-lg transition-shadow block ring-2 ring-primary/40">
+          <div class="aspect-[9/16] bg-muted grid place-items-center p-6">
+            <div class="text-center">
+              <p class="text-3xl mb-2">⏱</p>
+              <p class="text-sm font-semibold text-foreground tabular">01:12</p>
+              <p class="text-xs text-success mt-1 font-medium">under 4-min target</p>
+            </div>
+          </div>
+          <div class="p-4">
+            <p class="text-xs text-muted-foreground uppercase tracking-wide">2.2 · SM-15 CLIMAX</p>
+            <p class="font-semibold text-base mt-1">Book Again Path</p>
+            <p class="text-xs text-muted-foreground mt-1 leading-relaxed">Live elapsed-time indicator · Use-saved toggles for all 5 care sections · Editable instructions. Under 4-min target.</p>
+          </div>
+        </a>
+
+        <a href="01-home.html" class="bg-card border border-border rounded-xl overflow-hidden hover:shadow-lg transition-shadow block">
+          <div class="aspect-[9/16] bg-muted grid place-items-center p-6">
+            <div class="text-center">
+              <p class="text-3xl mb-2">🏠</p>
+              <p class="text-sm font-semibold text-foreground">Home / Search</p>
+              <p class="text-xs text-muted-foreground mt-1">Species · dates · neighborhood</p>
+            </div>
+          </div>
+          <div class="p-4">
+            <p class="text-xs text-muted-foreground uppercase tracking-wide">01 · Existing</p>
+            <p class="font-semibold text-base mt-1">Home / Landing</p>
+            <p class="text-xs text-muted-foreground mt-1 leading-relaxed">Search entrypoint returning Bibi to "book Rashid for Tito again." Bangla-ready.</p>
+          </div>
+        </a>
+
+        <a href="02-search-results.html" class="bg-card border border-border rounded-xl overflow-hidden hover:shadow-lg transition-shadow block">
+          <div class="aspect-[9/16] bg-muted grid place-items-center p-6">
+            <div class="text-center">
+              <p class="text-3xl mb-2">🔍</p>
+              <p class="text-sm font-semibold text-foreground">Tier-A above Tier-B</p>
+              <p class="text-xs text-muted-foreground mt-1">Date-Level Capacity visible</p>
+            </div>
+          </div>
+          <div class="p-4">
+            <p class="text-xs text-muted-foreground uppercase tracking-wide">02 · Existing</p>
+            <p class="font-semibold text-base mt-1">Search Results</p>
+            <p class="text-xs text-muted-foreground mt-1 leading-relaxed">Filter chips for special-care. Tier ordering visible. Date-Level Capacity on each card.</p>
+          </div>
+        </a>
+
+        <a href="03-provider-profile.html" class="bg-card border border-border rounded-xl overflow-hidden hover:shadow-lg transition-shadow block">
+          <div class="aspect-[9/16] bg-muted grid place-items-center p-6">
+            <div class="text-center">
+              <p class="text-3xl mb-2">👤</p>
+              <p class="text-sm font-semibold text-foreground">Rashid · Gulshan</p>
+              <p class="text-xs text-muted-foreground mt-1">Tier-A · 4.9★ · 12 diabetic dogs</p>
+            </div>
+          </div>
+          <div class="p-4">
+            <p class="text-xs text-muted-foreground uppercase tracking-wide">03 · Existing</p>
+            <p class="font-semibold text-base mt-1">Provider Profile</p>
+            <p class="text-xs text-muted-foreground mt-1 leading-relaxed">Photo, Tier-A badge, special-care experience, capacity calendar, verified reviews.</p>
+          </div>
+        </a>
+
+        <a href="04-booking-configuration.html" class="bg-card border border-border rounded-xl overflow-hidden hover:shadow-lg transition-shadow block">
+          <div class="aspect-[9/16] bg-muted grid place-items-center p-6">
+            <div class="text-center">
+              <p class="text-3xl mb-2">⚙</p>
+              <p class="text-sm font-semibold text-foreground">Care configuration</p>
+              <p class="text-xs text-muted-foreground mt-1">Dates · food · medication · flags</p>
+            </div>
+          </div>
+          <div class="p-4">
+            <p class="text-xs text-muted-foreground uppercase tracking-wide">04 · Existing</p>
+            <p class="font-semibold text-base mt-1">Care Configuration</p>
+            <p class="text-xs text-muted-foreground mt-1 leading-relaxed">Intake flow with pre-filled pet. Treated with care-flow seriousness.</p>
+          </div>
+        </a>
+
+      </div>
+    </section>
+
+    <!-- PROVIDER · Mobile -->
+    <section class="mb-12">
+      <div class="flex items-baseline justify-between mb-6">
+        <h2 class="text-xl font-semibold">Provider · Mobile</h2>
+        <span class="text-xs text-muted-foreground">2 surfaces · 390px</span>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+
+        <a href="35-in-stay-management.html" class="bg-card border border-border rounded-xl overflow-hidden hover:shadow-lg transition-shadow block">
+          <div class="aspect-[9/16] bg-muted grid place-items-center p-6">
+            <div class="text-center">
+              <p class="text-3xl mb-2">📅</p>
+              <p class="text-sm font-semibold text-foreground tabular">Day 4 of 9</p>
+              <p class="text-xs text-muted-foreground mt-1">Insulin due in 2h 15m</p>
+            </div>
+          </div>
+          <div class="p-4">
+            <p class="text-xs text-muted-foreground uppercase tracking-wide">3.5 · Anti-radio-silence</p>
+            <p class="font-semibold text-base mt-1">In-Stay Management</p>
+            <p class="text-xs text-muted-foreground mt-1 leading-relaxed">Full in-stay picture: daily updates, chat, vet directory, acute-event trigger. The structural answer to radio silence.</p>
+          </div>
+        </a>
+
+        <a href="36-daily-update-composer.html" class="bg-card border border-border rounded-xl overflow-hidden hover:shadow-lg transition-shadow block">
+          <div class="aspect-[9/16] bg-muted grid place-items-center p-6">
+            <div class="text-center">
+              <p class="text-3xl mb-2">📸</p>
+              <p class="text-sm font-semibold text-foreground">2 of 4 photos</p>
+              <p class="text-xs text-muted-foreground mt-1">Insulin given · Calm · Normal glucose</p>
+            </div>
+          </div>
+          <div class="p-4">
+            <p class="text-xs text-muted-foreground uppercase tracking-wide">3.6 · Fit Evidence</p>
+            <p class="font-semibold text-base mt-1">Daily Update Composer</p>
+            <p class="text-xs text-muted-foreground mt-1 leading-relaxed">Photo + structured note in under 60 sec. Each update = demonstrated-Fit evidence. Voice-input mic.</p>
+          </div>
+        </a>
+
+        <a href="57-acute-event-trigger.html" class="bg-card border border-border rounded-xl overflow-hidden hover:shadow-lg transition-shadow block ring-2 ring-accent/40">
+          <div class="aspect-[9/16] bg-muted grid place-items-center p-6">
+            <div class="text-center">
+              <p class="text-3xl mb-2">⚠</p>
+              <p class="text-sm font-semibold text-foreground">Acute · Start runbook</p>
+              <p class="text-xs text-muted-foreground mt-1">Glucose drop · Urgent</p>
+            </div>
+          </div>
+          <div class="p-4">
+            <p class="text-xs text-muted-foreground uppercase tracking-wide">5.7 · R-10 LAUNCH-BLOCKING</p>
+            <p class="font-semibold text-base mt-1">Acute-Event Trigger</p>
+            <p class="text-xs text-muted-foreground mt-1 leading-relaxed">Provider-side start. Notifies Ayaat + Bibi. Booking → Disputed. Payout pauses for review.</p>
+          </div>
+        </a>
+
+        <a href="07-provider-calendar.html" class="bg-card border border-border rounded-xl overflow-hidden hover:shadow-lg transition-shadow block">
+          <div class="aspect-[9/16] bg-muted grid place-items-center p-6">
+            <div class="text-center">
+              <p class="text-3xl mb-2">📆</p>
+              <p class="text-sm font-semibold text-foreground">Capacity calendar</p>
+              <p class="text-xs text-muted-foreground mt-1">Date-Level Capacity · Peak Eid</p>
+            </div>
+          </div>
+          <div class="p-4">
+            <p class="text-xs text-muted-foreground uppercase tracking-wide">07 · Existing</p>
+            <p class="font-semibold text-base mt-1">Provider Calendar / Capacity</p>
+            <p class="text-xs text-muted-foreground mt-1 leading-relaxed">Date-Level Capacity with peak-window highlighting. Pending requests inline.</p>
+          </div>
+        </a>
+
+      </div>
+    </section>
+
+    <!-- ADMIN · Desktop -->
+    <section class="mb-12">
+      <div class="flex items-baseline justify-between mb-6">
+        <h2 class="text-xl font-semibold">Admin · Desktop</h2>
+        <span class="text-xs text-muted-foreground">2 surfaces · 1280px</span>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+        <a href="42-acute-event-runbook.html" class="bg-card border border-border rounded-xl overflow-hidden hover:shadow-lg transition-shadow block ring-2 ring-accent/40 col-span-1 md:col-span-2">
+          <div class="aspect-[16/9] bg-muted grid place-items-center p-6">
+            <div class="text-center">
+              <p class="text-3xl mb-2">🏥</p>
+              <p class="text-base font-semibold text-foreground">Acute Event · AE-2026-0001</p>
+              <p class="text-xs text-muted-foreground mt-1 tabular">2/7 runbook steps done · 05:00 elapsed · SM-20 met</p>
+            </div>
+          </div>
+          <div class="p-4">
+            <p class="text-xs text-muted-foreground uppercase tracking-wide">4.2 · R-10 LAUNCH-BLOCKING · THE launch-blocking surface</p>
+            <p class="font-semibold text-base mt-1">Acute Event Runbook</p>
+            <p class="text-xs text-muted-foreground mt-1 leading-relaxed">7-step runbook (Confirm → Provider → Admin → Vet → Owner notification → Payout → Post-mortem). Live elapsed timer. EN/বাংলা notification template. Vet lookup. Timeline.</p>
+          </div>
+        </a>
+
+        <a href="47-review-moderation-queue.html" class="bg-card border border-border rounded-xl overflow-hidden hover:shadow-lg transition-shadow block col-span-1 md:col-span-2">
+          <div class="aspect-[16/9] bg-muted grid place-items-center p-6">
+            <div class="text-center">
+              <p class="text-3xl mb-2">⚖</p>
+              <p class="text-base font-semibold text-foreground">Review moderation</p>
+              <p class="text-xs text-muted-foreground mt-1 tabular">12 pending · 3 flagged · SM-C3 enforced</p>
+            </div>
+          </div>
+          <div class="p-4">
+            <p class="text-xs text-muted-foreground uppercase tracking-wide">4.7 · SM-C3 PROTECTION</p>
+            <p class="font-semibold text-base mt-1">Review Moderation Queue</p>
+            <p class="text-xs text-muted-foreground mt-1 leading-relaxed">Star-rating optimization is NOT a goal. Critical reviews protected. Consistency check on Ayaat's prior decisions. Reason-required removal.</p>
+          </div>
+        </a>
+
+        <a href="06-admin-queue.html" class="bg-card border border-border rounded-xl overflow-hidden hover:shadow-lg transition-shadow block col-span-1 md:col-span-2">
+          <div class="aspect-[16/9] bg-muted grid place-items-center p-6">
+            <div class="text-center">
+              <p class="text-3xl mb-2">📊</p>
+              <p class="text-base font-semibold text-foreground">Admin Queue Dashboard</p>
+              <p class="text-xs text-muted-foreground mt-1">Priority-ordered · Operating ceiling visible</p>
+            </div>
+          </div>
+          <div class="p-4">
+            <p class="text-xs text-muted-foreground uppercase tracking-wide">06 · Existing</p>
+            <p class="font-semibold text-base mt-1">Admin Queue Dashboard</p>
+            <p class="text-xs text-muted-foreground mt-1 leading-relaxed">Acute (P1, coral) · Dispute (P2, red) · Vetting (P3, amber) · In-stay (P4, forest). 1/25/75 operating ceiling.</p>
+          </div>
+        </a>
+
+      </div>
+    </section>
+
+    <!-- Design tokens · reference -->
+    <section class="mb-12">
+      <h2 class="text-xl font-semibold mb-6">Reference</h2>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <a href="13-curated-shortlist.component.md" class="bg-card border border-border rounded-xl p-5 hover:shadow-lg transition-shadow block">
+          <p class="text-xs text-muted-foreground uppercase tracking-wide">Component Spec</p>
+          <p class="font-semibold mt-1">Curated Shortlist</p>
+          <p class="text-xs text-muted-foreground mt-2 leading-relaxed">1.3 component spec · Token catalog for desktop pre-fill view.</p>
+        </a>
+        <a href="../DESIGN.md" class="bg-card border border-border rounded-xl p-5 hover:shadow-lg transition-shadow block">
+          <p class="text-xs text-muted-foreground uppercase tracking-wide">Spine</p>
+          <p class="font-semibold mt-1">DESIGN.md · rev 3</p>
+          <p class="text-xs text-muted-foreground mt-2 leading-relaxed">Visual identity tokens. shadcn-derived. 28 component sections.</p>
+        </a>
+        <a href="../EXPERIENCE.md" class="bg-card border border-border rounded-xl p-5 hover:shadow-lg transition-shadow block">
+          <p class="text-xs text-muted-foreground uppercase tracking-wide">Spine</p>
+          <p class="font-semibold mt-1">EXPERIENCE.md · rev 3</p>
+          <p class="text-xs text-muted-foreground mt-2 leading-relaxed">Information architecture · behavior · states · accessibility · key flows.</p>
+        </a>
+      </div>
+    </section>
+
+    <footer class="mt-16 pt-8 border-t border-border">
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div>
+          <p class="text-xs text-muted-foreground uppercase tracking-wide font-medium">Spines</p>
+          <p class="mt-3 text-sm"><a href="../DESIGN.md" class="text-primary underline underline-offset-2">DESIGN.md</a> · visual identity</p>
+          <p class="mt-1 text-sm"><a href="../EXPERIENCE.md" class="text-primary underline underline-offset-2">EXPERIENCE.md</a> · behavior, IA, flows</p>
+        </div>
+        <div>
+          <p class="text-xs text-muted-foreground uppercase tracking-wide font-medium">Source</p>
+          <p class="mt-3 text-sm"><a href="../../prds/prd-PetCare-2026-08-29/prd.md" class="text-primary underline underline-offset-2">PRD · rev 1</a></p>
+          <p class="mt-1 text-xs text-muted-foreground">52 FRs · 4 UJs · 26 NFRs</p>
+        </div>
+        <div>
+          <p class="text-xs text-muted-foreground uppercase tracking-wide font-medium">Method</p>
+          <p class="mt-3 text-sm">WDS Phase 4 [H] Design-Delivery</p>
+          <p class="mt-1 text-xs text-muted-foreground">Built 2026-08-31 · Bangla-ready · WCAG 2.1 AA floor</p>
+        </div>
+      </div>
+    </footer>
+
+  </div>
+
+</body>
+</html>

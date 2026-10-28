@@ -1,0 +1,2064 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PetCare — Prototype</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Source+Serif+4:wght@400;600;700&family=Noto+Sans+Bengali:wght@400;500;600&display=swap" rel="stylesheet" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'Noto Sans Bengali', 'system-ui', 'sans-serif'],
+            editorial: ['"Source Serif 4"', 'Georgia', 'serif'],
+          },
+          colors: {
+            background: 'hsl(38 35% 97%)',
+            foreground: 'hsl(30 12% 14%)',
+            muted: 'hsl(36 18% 92%)',
+            'muted-foreground': 'hsl(30 8% 38%)',
+            card: 'hsl(0 0% 100%)',
+            'card-foreground': 'hsl(30 12% 14%)',
+            border: 'hsl(34 14% 86%)',
+            input: 'hsl(34 14% 90%)',
+            ring: 'hsl(150 32% 32%)',
+            primary: {
+              DEFAULT: 'hsl(150 32% 32%)',
+              foreground: 'hsl(38 35% 97%)',
+              soft: 'hsl(150 22% 92%)',
+              'soft-foreground': 'hsl(150 38% 22%)',
+            },
+            accent: {
+              DEFAULT: 'hsl(14 64% 56%)',
+              foreground: 'hsl(38 35% 97%)',
+              soft: 'hsl(14 70% 94%)',
+              'soft-foreground': 'hsl(14 64% 32%)',
+            },
+            info: { DEFAULT: 'hsl(212 56% 48%)', soft: 'hsl(212 56% 94%)' },
+            warning: { DEFAULT: 'hsl(36 78% 46%)', soft: 'hsl(36 78% 94%)' },
+            destructive: { DEFAULT: 'hsl(0 62% 48%)', soft: 'hsl(0 62% 94%)' },
+            success: { DEFAULT: 'hsl(150 32% 32%)', soft: 'hsl(150 22% 92%)' },
+          },
+          boxShadow: {
+            'sm-soft': '0 1px 2px 0 rgba(30, 22, 12, 0.04)',
+            'md-soft': '0 2px 4px -1px rgba(30, 22, 12, 0.06), 0 1px 2px 0 rgba(30, 22, 12, 0.04)',
+            'lg-soft': '0 8px 16px -4px rgba(30, 22, 12, 0.08), 0 4px 8px -2px rgba(30, 22, 12, 0.04)',
+            'xl-soft': '0 16px 32px -8px rgba(30, 22, 12, 0.12), 0 8px 16px -4px rgba(30, 22, 12, 0.06)',
+            ring: '0 0 0 3px hsl(150 32% 32% / 0.18)',
+          },
+        },
+      },
+    };
+  </script>
+  <style>
+    body { font-family: 'Inter', system-ui, sans-serif; background: hsl(38 35% 97%); color: hsl(30 12% 14%); }
+    .tabular { font-variant-numeric: tabular-nums; }
+    .font-editorial { font-family: 'Source Serif 4', Georgia, serif; }
+    .tier-a-badge {
+      display: inline-flex; align-items: center; gap: 0.375rem;
+      border-radius: 9999px; border: 2px solid hsl(150 32% 32%);
+      background: hsl(150 22% 92%); padding: 0.25rem 0.75rem;
+      font-size: 0.6875rem; font-weight: 600;
+      color: hsl(150 38% 22%); letter-spacing: 0.04em;
+    }
+    .tier-a-badge .dot {
+      width: 0.375rem; height: 0.375rem; border-radius: 9999px; background: hsl(150 32% 32%);
+    }
+    button:focus-visible, a:focus-visible, [role="button"]:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible {
+      outline: none; box-shadow: 0 0 0 3px hsl(150 32% 32% / 0.18);
+    }
+    /* Scrollbar discipline */
+    ::-webkit-scrollbar { width: 10px; height: 10px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: hsl(34 14% 80%); border-radius: 9999px; }
+    ::-webkit-scrollbar-thumb:hover { background: hsl(30 8% 60%); }
+    /* SVG-rendered placeholder images */
+    img.svg-ph { display: block; width: 100%; height: 100%; object-fit: cover; }
+    /* Smooth route change */
+    .fade-in { animation: fadeIn 200ms ease-out; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(2px); } to { opacity: 1; transform: translateY(0); } }
+  </style>
+</head>
+<body class="antialiased">
+  <div id="app" class="min-h-screen"></div>
+
+  <script>
+  /* =========================================================
+     PetCare Prototype — Role-Based Web App
+     Single-file SPA. Three roles: Owner / Provider / Admin.
+     Routes via hash. State lives in `state`. All click handlers
+     use data-action attributes for routing.
+     ========================================================= */
+
+  // ---------------- DATA ----------------
+  const state = {
+    currentUser: null, // 'owner' | 'provider' | 'admin'
+    activeRoute: '#/',
+    bookings: [
+      {
+        id: 'BK-2026-0142',
+        pet: 'Tito',
+        provider: 'Rashid M.',
+        dates: 'Mar 28 – Apr 6',
+        nights: 9,
+        status: 'in-stay',
+        total: 19800,
+        neighborhood: 'Banani → Gulshan',
+        species: 'Small dog',
+        configuredCare: {
+          insulin: { on: true, value: '2 units, twice daily (8am, 8pm) — Humulin N' },
+          diet: { on: true, value: 'Royal Canin adult — 1/2 cup, twice daily' },
+          anxiety: { on: false, value: '' },
+          instructions: { on: true, value: 'Tito sleeps on the bed. Soft voice only — loud noises make him hide.' },
+          vet: { on: true, value: 'Banani Pet Clinic · Dr. Iqbal · 01711-222-333' },
+        },
+      },
+      {
+        id: 'BK-2026-0098',
+        pet: 'Tito',
+        provider: 'Rashid M.',
+        dates: 'Feb 14 – Feb 21',
+        nights: 7,
+        status: 'completed',
+        total: 15400,
+        neighborhood: 'Banani → Gulshan',
+        species: 'Small dog',
+      },
+    ],
+    providers: [
+      {
+        id: 'rashid',
+        name: 'Rashid M.',
+        tier: 'A',
+        neighborhood: 'Gulshan',
+        distanceKm: 2.4,
+        yearsHosting: 6,
+        pricePerNight: 2200,
+        rating: 4.9,
+        reviewsCount: 47,
+        repeatOwners: 12,
+        verifiedReviewsWithPhotos: 47,
+        fitStats: [
+          { value: '12', label: 'diabetic small dogs handled successfully' },
+          { value: '6', label: 'cat boardings · 5 with medication' },
+          { value: '4', label: 'repeat owners · 3 with senior pets' },
+          { value: '4/4', label: 'Eid-week capacity honored' },
+        ],
+        description: 'Dedicated pet room in a quiet Gulshan townhouse. Six years hosting. Handles diabetic small dogs, anxious pets, and short-stay medical needs.',
+        homeType: 'Townhouse with garden',
+        capacityThisWindow: { available: 9, total: 9 },
+        color: '210 25% 70%',
+      },
+      {
+        id: 'farzana',
+        name: 'Farzana A.',
+        tier: 'A',
+        neighborhood: 'Banani',
+        distanceKm: 3.1,
+        yearsHosting: 4,
+        pricePerNight: 1950,
+        rating: 4.8,
+        reviewsCount: 28,
+        repeatOwners: 9,
+        verifiedReviewsWithPhotos: 28,
+        fitStats: [
+          { value: '9', label: 'anxious small-breed dogs' },
+          { value: '5', label: 'diabetic pets handled' },
+          { value: '3', label: 'repeat owners' },
+        ],
+        description: 'Calm apartment in central Banani. Single-pet household. Best for one small dog or cat who wants quiet.',
+        homeType: 'Apartment, no other pets',
+        capacityThisWindow: { available: 9, total: 9 },
+        color: '28 30% 72%',
+      },
+      {
+        id: 'asif',
+        name: 'Asif K.',
+        tier: 'A',
+        neighborhood: 'Baridhara',
+        distanceKm: 5.2,
+        yearsHosting: 8,
+        pricePerNight: 2400,
+        rating: 4.7,
+        reviewsCount: 35,
+        repeatOwners: 8,
+        verifiedReviewsWithPhotos: 30,
+        fitStats: [
+          { value: '14', label: 'senior pets boarded' },
+          { value: '7', label: 'special-diet regimens' },
+        ],
+        description: 'Spacious Baridhara duplex with garden. Specializes in senior pets and special-diet routines.',
+        homeType: 'Duplex with garden',
+        capacityThisWindow: { available: 5, total: 9 },
+        color: '150 18% 62%',
+      },
+      {
+        id: 'kamrul',
+        name: 'Kamrul H.',
+        tier: 'B',
+        neighborhood: 'Bashundhara',
+        distanceKm: 5.4,
+        yearsHosting: 1,
+        pricePerNight: 1500,
+        rating: 4.4,
+        reviewsCount: 6,
+        repeatOwners: 1,
+        verifiedReviewsWithPhotos: 2,
+        fitStats: [],
+        description: 'New to PetCare. Open to small-breed dogs. Limited special-care experience.',
+        homeType: 'Apartment',
+        capacityThisWindow: { available: 9, total: 9 },
+        color: '38 22% 70%',
+      },
+    ],
+    acuteEvents: [
+      {
+        id: 'AE-2026-0001',
+        bookingId: 'BK-2026-0142',
+        pet: 'Tito',
+        provider: 'Rashid M.',
+        owner: 'Bibi R.',
+        category: 'Hypoglycemia',
+        severity: 'High',
+        triggeredAt: '23:14 last night',
+        elapsedMin: 412,
+        runbookStep: 4,
+        status: 'vet-contacted',
+        notes: 'Trembling, refused food at 21:30. Glucose check at 22:40 read 58 mg/dL. Owner contacted at 22:55, vet at 23:05.',
+      },
+      {
+        id: 'AE-2026-0002',
+        bookingId: 'BK-2026-0141',
+        pet: 'Mimi',
+        provider: 'Farzana A.',
+        owner: 'Tahsin A.',
+        category: 'Anx-behavior',
+        severity: 'Medium',
+        triggeredAt: '2 days ago',
+        elapsedMin: 2880,
+        runbookStep: 7,
+        status: 'resolved',
+        notes: 'Hiding under bed for 6+ hours. Resolved with calming protocol — Mimi emerged for food next morning.',
+      },
+    ],
+    pets: [
+      {
+        id: 'tito',
+        name: 'Tito',
+        species: 'Small dog · Toy Poodle',
+        age: '8 yrs',
+        weight: '4.2 kg',
+        medical: 'Type-1 diabetic — insulin 2 units, twice daily (8am, 8pm) Humulin N',
+        diet: 'Royal Canin adult — 1/2 cup twice daily',
+        flags: ['Diabetic', 'Senior'],
+        photo: '🐩',
+      },
+    ],
+    reviews: [
+      {
+        id: 'RV-2026-0091',
+        providerId: 'rashid',
+        bookingId: 'BK-2026-0098',
+        owner: 'Bibi R.',
+        rating: 5,
+        text: 'Tito came back home calmer than he left. Rashid sent three photo updates, each with a note about how the insulin timing went. The first time I have ever felt like a host actually understood our routine.',
+        photosCount: 4,
+        date: '2026-02-23',
+        flag: 'pending-moderation',
+        flagReason: 'Mentioned competitor name in text',
+      },
+      {
+        id: 'RV-2026-0078',
+        providerId: 'rashid',
+        bookingId: 'BK-2026-0081',
+        owner: 'Tahsin A.',
+        rating: 5,
+        text: 'Mimi was terrified of the kennel experience we tried last year. Rashid took her for the first weekend and we got hourly updates. She will not board anywhere else now.',
+        photosCount: 3,
+        date: '2026-01-15',
+        flag: null,
+      },
+    ],
+  };
+
+  // ---------------- HELPERS ----------------
+  const $ = (sel) => document.querySelector(sel);
+  const fmtBDT = (n) => 'BDT ' + n.toLocaleString('en-US');
+  const cls = (...c) => c.filter(Boolean).join(' ');
+  const svg = (content) => `data:image/svg+xml;utf8,${encodeURIComponent(content)}`;
+
+  function petPlaceholder(name, hue) {
+    return svg(`
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 80 60">
+        <rect width="80" height="60" fill="hsl(${hue} 30% 86%)"/>
+        <circle cx="30" cy="34" r="10" fill="hsl(${hue} 22% 65%)"/>
+        <circle cx="50" cy="38" r="11" fill="hsl(${hue} 28% 60%)"/>
+        <circle cx="27" cy="31" r="1.4" fill="hsl(30 12% 14%)"/>
+        <circle cx="33" cy="31" r="1.4" fill="hsl(30 12% 14%)"/>
+        <path d="M27 38 Q30 40 33 38" stroke="hsl(30 12% 14%)" fill="none" stroke-width="0.8"/>
+      </svg>
+    `);
+  }
+  function homePlaceholder(hue) {
+    return svg(`
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 80 60">
+        <rect width="80" height="60" fill="hsl(${hue} 22% 84%)"/>
+        <rect x="14" y="22" width="52" height="30" fill="hsl(${hue} 18% 68%)" rx="2"/>
+        <polygon points="14,22 40,8 66,22" fill="hsl(${hue} 25% 60%)"/>
+        <rect x="32" y="36" width="8" height="16" fill="hsl(30 12% 24%)"/>
+        <rect x="20" y="30" width="8" height="8" fill="hsl(48 30% 88%)"/>
+        <rect x="52" y="30" width="8" height="8" fill="hsl(48 30% 88%)"/>
+        <rect x="0" y="50" width="80" height="10" fill="hsl(80 18% 70%)"/>
+      </svg>
+    `);
+  }
+  function reviewPlaceholder() {
+    return svg(`
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 80 60">
+        <rect width="80" height="60" fill="hsl(28 30% 82%)"/>
+        <rect x="6" y="8" width="30" height="44" fill="hsl(28 28% 70%)" rx="2"/>
+        <rect x="44" y="14" width="30" height="20" fill="hsl(28 28% 70%)" rx="2"/>
+        <rect x="44" y="38" width="30" height="14" fill="hsl(28 28% 70%)" rx="2"/>
+        <circle cx="20" cy="30" r="6" fill="hsl(28 30% 60%)"/>
+      </svg>
+    `);
+  }
+
+  // ---------------- COMPONENT LIBRARY ----------------
+  const TierABadge = () => `
+    <span class="tier-a-badge"><span class="dot"></span>Tier-A · Admin-vetted</span>`;
+  const TierBTag = () => `
+    <span class="inline-flex items-center rounded-full bg-muted text-muted-foreground border border-border px-2 py-0.5 text-[10px] font-medium tracking-wide">TIER-B</span>`;
+
+  const BookingStateBadge = (state) => {
+    const map = {
+      'requested': ['bg-info-soft text-info border-info/30', 'Requested'],
+      'authorized': ['bg-info-soft text-info border-info/30', 'Authorized'],
+      'captured': ['bg-primary-soft text-primary-soft-foreground border-primary/20', 'Captured'],
+      'in-stay': ['bg-primary text-primary-foreground border-primary', 'In-stay'],
+      'completed': ['bg-success-soft text-success border-success/30', 'Completed'],
+      'declined': ['bg-warning-soft text-foreground/80 border-warning/30', 'Declined'],
+      'disputed': ['bg-destructive-soft text-destructive border-destructive/30', 'Disputed'],
+      'refunded': ['bg-muted text-muted-foreground border-border', 'Refunded'],
+    };
+    const [klass, label] = map[state] || ['bg-muted text-muted-foreground border-border', state];
+    return `<span class="inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-medium border ${klass}">${label}</span>`;
+  };
+
+  const AvailPill = (avail, total) => {
+    if (avail === total) return `
+      <span class="inline-flex items-center gap-1.5 rounded-full bg-primary-soft text-primary-soft-foreground border border-primary/20 px-2.5 py-1 text-xs font-medium">
+        <span class="w-1.5 h-1.5 rounded-full bg-primary"></span>Available all ${total} nights
+      </span>`;
+    if (avail === 0) return `
+      <span class="inline-flex items-center gap-1.5 rounded-full bg-muted text-muted-foreground/50 border border-border px-2.5 py-1 text-xs font-medium line-through">
+        <span class="w-1.5 h-1.5 rounded-full bg-muted-foreground/50"></span>Fully booked
+      </span>`;
+    return `
+      <span class="inline-flex items-center gap-1.5 rounded-full bg-info-soft text-info border border-info/30 px-2.5 py-1 text-xs font-medium">
+        <span class="w-1.5 h-1.5 rounded-full bg-info"></span>Available ${avail} of ${total} nights
+      </span>`;
+  };
+
+  const FitCard = (v, l) => `
+    <div class="flex-shrink-0 w-[150px] p-3 rounded-lg bg-muted border border-border">
+      <p class="tabular text-xl font-editorial font-semibold text-primary leading-none">${v}</p>
+      <p class="text-[11px] text-foreground/80 leading-snug mt-1">${l}</p>
+    </div>`;
+
+  // ---------------- ICONS ----------------
+  const Icon = {
+    pin: `<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>`,
+    star: `<svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15 9 22 9.3 17 14 18.5 21 12 17.3 5.5 21 7 14 2 9.3 9 9"/></svg>`,
+    check: `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="text-primary"><path d="M20 6 9 17l-5-5"/></svg>`,
+    chev: `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>`,
+    back: `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>`,
+    bell: `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg>`,
+    search: `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>`,
+    cal: `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M16 2v4"/><path d="M8 2v4"/><path d="M3 10h18"/></svg>`,
+    pet: `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="4" r="2"/><circle cx="18" cy="8" r="2"/><circle cx="20" cy="16" r="2"/><circle cx="9" cy="10" r="3"/><circle cx="6" cy="18" r="2"/><path d="M9 13a3 3 0 0 1 3 3v3"/></svg>`,
+    msg: `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>`,
+    inbox: `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 16 12 14 15 10 15 8 12 2 12"/><path d="M5.45 5.11 2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z"/></svg>`,
+    shield: `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>`,
+    users: `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>`,
+    cog: `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>`,
+    alert: `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg>`,
+    refresh: `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"/><path d="M3 21v-5h5"/></svg>`,
+    plus: `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14"/><path d="M5 12h14"/></svg>`,
+    flask: `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 2v7.527a2 2 0 0 1-.211.896L4.72 20.55a1 1 0 0 0 .9 1.45h12.76a1 1 0 0 0 .9-1.45l-5.069-10.127A2 2 0 0 1 14 9.527V2"/><path d="M8.5 2h7"/><path d="M7 16h10"/></svg>`,
+  };
+
+  </script>
+
+  <script>
+  /* =========================================================
+     APP: Router, layouts, screens, click handlers
+     ========================================================= */
+
+  // ---------------- ROUTE TABLE ----------------
+  const routes = {
+    '#/':                              { role: null,    screen: 'landing' },
+    '#/owner':                         { role: 'owner', screen: 'ownerHome' },
+    '#/owner/search':                  { role: 'owner', screen: 'ownerSearch' },
+    '#/owner/results':                 { role: 'owner', screen: 'ownerResults' },
+    '#/owner/provider':                { role: 'owner', screen: 'ownerProviderDetail' },
+    '#/owner/configure':               { role: 'owner', screen: 'ownerConfigure' },
+    '#/owner/payment':                 { role: 'owner', screen: 'ownerPayment' },
+    '#/owner/confirmation':            { role: 'owner', screen: 'ownerConfirmation' },
+    '#/owner/bookings':                { role: 'owner', screen: 'ownerBookings' },
+    '#/owner/instay':                  { role: 'owner', screen: 'ownerInstay' },
+    '#/owner/daily-update':            { role: 'owner', screen: 'ownerDailyUpdate' },
+    '#/owner/care-history':            { role: 'owner', screen: 'ownerCareHistory' },
+    '#/owner/book-again':              { role: 'owner', screen: 'ownerBookAgain' },
+    '#/owner/review':                  { role: 'owner', screen: 'ownerReview' },
+    '#/owner/pets':                    { role: 'owner', screen: 'ownerPets' },
+    '#/owner/messages':                { role: 'owner', screen: 'ownerMessages' },
+    '#/provider':                      { role: 'provider', screen: 'providerDashboard' },
+    '#/provider/queue':                { role: 'provider', screen: 'providerQueue' },
+    '#/provider/booking':              { role: 'provider', screen: 'providerBookingDetail' },
+    '#/provider/calendar':             { role: 'provider', screen: 'providerCalendar' },
+    '#/provider/instay':               { role: 'provider', screen: 'providerInstay' },
+    '#/provider/daily-update':         { role: 'provider', screen: 'providerDailyUpdate' },
+    '#/provider/trigger':              { role: 'provider', screen: 'providerTrigger' },
+    '#/provider/completed':            { role: 'provider', screen: 'providerCompleted' },
+    '#/provider/reviews':              { role: 'provider', screen: 'providerReviews' },
+    '#/provider/listings':             { role: 'provider', screen: 'providerListings' },
+    '#/admin':                         { role: 'admin', screen: 'adminDashboard' },
+    '#/admin/runbook':                 { role: 'admin', screen: 'adminRunbook' },
+    '#/admin/booking':                 { role: 'admin', screen: 'adminBooking' },
+    '#/admin/moderation':              { role: 'admin', screen: 'adminModeration' },
+    '#/admin/providers':               { role: 'admin', screen: 'adminProviders' },
+    '#/admin/defection':               { role: 'admin', screen: 'adminDefection' },
+  };
+
+  function go(hash) {
+    if (location.hash === hash) render();
+    else location.hash = hash;
+  }
+
+  function currentRoute() {
+    return routes[location.hash] || routes['#/'];
+  }
+
+  // ---------------- LAYOUT: Top Role Switcher ----------------
+  function TopBar() {
+    const r = currentRoute();
+    const isLanding = r.screen === 'landing';
+    return `
+      <header class="bg-card border-b border-border sticky top-0 z-30">
+        <div class="max-w-[1400px] mx-auto px-6 h-14 flex items-center justify-between gap-4">
+          <a href="#/" data-action="nav" class="flex items-center gap-2">
+            <div class="w-7 h-7 rounded-full bg-primary grid place-items-center text-primary-foreground text-[11px] font-bold">PC</div>
+            <span class="font-semibold text-base">PetCare</span>
+          </a>
+          ${isLanding ? '' : `
+            <div class="flex items-center gap-1 bg-muted rounded-full p-1">
+              <button data-action="role:owner"
+                class="px-3 h-8 rounded-full text-xs font-medium ${state.currentUser==='owner'?'bg-card text-foreground shadow-sm':'text-muted-foreground hover:text-foreground'}">
+                Pet Owner
+              </button>
+              <button data-action="role:provider"
+                class="px-3 h-8 rounded-full text-xs font-medium ${state.currentUser==='provider'?'bg-card text-foreground shadow-sm':'text-muted-foreground hover:text-foreground'}">
+                Provider
+              </button>
+              <button data-action="role:admin"
+                class="px-3 h-8 rounded-full text-xs font-medium ${state.currentUser==='admin'?'bg-card text-foreground shadow-sm':'text-muted-foreground hover:text-foreground'}">
+                Admin
+              </button>
+            </div>
+          `}
+          <div class="flex items-center gap-3">
+            ${isLanding ? '' : `
+              <button class="w-9 h-9 grid place-items-center rounded-full hover:bg-muted text-muted-foreground">${Icon.bell}</button>
+              <div class="w-8 h-8 rounded-full bg-primary-soft text-primary-soft-foreground grid place-items-center text-xs font-semibold">BR</div>
+            `}
+          </div>
+        </div>
+      </header>`;
+  }
+
+  // ---------------- LAYOUT: Sidebar per role ----------------
+  function Sidebar() {
+    const r = currentRoute();
+    const items = {
+      owner: [
+        ['#/owner',            Icon.search,  'Find care'],
+        ['#/owner/bookings',   Icon.cal,     'My bookings'],
+        ['#/owner/pets',       Icon.pet,     'My pets'],
+        ['#/owner/messages',   Icon.msg,     'Messages'],
+      ],
+      provider: [
+        ['#/provider',          Icon.shield, 'Dashboard'],
+        ['#/provider/queue',    Icon.inbox,  'Requests'],
+        ['#/provider/calendar', Icon.cal,    'Calendar'],
+        ['#/provider/instay',   Icon.pet,    'In-stay'],
+        ['#/provider/reviews',  Icon.star,   'Reviews'],
+        ['#/provider/listings', Icon.cog,    'My listing'],
+      ],
+      admin: [
+        ['#/admin',              Icon.shield, 'Dashboard'],
+        ['#/admin/runbook',      Icon.alert,  'Acute events'],
+        ['#/admin/moderation',   Icon.star,   'Review queue'],
+        ['#/admin/providers',    Icon.users,  'Providers'],
+        ['#/admin/defection',    Icon.refresh,'Defection'],
+      ],
+    };
+    const list = items[state.currentUser] || [];
+    return `
+      <aside class="w-60 flex-shrink-0 border-r border-border bg-card sticky top-14 self-start h-[calc(100vh-3.5rem)] overflow-y-auto">
+        <nav class="p-3 space-y-1">
+          ${list.map(([href, ic, label]) => {
+            const active = location.hash === href || (href !== `#/${state.currentUser}` && location.hash.startsWith(href + '/'));
+            return `
+              <a href="${href}" data-action="nav"
+                 class="flex items-center gap-3 px-3 h-9 rounded-md text-sm ${active ? 'bg-primary-soft text-primary-soft-foreground font-semibold' : 'text-foreground/80 hover:bg-muted'}">
+                <span class="${active ? 'text-primary' : 'text-muted-foreground'}">${ic}</span>
+                <span>${label}</span>
+              </a>`;
+          }).join('')}
+        </nav>
+        <div class="mt-6 mx-3 p-3 rounded-lg bg-muted border border-border">
+          <p class="text-[11px] uppercase tracking-wide text-muted-foreground font-semibold">Demo tip</p>
+          <p class="text-xs text-foreground/80 mt-1 leading-snug">Click anything. Press <kbd class="px-1 py-0.5 bg-card border border-border rounded text-[10px]">Esc</kbd> to return to the role picker.</p>
+        </div>
+      </aside>`;
+  }
+
+  function PageHeader({ title, kicker, actions, back }) {
+    return `
+      <div class="flex items-start justify-between gap-6 mb-8">
+        <div class="min-w-0">
+          ${back ? `<button data-action="nav" href="${back}" class="text-xs font-medium text-muted-foreground hover:text-foreground inline-flex items-center gap-1 mb-3">${Icon.back} Back</button>` : ''}
+          ${kicker ? `<p class="text-xs font-semibold uppercase tracking-wide text-muted-foreground mb-1">${kicker}</p>` : ''}
+          <h1 class="font-editorial text-3xl font-semibold text-foreground">${title}</h1>
+        </div>
+        ${actions ? `<div class="flex items-center gap-2 flex-shrink-0">${actions}</div>` : ''}
+      </div>`;
+  }
+
+  function Shell(content) {
+    if (currentRoute().screen === 'landing') return `${TopBar()}<main class="fade-in">${content}</main>`;
+    return `
+      ${TopBar()}
+      <div class="max-w-[1400px] mx-auto flex">
+        ${Sidebar()}
+        <main class="flex-1 min-w-0 px-8 py-8 fade-in">${content}</main>
+      </div>`;
+  }
+
+  // ===========================================================
+  // ---------------- SCREENS: LANDING ----------------
+  // ===========================================================
+  function ScreenLanding() {
+    return `
+      <section class="bg-gradient-to-b from-background to-muted">
+        <div class="max-w-[1100px] mx-auto px-6 py-20">
+          <p class="text-xs font-semibold uppercase tracking-wide text-primary text-center mb-4">Curated pet boarding · Dhaka</p>
+          <h1 class="font-editorial text-5xl sm:text-6xl font-semibold text-center leading-tight max-w-3xl mx-auto">
+            Special care, demonstrated.
+          </h1>
+          <p class="text-lg text-muted-foreground text-center mt-6 max-w-2xl mx-auto leading-relaxed">
+            A vetted marketplace for pets with specific or special-care requirements. Real demonstrated-fit data, verified reviews, and an acute-event protocol that doesn't fail your pet when it matters.
+          </p>
+          <div class="grid sm:grid-cols-3 gap-4 mt-16 max-w-4xl mx-auto">
+            ${[
+              ['Pet Owner', 'owner', 'Bibi needs boarding for diabetic Tito during Eid. Find a provider who has actually handled diabetic small dogs.'],
+              ['Provider', 'provider', 'Rashid is a Tier-A host with 6 years and 47 verified reviews. Manage requests, calendar, and in-stay updates.'],
+              ['Admin', 'admin', 'Ayaat runs the operations console — acute-event runbook, review moderation, and provider supply health.'],
+            ].map(([name, role, sub]) => `
+              <button data-action="role:${role}"
+                class="text-left bg-card border border-border rounded-xl p-6 hover:border-primary hover:shadow-md-soft transition group">
+                <div class="w-10 h-10 rounded-full bg-primary-soft grid place-items-center text-primary mb-4">${role==='owner'?Icon.search:role==='provider'?Icon.shield:Icon.users}</div>
+                <p class="font-semibold text-foreground">Sign in as <span class="text-primary">${name}</span></p>
+                <p class="text-sm text-muted-foreground mt-2 leading-snug">${sub}</p>
+                <p class="text-xs text-primary mt-4 inline-flex items-center gap-1 group-hover:gap-2 transition-all">Enter workspace ${Icon.chev}</p>
+              </button>
+            `).join('')}
+          </div>
+          <div class="mt-16 grid grid-cols-2 sm:grid-cols-4 gap-3 max-w-3xl mx-auto text-center">
+            ${[['52','features'],['26','non-functional reqs'],['20','success metrics'],['5','counter-metrics']].map(([n,l])=>`
+              <div class="bg-card border border-border rounded-lg p-4">
+                <p class="tabular text-2xl font-editorial font-semibold text-primary">${n}</p>
+                <p class="text-[11px] uppercase tracking-wide text-muted-foreground mt-1">${l}</p>
+              </div>`).join('')}
+          </div>
+        </div>
+      </section>`;
+  }
+
+  // ===========================================================
+  // ---------------- SCREENS: OWNER ----------------
+  // ===========================================================
+  function ScreenOwnerHome() {
+    const inStay = state.bookings.find(b => b.status === 'in-stay');
+    return `
+      ${PageHeader({ kicker: 'Welcome back, Bibi', title: 'Find care for Tito' })}
+      <div class="grid lg:grid-cols-3 gap-6">
+        <a href="#/owner/search" data-action="nav" class="lg:col-span-2 bg-card border border-border rounded-xl p-6 hover:border-primary transition shadow-sm-soft">
+          <div class="flex items-center justify-between mb-4">
+            <p class="font-semibold text-lg">Start a new search</p>
+            <span class="text-primary">${Icon.chev}</span>
+          </div>
+          <div class="grid sm:grid-cols-3 gap-3">
+            <div>
+              <p class="text-[11px] uppercase tracking-wide text-muted-foreground mb-1">Location</p>
+              <p class="font-medium">Banani, Dhaka</p>
+            </div>
+            <div>
+              <p class="text-[11px] uppercase tracking-wide text-muted-foreground mb-1">Pet</p>
+              <p class="font-medium">Tito · small dog</p>
+            </div>
+            <div>
+              <p class="text-[11px] uppercase tracking-wide text-muted-foreground mb-1">Dates</p>
+              <p class="font-medium">Eid-1 → Eid+9 · 9 nights</p>
+            </div>
+          </div>
+        </a>
+        ${inStay ? `
+          <a href="#/owner/instay" data-action="nav" class="bg-primary-soft border border-primary/20 rounded-xl p-6 hover:border-primary transition">
+            <p class="text-xs font-semibold uppercase tracking-wide text-primary-soft-foreground">In-stay now</p>
+            <p class="font-editorial text-2xl font-semibold text-primary mt-1">Tito at Rashid's</p>
+            <p class="text-sm text-foreground/80 mt-2">Day 3 of 9 · last update 2h ago</p>
+            <p class="text-xs text-primary mt-3 inline-flex items-center gap-1">View daily update ${Icon.chev}</p>
+          </a>
+        ` : `
+          <a href="#/owner/care-history" data-action="nav" class="bg-card border border-border rounded-xl p-6 hover:border-primary transition">
+            <p class="font-semibold">Re-book Rashid</p>
+            <p class="text-sm text-muted-foreground mt-1">Last stay Feb 14–21. Pre-filled with Tito's saved care.</p>
+            <p class="text-xs text-primary mt-3 inline-flex items-center gap-1">Care history ${Icon.chev}</p>
+          </a>
+        `}
+      </div>
+
+      <div class="grid lg:grid-cols-2 gap-6 mt-8">
+        <div class="bg-card border border-border rounded-xl p-6">
+          <p class="font-semibold mb-3">Tito's care profile</p>
+          <div class="flex items-center gap-3 mb-4">
+            <div class="w-12 h-12 rounded-full bg-muted grid place-items-center text-2xl">🐩</div>
+            <div>
+              <p class="font-medium">Tito</p>
+              <p class="text-xs text-muted-foreground">Toy Poodle · 8 yrs · 4.2 kg</p>
+            </div>
+          </div>
+          <div class="space-y-2 text-sm">
+            <div class="flex justify-between"><span class="text-muted-foreground">Insulin</span><span>2u twice daily · Humulin N</span></div>
+            <div class="flex justify-between"><span class="text-muted-foreground">Diet</span><span>Royal Canin adult</span></div>
+            <div class="flex justify-between"><span class="text-muted-foreground">Vet</span><span>Banani Pet Clinic · Dr. Iqbal</span></div>
+          </div>
+          <a href="#/owner/pets" data-action="nav" class="text-xs text-primary mt-4 inline-flex items-center gap-1">Edit profile ${Icon.chev}</a>
+        </div>
+        <div class="bg-card border border-border rounded-xl p-6">
+          <p class="font-semibold mb-3">Recent activity</p>
+          <ul class="space-y-3 text-sm">
+            <li class="flex items-start gap-3">
+              <div class="w-2 h-2 rounded-full bg-primary mt-2"></div>
+              <div>
+                <p>Daily update from Rashid — Day 3 morning</p>
+                <p class="text-xs text-muted-foreground">2h ago · 2 photos</p>
+              </div>
+            </li>
+            <li class="flex items-start gap-3">
+              <div class="w-2 h-2 rounded-full bg-accent mt-2"></div>
+              <div>
+                <p>Acute event AE-2026-0001 resolved</p>
+                <p class="text-xs text-muted-foreground">Yesterday · hypoglycemia · vet contacted</p>
+              </div>
+            </li>
+            <li class="flex items-start gap-3">
+              <div class="w-2 h-2 rounded-full bg-muted-foreground mt-2"></div>
+              <div>
+                <p>Booking BK-2026-0142 started</p>
+                <p class="text-xs text-muted-foreground">3 days ago · 9 nights at Rashid's</p>
+              </div>
+            </li>
+          </ul>
+        </div>
+      </div>`;
+  }
+
+  function ScreenOwnerSearch() {
+    return `
+      ${PageHeader({ kicker: 'Step 1 of 4', title: 'Find care for Tito', back: '#/owner' })}
+      <div class="bg-card border border-border rounded-xl p-8 max-w-3xl">
+        <div class="space-y-6">
+          <div>
+            <label class="block text-sm font-medium mb-2">Where in Dhaka?</label>
+            <div class="relative">
+              <span class="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground">${Icon.pin}</span>
+              <input value="Banani" class="w-full h-12 pl-10 pr-4 bg-input border border-border rounded-md text-base" />
+            </div>
+            <p class="text-xs text-muted-foreground mt-2">We'll show providers within 6 km by default.</p>
+          </div>
+          <div class="grid sm:grid-cols-2 gap-4">
+            <div>
+              <label class="block text-sm font-medium mb-2">Check-in</label>
+              <input value="Mar 28, 2026" class="w-full h-12 px-4 bg-input border border-border rounded-md text-base" />
+            </div>
+            <div>
+              <label class="block text-sm font-medium mb-2">Check-out</label>
+              <input value="Apr 6, 2026" class="w-full h-12 px-4 bg-input border border-border rounded-md text-base" />
+            </div>
+          </div>
+          <div>
+            <label class="block text-sm font-medium mb-2">Pet</label>
+            <div class="flex items-center gap-3 p-3 border border-border rounded-md bg-muted">
+              <div class="w-10 h-10 rounded-full bg-card grid place-items-center text-xl">🐩</div>
+              <div class="flex-1">
+                <p class="font-medium text-sm">Tito · Toy Poodle · 8 yrs</p>
+                <p class="text-xs text-muted-foreground">Type-1 diabetic · insulin 2u twice daily</p>
+              </div>
+              <button class="text-xs text-primary font-medium">Change</button>
+            </div>
+          </div>
+          <div>
+            <label class="block text-sm font-medium mb-3">Care requirements</label>
+            <div class="flex flex-wrap gap-2">
+              ${['Medication','Daily routine','Special diet','Senior pets','Anxiety','Multiple pets'].map((c,i) => `
+                <button class="h-8 px-3 rounded-full text-xs font-medium border ${i<2?'bg-primary-soft text-primary-soft-foreground border-primary/20':'bg-muted text-foreground/80 border-border'}">
+                  ${i<2?'✓ ':''}${c}
+                </button>
+              `).join('')}
+            </div>
+          </div>
+          <button data-action="nav" href="#/owner/results" class="w-full h-12 rounded-md bg-primary text-primary-foreground font-semibold hover:bg-primary/90 inline-flex items-center justify-center gap-2">
+            See 4 vetted providers ${Icon.chev}
+          </button>
+        </div>
+      </div>`;
+  }
+
+  function ScreenOwnerResults() {
+    return `
+      ${PageHeader({ kicker: '4 providers match · Banani', title: 'Curated for Tito', back: '#/owner/search',
+        actions: `<button class="h-10 px-4 rounded-md bg-muted border border-border text-sm font-medium">Tier ▾</button>
+                  <button class="h-10 px-4 rounded-md bg-muted border border-border text-sm font-medium">Price ▾</button>`})}
+      <div class="bg-muted rounded-full border border-border px-5 h-11 flex items-center justify-between text-sm mb-6">
+        <span class="tabular font-medium">Banani · Dog · Mar 28 → Apr 6 · 9 nights</span>
+        <span class="text-muted-foreground">▾</span>
+      </div>
+      <div class="space-y-5">
+        ${state.providers.map(p => ProviderCard(p)).join('')}
+      </div>
+      <div class="mt-8 text-center">
+        <a href="#" data-action="nav" class="text-sm font-medium text-primary underline underline-offset-4 decoration-primary/40">View all 14 approved providers in Banani & nearby</a>
+      </div>`;
+  }
+
+  function ProviderCard(p) {
+    const isTierB = p.tier === 'B';
+    return `
+      <article class="bg-card border border-border rounded-xl overflow-hidden shadow-sm-soft ${isTierB?'opacity-90':''}">
+        <div class="grid sm:grid-cols-[260px_1fr]">
+          ${isTierB ? `
+            <div class="bg-muted p-6 grid place-items-center">
+              <div class="text-6xl">🐕</div>
+              <div class="mt-3">${TierBTag()}</div>
+            </div>
+          ` : `
+            <div class="relative aspect-[4/3] sm:aspect-auto bg-muted">
+              <img src="${homePlaceholder(p.color)}" alt="${p.name}'s home" class="svg-ph" />
+              <div class="absolute top-3 right-3">${TierABadge()}</div>
+            </div>
+          `}
+          <div class="p-5">
+            <div class="flex items-start justify-between gap-3">
+              <div class="min-w-0">
+                <h3 class="font-semibold text-lg">${p.name}</h3>
+                <p class="text-sm text-muted-foreground mt-0.5 inline-flex items-center gap-1">${Icon.pin} ${p.neighborhood} · ${p.distanceKm} km from Banani</p>
+              </div>
+              <div class="text-right flex-shrink-0">
+                <p class="tabular font-semibold text-primary">${p.rating} ★</p>
+                <p class="text-[11px] text-muted-foreground tabular mt-1">${p.reviewsCount} reviews</p>
+              </div>
+            </div>
+            <div class="mt-3">${AvailPill(p.capacityThisWindow.available, p.capacityThisWindow.total)}</div>
+            <p class="text-xs text-muted-foreground mt-2 tabular">${p.yearsHosting} yrs hosting · ${p.repeatOwners} repeat owners</p>
+            ${isTierB ? `
+              <p class="text-sm text-foreground/70 mt-3">${p.description}</p>
+            ` : `
+              <div class="mt-4 pt-4 border-t border-border">
+                <p class="text-xs font-semibold flex items-center gap-1.5">${Icon.check} Demonstrated experience</p>
+                <p class="text-xs text-muted-foreground mt-0.5">What ${p.name.split(' ')[0]} has actually handled well</p>
+                <div class="mt-3 flex gap-2 overflow-x-auto -mx-5 px-5 pb-1">
+                  ${p.fitStats.map(([v,l]) => FitCard(v,l)).join('')}
+                </div>
+              </div>
+            `}
+            <div class="mt-4 pt-4 border-t border-border flex items-end justify-between gap-3">
+              <div>
+                <p class="tabular font-medium">${fmtBDT(p.pricePerNight)}<span class="text-muted-foreground text-xs font-normal"> / night</span></p>
+                <p class="tabular text-xs text-muted-foreground mt-0.5">9 nights = ${fmtBDT(p.pricePerNight*9)}</p>
+              </div>
+              <a href="${isTierB ? '#/owner/provider?p=kamrul' : `#/owner/provider?p=${p.id}`}" data-action="nav"
+                 class="px-4 h-10 rounded-md bg-primary text-primary-foreground text-sm font-semibold inline-flex items-center gap-1.5 hover:bg-primary/90">
+                View profile ${Icon.chev}
+              </a>
+            </div>
+          </div>
+        </div>
+      </article>`;
+  }
+
+  function ScreenOwnerProviderDetail() {
+    const params = new URLSearchParams(location.hash.split('?')[1] || '');
+    const id = params.get('p') || 'rashid';
+    const p = state.providers.find(x => x.id === id) || state.providers[0];
+    const reviews = state.reviews.filter(r => r.providerId === id);
+    return `
+      ${PageHeader({ kicker: p.neighborhood, title: p.name, back: '#/owner/results',
+        actions: `<button class="h-10 w-10 grid place-items-center rounded-md bg-muted border border-border">${Icon.bell}</button>`})}
+      <div class="grid lg:grid-cols-[1fr_320px] gap-8">
+        <div class="space-y-8">
+          <div class="aspect-[16/9] rounded-xl overflow-hidden bg-muted relative">
+            <img src="${homePlaceholder(p.color)}" class="svg-ph" />
+            <div class="absolute top-4 left-4">${TierABadge()}</div>
+          </div>
+          <div class="flex items-center gap-4 flex-wrap">
+            ${AvailPill(p.capacityThisWindow.available, p.capacityThisWindow.total)}
+            <span class="text-sm text-muted-foreground">${p.homeType}</span>
+            <span class="text-sm text-muted-foreground">${p.yearsHosting} yrs hosting</span>
+          </div>
+          <p class="text-base leading-relaxed">${p.description}</p>
+
+          <div>
+            <h2 class="font-editorial text-xl font-semibold mb-4">Demonstrated fit</h2>
+            <p class="text-sm text-muted-foreground mb-4">Verified from booking history — never self-declared.</p>
+            <div class="grid sm:grid-cols-2 gap-3">
+              ${p.fitStats.map(([v,l]) => `
+                <div class="p-4 rounded-lg bg-muted border border-border">
+                  <p class="tabular text-2xl font-editorial font-semibold text-primary leading-none">${v}</p>
+                  <p class="text-sm text-foreground/80 leading-snug mt-2">${l}</p>
+                </div>`).join('')}
+            </div>
+          </div>
+
+          <div>
+            <h2 class="font-editorial text-xl font-semibold mb-4">Verified reviews · ${p.reviewsCount} with photos</h2>
+            <div class="space-y-6">
+              ${reviews.map(r => `
+                <article class="grid sm:grid-cols-[200px_1fr] gap-5">
+                  <div class="aspect-[4/3] rounded-md overflow-hidden bg-muted">
+                    <img src="${reviewPlaceholder()}" class="svg-ph" />
+                  </div>
+                  <div>
+                    <div class="flex items-center gap-2 mb-2">
+                      <span class="tabular font-semibold text-primary">${r.rating}.0</span>
+                      <span class="text-muted-foreground">${'★'.repeat(r.rating)}</span>
+                      <span class="text-xs text-muted-foreground">· ${r.photosCount} photos · ${r.date}</span>
+                    </div>
+                    <p class="font-editorial text-lg leading-relaxed">${r.text}</p>
+                    <p class="text-sm text-muted-foreground mt-2">— ${r.owner}</p>
+                  </div>
+                </article>
+              `).join('')}
+            </div>
+          </div>
+        </div>
+
+        <aside class="space-y-4">
+          <div class="bg-card border border-border rounded-xl p-5 sticky top-20">
+            <p class="tabular text-2xl font-editorial font-semibold">${fmtBDT(p.pricePerNight)}<span class="text-sm font-sans text-muted-foreground font-normal"> / night</span></p>
+            <p class="text-sm text-muted-foreground">9 nights · ${p.neighborhood}</p>
+            <hr class="my-4 border-border" />
+            <div class="space-y-2 text-sm">
+              <div class="flex justify-between"><span class="text-muted-foreground">9 nights</span><span class="tabular">${fmtBDT(p.pricePerNight*9)}</span></div>
+              <div class="flex justify-between"><span class="text-muted-foreground">Service fee</span><span class="tabular">${fmtBDT(990)}</span></div>
+            </div>
+            <hr class="my-4 border-border" />
+            <div class="flex justify-between font-semibold mb-4"><span>Total</span><span class="tabular">${fmtBDT(p.pricePerNight*9 + 990)}</span></div>
+            <a href="#/owner/configure" data-action="nav" class="block text-center w-full h-12 rounded-md bg-primary text-primary-foreground font-semibold hover:bg-primary/90 inline-flex items-center justify-center gap-2">
+              Continue to care configuration ${Icon.chev}
+            </a>
+            <a href="#/owner/messages" data-action="nav" class="block text-center text-sm font-medium text-primary mt-3 underline-offset-4 hover:underline">Message ${p.name.split(' ')[0]}</a>
+          </div>
+        </aside>
+      </div>`;
+  }
+
+  function Toggle(on, label) {
+    return `
+      <div class="flex items-center justify-between gap-3 p-3 rounded-lg bg-muted border border-border">
+        <span class="text-sm">${label}</span>
+        <button role="switch" aria-checked="${on}" class="relative w-9 h-5 rounded-full ${on?'bg-primary-soft border border-primary/30':'bg-muted border border-border'}">
+          <span class="absolute top-0.5 ${on?'translate-x-4':'translate-x-0.5'} transition w-4 h-4 rounded-full ${on?'bg-primary':'bg-muted-foreground/50'}"></span>
+        </button>
+      </div>`;
+  }
+
+  function ScreenOwnerConfigure() {
+    const c = state.bookings[0].configuredCare;
+    return `
+      ${PageHeader({ kicker: 'Step 2 of 4', title: 'Configure care for Tito', back: '#/owner/provider?p=rashid' })}
+      <div class="grid lg:grid-cols-[1fr_320px] gap-8">
+        <div class="space-y-8">
+          <section>
+            <h2 class="font-semibold text-lg mb-1">Dates & pet</h2>
+            <p class="text-sm text-muted-foreground mb-4">9 nights · Mar 28 → Apr 6</p>
+            <div class="p-4 rounded-lg bg-card border border-border flex items-center gap-3">
+              <div class="w-10 h-10 rounded-full bg-muted grid place-items-center text-xl">🐩</div>
+              <div class="flex-1"><p class="font-medium">Tito</p><p class="text-xs text-muted-foreground">Toy Poodle · 8 yrs · diabetic</p></div>
+              <span class="text-xs text-primary font-medium">Edit pet</span>
+            </div>
+          </section>
+
+          <section>
+            <h2 class="font-semibold text-lg mb-1">Care configuration</h2>
+            <p class="text-sm text-muted-foreground mb-4">Pre-filled from Tito's saved profile. Toggle off any axis to edit for this stay.</p>
+            <div class="space-y-3">
+              ${Toggle(c.insulin.on, 'Insulin: 2 units, twice daily (8am, 8pm) — Humulin N')}
+              ${Toggle(c.diet.on, 'Diet: Royal Canin adult — 1/2 cup, twice daily')}
+              ${Toggle(c.anxiety.on, 'Anxiety protocol: not set')}
+              ${Toggle(c.instructions.on, 'Instructions: sleeps on bed, soft voice only')}
+              ${Toggle(c.vet.on, 'Vet: Banani Pet Clinic · Dr. Iqbal · 01711-222-333')}
+            </div>
+          </section>
+
+          <section>
+            <h2 class="font-semibold text-lg mb-1">Free-text instructions for Rashid</h2>
+            <p class="text-sm text-muted-foreground mb-4">Anything else — quirks, comfort items, what makes Tito feel at home.</p>
+            <textarea rows="5" class="w-full p-4 rounded-md bg-input border border-border text-base leading-relaxed">Tito sleeps on the bed. He has a small grey blanket from home — I'll send it. Soft voice only — loud noises make him hide under furniture.</textarea>
+          </section>
+        </div>
+
+        <aside>
+          <div class="bg-card border border-border rounded-xl p-5 sticky top-20">
+            <p class="text-sm text-muted-foreground">9 nights at Rashid M.</p>
+            <p class="tabular text-xl font-semibold">${fmtBDT(2200*9 + 990)}</p>
+            <hr class="my-4 border-border" />
+            <div class="space-y-2 text-sm">
+              <div class="flex justify-between"><span class="text-muted-foreground">Stay</span><span class="tabular">${fmtBDT(2200*9)}</span></div>
+              <div class="flex justify-between"><span class="text-muted-foreground">Service fee</span><span class="tabular">${fmtBDT(990)}</span></div>
+            </div>
+            <a href="#/owner/payment" data-action="nav" class="block text-center w-full h-12 mt-5 rounded-md bg-primary text-primary-foreground font-semibold hover:bg-primary/90 inline-flex items-center justify-center gap-2">
+              Continue to payment ${Icon.chev}
+            </a>
+            <p class="text-[11px] text-muted-foreground text-center mt-3 leading-snug">Payment is authorized (not captured) until Rashid accepts.</p>
+          </div>
+        </aside>
+      </div>`;
+  }
+
+  function ScreenOwnerPayment() {
+    return `
+      ${PageHeader({ kicker: 'Step 3 of 4', title: 'Authorize payment', back: '#/owner/configure' })}
+      <div class="grid lg:grid-cols-[1fr_320px] gap-8">
+        <div class="space-y-6">
+          <div>
+            <h2 class="font-semibold text-lg mb-3">Pay with</h2>
+            <div class="grid sm:grid-cols-2 gap-3">
+              ${['bKash · 01711-***-3344','Visa •••• 4127'].map((c,i)=>`
+                <label class="flex items-center gap-3 p-4 rounded-lg border ${i===0?'border-primary bg-primary-soft':'border-border bg-card'} cursor-pointer">
+                  <input type="radio" name="pay" ${i===0?'checked':''} class="accent-primary" />
+                  <span class="text-sm font-medium">${c}</span>
+                </label>
+              `).join('')}
+            </div>
+            <button class="mt-3 text-sm text-primary font-medium inline-flex items-center gap-1">${Icon.plus} Add payment method</button>
+          </div>
+          <div class="bg-info-soft border-l-4 border-info rounded-r-md p-4">
+            <p class="text-sm font-semibold">Authorize · don't pay yet</p>
+            <p class="text-sm text-muted-foreground mt-1">We'll place a hold on your account. The amount is captured only after Rashid accepts the booking request. If he declines, the hold releases in 3-5 days.</p>
+          </div>
+          <div>
+            <label class="block text-sm font-medium mb-2">Message to Rashid (optional)</label>
+            <textarea rows="3" class="w-full p-4 rounded-md bg-input border border-border text-base" placeholder="Tito's first boarding — please text me when he settles…"></textarea>
+          </div>
+        </div>
+        <aside>
+          <div class="bg-card border border-border rounded-xl p-5 sticky top-20">
+            <p class="font-semibold mb-1">Booking summary</p>
+            <p class="text-sm text-muted-foreground">Rashid M. · Banani → Gulshan</p>
+            <p class="text-sm text-muted-foreground">Mar 28 → Apr 6 · 9 nights</p>
+            <hr class="my-4 border-border" />
+            <div class="space-y-2 text-sm">
+              <div class="flex justify-between"><span class="text-muted-foreground">Stay</span><span class="tabular">${fmtBDT(2200*9)}</span></div>
+              <div class="flex justify-between"><span class="text-muted-foreground">Service fee</span><span class="tabular">${fmtBDT(990)}</span></div>
+              <div class="flex justify-between font-semibold pt-2 border-t border-border"><span>Authorize hold</span><span class="tabular">${fmtBDT(2200*9 + 990)}</span></div>
+            </div>
+            <a href="#/owner/confirmation" data-action="nav" class="block text-center w-full h-12 mt-5 rounded-md bg-primary text-primary-foreground font-semibold hover:bg-primary/90 inline-flex items-center justify-center gap-2">
+              Authorize & send request ${Icon.chev}
+            </a>
+          </div>
+        </aside>
+      </div>`;
+  }
+
+  function ScreenOwnerConfirmation() {
+    return `
+      <div class="max-w-2xl mx-auto text-center py-12">
+        <div class="w-16 h-16 rounded-full bg-success-soft grid place-items-center mx-auto mb-6">
+          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="text-primary"><path d="M20 6 9 17l-5-5"/></svg>
+        </div>
+        <p class="text-xs font-semibold uppercase tracking-wide text-primary">Booking requested</p>
+        <h1 class="font-editorial text-4xl font-semibold mt-2">Your request is on its way to Rashid.</h1>
+        <p class="text-muted-foreground mt-4 leading-relaxed max-w-md mx-auto">
+          Rashid typically responds within 6 hours. We'll text and email you the moment he accepts — or if he can't take these dates. Your ${fmtBDT(2200*9 + 990)} hold stays untouched until then.
+        </p>
+        <div class="bg-card border border-border rounded-xl p-6 mt-10 text-left">
+          <div class="grid sm:grid-cols-2 gap-4">
+            <div><p class="text-xs uppercase tracking-wide text-muted-foreground">Booking ID</p><p class="font-mono text-sm mt-1">BK-2026-0142</p></div>
+            <div><p class="text-xs uppercase tracking-wide text-muted-foreground">Status</p><div class="mt-1">${BookingStateBadge('authorized')}</div></div>
+            <div><p class="text-xs uppercase tracking-wide text-muted-foreground">Provider</p><p class="font-medium mt-1">Rashid M.</p></div>
+            <div><p class="text-xs uppercase tracking-wide text-muted-foreground">Stay</p><p class="font-medium mt-1">Mar 28 → Apr 6 · 9 nights</p></div>
+          </div>
+        </div>
+        <div class="flex items-center justify-center gap-3 mt-8">
+          <a href="#/owner/bookings" data-action="nav" class="h-11 px-5 rounded-md bg-primary text-primary-foreground font-semibold hover:bg-primary/90 inline-flex items-center gap-2">View my bookings ${Icon.chev}</a>
+          <a href="#/owner" data-action="nav" class="h-11 px-5 rounded-md bg-muted border border-border font-semibold">Back to home</a>
+        </div>
+      </div>`;
+  }
+
+  function ScreenOwnerBookings() {
+    return `
+      ${PageHeader({ title: 'My bookings' })}
+      <div class="space-y-4">
+        ${state.bookings.map(b => `
+          <a href="${b.status==='in-stay' ? '#/owner/instay' : '#/owner/care-history'}" data-action="nav"
+             class="block bg-card border border-border rounded-xl p-5 hover:border-primary transition">
+            <div class="flex items-start justify-between gap-4">
+              <div class="flex items-center gap-4">
+                <div class="w-12 h-12 rounded-full bg-muted grid place-items-center text-xl">🐩</div>
+                <div>
+                  <p class="font-semibold">${b.pet} at ${b.provider}</p>
+                  <p class="text-sm text-muted-foreground">${b.dates} · ${b.nights} nights · ${fmtBDT(b.total)}</p>
+                </div>
+              </div>
+              <div class="flex items-center gap-3">${BookingStateBadge(b.status)}<span class="text-muted-foreground">${Icon.chev}</span></div>
+            </div>
+          </a>
+        `).join('')}
+      </div>`;
+  }
+
+  function ScreenOwnerInstay() {
+    const b = state.bookings[0];
+    return `
+      ${PageHeader({ kicker: 'In-stay · Day 3 of 9', title: 'Tito at Rashid\'s', back: '#/owner/bookings',
+        actions: `<button class="h-10 px-4 rounded-md bg-accent-soft text-accent-soft-foreground border border-accent/30 text-sm font-medium inline-flex items-center gap-1.5">${Icon.msg} Message Rashid</button>`})}
+      <div class="grid lg:grid-cols-[1fr_320px] gap-8">
+        <div class="space-y-6">
+          <div class="bg-card border border-border rounded-xl overflow-hidden">
+            <div class="aspect-[16/9] bg-muted relative">
+              <img src="${petPlaceholder('Tito', '28 30%')}" class="svg-ph" />
+              <div class="absolute bottom-3 left-3 bg-card/95 backdrop-blur rounded-full px-3 py-1.5 text-xs font-medium flex items-center gap-2">
+                <span class="w-2 h-2 rounded-full bg-primary animate-pulse"></span>Live · 5 min ago
+              </div>
+            </div>
+            <div class="p-5">
+              <div class="flex items-center justify-between mb-3">
+                <p class="font-semibold">Day 3 morning update</p>
+                <span class="text-xs text-muted-foreground tabular">7:42 AM · Rashid</span>
+              </div>
+              <p class="text-base leading-relaxed">Insulin at 8am went smoothly. Tito ate all his breakfast. He played in the garden for 20 min and is now napping on his blanket. Three photos attached.</p>
+              <div class="grid grid-cols-3 gap-2 mt-4">
+                ${[1,2,3].map(i => `<div class="aspect-square rounded-md overflow-hidden bg-muted"><img src="${petPlaceholder('p'+i, (28+i*8)+' 30%')}" class="svg-ph" /></div>`).join('')}
+              </div>
+            </div>
+          </div>
+
+          <div class="bg-card border border-border rounded-xl p-5">
+            <p class="font-semibold mb-4">Care timeline</p>
+            <ol class="space-y-4">
+              ${[
+                ['7:42 AM','Morning update posted','bg-primary'],
+                ['8:00 AM','Insulin dose given · 2u Humulin N','bg-primary-soft border border-primary/30'],
+                ['8:30 AM','Breakfast · Royal Canin · 1/2 cup','bg-primary-soft border border-primary/30'],
+                ['10:15 AM','Garden play · 20 min','bg-muted'],
+                ['12:00 PM','Midday check pending','bg-muted'],
+                ['8:00 PM','Evening insulin + dinner','bg-muted'],
+              ].map(([t,label,dot]) => `
+                <li class="flex items-start gap-3">
+                  <span class="w-2 h-2 rounded-full ${dot} mt-2"></span>
+                  <div class="flex-1 grid grid-cols-[80px_1fr] gap-3"><span class="text-xs text-muted-foreground tabular">${t}</span><span class="text-sm">${label}</span></div>
+                </li>
+              `).join('')}
+            </ol>
+          </div>
+        </div>
+
+        <aside class="space-y-4">
+          <div class="bg-card border border-border rounded-xl p-5">
+            <p class="text-xs uppercase tracking-wide text-muted-foreground font-semibold">Care this stay</p>
+            <div class="mt-3 space-y-2 text-sm">
+              <div class="flex justify-between"><span class="text-muted-foreground">Insulin</span><span>2u · twice daily</span></div>
+              <div class="flex justify-between"><span class="text-muted-foreground">Diet</span><span>Royal Canin</span></div>
+              <div class="flex justify-between"><span class="text-muted-foreground">Vet</span><span>Dr. Iqbal</span></div>
+            </div>
+            <a href="#/owner/care-history" data-action="nav" class="block text-center text-xs text-primary font-medium mt-4 underline-offset-4 hover:underline">See full care history</a>
+          </div>
+          <div class="bg-card border border-border rounded-xl p-5">
+            <p class="text-xs uppercase tracking-wide text-muted-foreground font-semibold">Acute event log</p>
+            <p class="text-sm mt-3">1 event recorded · resolved</p>
+            <div class="mt-3 p-3 rounded-md bg-warning-soft border border-warning/30">
+              <p class="text-xs font-semibold">AE-2026-0001 · Hypoglycemia</p>
+              <p class="text-xs text-muted-foreground mt-1">Day 1 · 23:14 · vet contacted · resolved 02:40</p>
+            </div>
+          </div>
+          <a href="#/owner/review" data-action="nav" class="block text-center w-full h-11 rounded-md bg-muted border border-border font-semibold">Leave a review (after stay)</a>
+        </aside>
+      </div>`;
+  }
+
+  function ScreenOwnerDailyUpdate() {
+    return `
+      ${PageHeader({ title: 'Today\'s update', back: '#/owner/instay' })}
+      <div class="max-w-2xl mx-auto bg-card border border-border rounded-xl p-8">
+        <p class="text-xs font-semibold uppercase tracking-wide text-muted-foreground">Day 3 · Morning</p>
+        <h2 class="font-editorial text-2xl font-semibold mt-2">Insulin + breakfast went smoothly</h2>
+        <p class="text-muted-foreground mt-2">From Rashid · 5 min ago</p>
+        <div class="aspect-video rounded-lg overflow-hidden bg-muted mt-6">
+          <img src="${petPlaceholder('Tito', '28 30%')}" class="svg-ph" />
+        </div>
+        <p class="text-base leading-relaxed mt-6">Tito took his 8am insulin with no resistance. Ate all his breakfast. Played in the garden for 20 minutes and is now napping on his blanket by the window.</p>
+        <div class="mt-8 flex items-center justify-between">
+          <button class="text-sm text-primary font-medium">Reply to Rashid</button>
+          <div class="flex gap-2"><button class="h-10 px-4 rounded-md bg-muted border border-border text-sm font-medium">Previous</button><button class="h-10 px-4 rounded-md bg-muted border border-border text-sm font-medium">Next</button></div>
+        </div>
+      </div>`;
+  }
+
+  function ScreenOwnerCareHistory() {
+    return `
+      ${PageHeader({ title: 'Care history · Tito', back: '#/owner/bookings' })}
+      <div class="bg-card border border-border rounded-xl p-6 mb-6">
+        <div class="flex items-center gap-4 mb-4">
+          <div class="w-14 h-14 rounded-full bg-muted grid place-items-center text-3xl">🐩</div>
+          <div><p class="font-semibold text-lg">Tito</p><p class="text-sm text-muted-foreground">Toy Poodle · 8 yrs · 4.2 kg · diabetic since 2024</p></div>
+        </div>
+        <div class="grid sm:grid-cols-4 gap-4 pt-4 border-t border-border">
+          <div><p class="text-xs uppercase tracking-wide text-muted-foreground">Stays</p><p class="tabular text-2xl font-editorial font-semibold text-primary mt-1">3</p></div>
+          <div><p class="text-xs uppercase tracking-wide text-muted-foreground">Total nights</p><p class="tabular text-2xl font-editorial font-semibold text-primary mt-1">23</p></div>
+          <div><p class="text-xs uppercase tracking-wide text-muted-foreground">Repeat with Rashid</p><p class="tabular text-2xl font-editorial font-semibold text-primary mt-1">3×</p></div>
+          <div><p class="text-xs uppercase tracking-wide text-muted-foreground">Acute events</p><p class="tabular text-2xl font-editorial font-semibold text-primary mt-1">1</p></div>
+        </div>
+      </div>
+
+      <h2 class="font-semibold text-lg mb-3">Past stays</h2>
+      <div class="space-y-3">
+        ${state.bookings.filter(b => b.status === 'completed').map(b => `
+          <div class="bg-card border border-border rounded-xl p-5">
+            <div class="flex items-center justify-between">
+              <div>
+                <p class="font-semibold">${b.provider}</p>
+                <p class="text-sm text-muted-foreground">${b.dates} · ${b.nights} nights · ${fmtBDT(b.total)}</p>
+              </div>
+              <div class="flex items-center gap-3">${BookingStateBadge(b.status)}<a href="#/owner/book-again" data-action="nav" class="text-sm text-primary font-medium">Book again</a></div>
+            </div>
+          </div>
+        `).join('')}
+      </div>`;
+  }
+
+  function ScreenOwnerBookAgain() {
+    return `
+      ${PageHeader({ kicker: 'Re-booking · Tito', title: 'Book Rashid again', back: '#/owner/care-history' })}
+      <div class="max-w-3xl">
+        <div class="bg-primary-soft border border-primary/20 rounded-xl p-4 mb-6 flex items-center gap-3">
+          ${Icon.check}
+          <p class="text-sm">Pre-filled from Tito's last stay with Rashid. Toggle off any axis to change for this stay.</p>
+        </div>
+        <div class="space-y-3 mb-6">
+          ${Toggle(true, 'Insulin: 2u twice daily (8am, 8pm) Humulin N')}
+          ${Toggle(true, 'Diet: Royal Canin adult — 1/2 cup twice daily')}
+          ${Toggle(false, 'Anxiety protocol')}
+          ${Toggle(true, 'Instructions: sleeps on bed, soft voice only')}
+          ${Toggle(true, 'Vet: Banani Pet Clinic · Dr. Iqbal')}
+        </div>
+        <div class="grid sm:grid-cols-2 gap-4 mb-6">
+          <div><label class="block text-sm font-medium mb-2">New dates</label><input value="Apr 18 → Apr 25 · 7 nights" class="w-full h-12 px-4 bg-input border border-border rounded-md text-base" /></div>
+          <div><label class="block text-sm font-medium mb-2">Total</label><p class="tabular text-xl font-semibold pt-3">${fmtBDT(2200*7 + 990)}</p></div>
+        </div>
+        <a href="#/owner/confirmation" data-action="nav" class="block text-center w-full h-12 rounded-md bg-primary text-primary-foreground font-semibold hover:bg-primary/90 inline-flex items-center justify-center gap-2">
+          Submit booking request ${Icon.chev}
+        </a>
+      </div>`;
+  }
+
+  function ScreenOwnerReview() {
+    return `
+      ${PageHeader({ title: 'Leave a review', back: '#/owner/instay' })}
+      <div class="max-w-2xl">
+        <div class="bg-card border border-border rounded-xl p-6">
+          <div class="flex items-center gap-4 mb-6">
+            <div class="w-12 h-12 rounded-full bg-muted grid place-items-center text-2xl">🐩</div>
+            <div>
+              <p class="font-semibold">Tito stayed with Rashid M.</p>
+              <p class="text-sm text-muted-foreground">Mar 28 → Apr 6 · 9 nights</p>
+            </div>
+          </div>
+          <div class="mb-6">
+            <label class="block text-sm font-medium mb-2">Rating</label>
+            <div class="flex gap-2">${'★★★★★'.split('').map(s => `<button class="text-2xl text-warning">★</button>`).join('')}</div>
+          </div>
+          <div class="mb-6">
+            <label class="block text-sm font-medium mb-2">Your review</label>
+            <textarea rows="5" class="w-full p-4 rounded-md bg-input border border-border text-base leading-relaxed" placeholder="What did Rashid do well? Specific moments help other owners decide."></textarea>
+          </div>
+          <div class="mb-6">
+            <label class="block text-sm font-medium mb-2">Add photos</label>
+            <div class="grid grid-cols-4 gap-2">
+              <div class="aspect-square rounded-md border-2 border-dashed border-border grid place-items-center text-muted-foreground text-xs">+ Add</div>
+              ${[1,2,3].map(i => `<div class="aspect-square rounded-md overflow-hidden bg-muted"><img src="${petPlaceholder('r'+i, '28 30%')}" class="svg-ph" /></div>`).join('')}
+            </div>
+          </div>
+          <button class="w-full h-12 rounded-md bg-primary text-primary-foreground font-semibold hover:bg-primary/90">Post review</button>
+          <p class="text-xs text-muted-foreground text-center mt-3">Reviews are verified with the booking record. 7-day dispute window applies to refund claims; reviews are independent.</p>
+        </div>
+      </div>`;
+  }
+
+  function ScreenOwnerPets() {
+    return `
+      ${PageHeader({ title: 'My pets', actions: `<button class="h-10 px-4 rounded-md bg-primary text-primary-foreground font-semibold inline-flex items-center gap-1.5">${Icon.plus} Add pet</button>`})}
+      <div class="grid sm:grid-cols-2 gap-4">
+        ${state.pets.map(p => `
+          <div class="bg-card border border-border rounded-xl p-5">
+            <div class="flex items-center gap-4">
+              <div class="w-16 h-16 rounded-full bg-muted grid place-items-center text-3xl">${p.photo}</div>
+              <div class="flex-1">
+                <p class="font-semibold text-lg">${p.name}</p>
+                <p class="text-sm text-muted-foreground">${p.species} · ${p.age} · ${p.weight}</p>
+              </div>
+              <button class="text-sm text-primary font-medium">Edit</button>
+            </div>
+            <div class="mt-4 space-y-2 text-sm">
+              <div><span class="text-muted-foreground">Medical:</span> ${p.medical}</div>
+              <div><span class="text-muted-foreground">Diet:</span> ${p.diet}</div>
+            </div>
+            <div class="flex flex-wrap gap-2 mt-4">
+              ${p.flags.map(f => `<span class="inline-flex items-center rounded-full bg-warning-soft text-foreground/80 border border-warning/30 px-2 py-0.5 text-[10px] font-medium">${f}</span>`).join('')}
+            </div>
+          </div>
+        `).join('')}
+      </div>`;
+  }
+
+  function ScreenOwnerMessages() {
+    return `
+      ${PageHeader({ title: 'Messages' })}
+      <div class="grid lg:grid-cols-[280px_1fr] gap-6">
+        <aside class="bg-card border border-border rounded-xl overflow-hidden">
+          ${['Rashid M. · Tito\'s stay','Farzana A. · Inquiry','PetCare Support'].map((n,i) => `
+            <button class="w-full text-left p-4 border-b border-border ${i===0?'bg-primary-soft':''} hover:bg-muted">
+              <p class="font-medium text-sm">${n}</p>
+              <p class="text-xs text-muted-foreground mt-1">${i===0?'Tito settled well — see photos…':'Tap to open'}</p>
+            </button>
+          `).join('')}
+        </aside>
+        <div class="bg-card border border-border rounded-xl flex flex-col h-[600px]">
+          <div class="p-4 border-b border-border flex items-center gap-3">
+            <div class="w-9 h-9 rounded-full bg-muted grid place-items-center font-semibold">R</div>
+            <div><p class="font-semibold text-sm">Rashid M.</p><p class="text-xs text-muted-foreground">Online · replies in ~10 min</p></div>
+          </div>
+          <div class="flex-1 p-6 space-y-4 overflow-y-auto">
+            <div class="flex gap-2"><div class="bg-muted text-foreground rounded-lg rounded-bl-sm max-w-[80%] p-3 text-sm">Tito took his 8am insulin smoothly. Ate all breakfast. Three photos coming.</div></div>
+            <div class="flex gap-2 justify-end"><div class="bg-primary text-primary-foreground rounded-lg rounded-br-sm max-w-[80%] p-3 text-sm">Wonderful, thank you. Could you weigh him before dinner?</div></div>
+            <div class="flex gap-2"><div class="bg-muted text-foreground rounded-lg rounded-bl-sm max-w-[80%] p-3 text-sm">Yes — will check around 6pm and update.</div></div>
+          </div>
+          <div class="p-3 border-t border-border">
+            <div class="flex gap-2">
+              <input class="flex-1 h-11 px-4 bg-input border border-border rounded-md" placeholder="Type a message…" />
+              <button class="h-11 px-5 rounded-md bg-primary text-primary-foreground font-semibold">Send</button>
+            </div>
+          </div>
+        </div>
+      </div>`;
+  }
+
+  // ===========================================================
+  // ---------------- SCREENS: PROVIDER ----------------
+  // ===========================================================
+  function ScreenProviderDashboard() {
+    return `
+      ${PageHeader({ kicker: 'Welcome back, Rashid', title: 'Today · Apr 6' })}
+      <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+        ${[
+          ['In-stay','1','Tito (Day 9 of 9)','bg-primary-soft text-primary-soft-foreground'],
+          ['Requests','3','2 awaiting your reply','bg-card'],
+          ['Upcoming','2','Apr 12 · Apr 18','bg-card'],
+          ['Earnings this cycle','—','${fmtBDT(48400)}','bg-card'],
+        ].map(([l,v,s,k]) => `
+          <div class="border border-border rounded-xl p-5 ${k.includes('primary-soft')?'border-primary/20':''}">
+            <p class="text-xs uppercase tracking-wide text-muted-foreground font-semibold">${l}</p>
+            <p class="font-editorial text-3xl font-semibold mt-2 tabular">${v}</p>
+            <p class="text-xs text-muted-foreground mt-1">${s}</p>
+          </div>
+        `).join('')}
+      </div>
+      <div class="grid lg:grid-cols-2 gap-6">
+        <div class="bg-card border border-border rounded-xl p-5">
+          <div class="flex items-center justify-between mb-4">
+            <p class="font-semibold">Action queue</p>
+            <a href="#/provider/queue" data-action="nav" class="text-xs text-primary font-medium">View all</a>
+          </div>
+          <div class="space-y-3">
+            ${[
+              ['Tahsin A.','Apr 12 – Apr 18','7 nights','Awaiting your reply','border-info bg-info-soft'],
+              ['Sadia K.','Apr 22 – Apr 25','3 nights','Awaiting your reply','border-info bg-info-soft'],
+              ['Nadia H.','May 3 – May 7','4 nights','Owner responded, confirm','border-border bg-card'],
+            ].map(([n,d,nl,st,k]) => `
+              <a href="#/provider/booking" data-action="nav" class="block p-3 rounded-lg border ${k} hover:border-primary transition">
+                <div class="flex items-center justify-between">
+                  <div>
+                    <p class="font-medium text-sm">${n}</p>
+                    <p class="text-xs text-muted-foreground">${d} · ${nl}</p>
+                  </div>
+                  <span class="text-xs text-muted-foreground">${st}</span>
+                </div>
+              </a>
+            `).join('')}
+          </div>
+        </div>
+        <div class="bg-card border border-border rounded-xl p-5">
+          <div class="flex items-center justify-between mb-4">
+            <p class="font-semibold">This week's stays</p>
+            <a href="#/provider/calendar" data-action="nav" class="text-xs text-primary font-medium">Calendar</a>
+          </div>
+          <div class="space-y-3">
+            ${[
+              ['Tito (Bibi R.)','Now → Apr 6','bg-primary text-primary-foreground'],
+              ['Coco (Tahsin A.)','Apr 12 → Apr 18','bg-muted'],
+              ['Mimi (Tahsin A.)','Apr 18 → Apr 25','bg-muted'],
+            ].map(([n,d,k]) => `
+              <a href="#/provider/instay" data-action="nav" class="block p-3 rounded-lg ${k} hover:opacity-90 transition">
+                <p class="font-medium text-sm">${n}</p>
+                <p class="text-xs ${k.includes('primary')?'text-primary-foreground/80':'text-muted-foreground'}">${d}</p>
+              </a>
+            `).join('')}
+          </div>
+        </div>
+      </div>`;
+  }
+
+  function ScreenProviderQueue() {
+    return `
+      ${PageHeader({ title: 'Booking requests', actions: `<button class="h-10 px-4 rounded-md bg-muted border border-border text-sm font-medium">Filter ▾</button>`})}
+      <div class="bg-card border border-border rounded-xl overflow-hidden">
+        <div class="grid grid-cols-[2rem_1fr_8rem_8rem_8rem] gap-4 px-5 py-3 bg-muted border-b border-border text-xs uppercase tracking-wide text-muted-foreground font-semibold">
+          <span></span><span>Pet + owner</span><span>Dates</span><span>Nights</span><span>Status</span>
+        </div>
+        ${[
+          ['Bibi R. · Tito','Apr 18 → Apr 25','7','Awaiting','border-info bg-info-soft text-info'],
+          ['Tahsin A. · Coco','Apr 12 → Apr 18','7','Awaiting','border-info bg-info-soft text-info'],
+          ['Sadia K. · Luna','Apr 22 → Apr 25','3','Awaiting','border-info bg-info-soft text-info'],
+          ['Nadia H. · Simba','May 3 → May 7','4','Counter-offered','border-warning bg-warning-soft text-foreground/80'],
+        ].map(([pet,d,n,s,k]) => `
+          <a href="#/provider/booking" data-action="nav" class="grid grid-cols-[2rem_1fr_8rem_8rem_8rem] gap-4 px-5 py-4 border-b border-border hover:bg-muted/50 items-center text-sm">
+            <span class="w-7 h-7 rounded-full bg-muted grid place-items-center">🐩</span>
+            <span><p class="font-medium">${pet}</p><p class="text-xs text-muted-foreground">Sent 2h ago</p></span>
+            <span class="tabular text-muted-foreground">${d}</span>
+            <span class="tabular">${n}</span>
+            <span><span class="inline-flex items-center rounded-full px-2.5 py-1 text-xs font-medium border ${k}">${s}</span></span>
+          </a>
+        `).join('')}
+      </div>`;
+  }
+
+  function ScreenProviderBookingDetail() {
+    return `
+      ${PageHeader({ kicker: 'Booking request · Awaiting your reply', title: 'Bibi R. · Tito', back: '#/provider/queue',
+        actions: `<button class="h-10 px-4 rounded-md bg-warning-soft text-foreground border border-warning/30 font-semibold">Decline</button>
+                  <button class="h-10 px-4 rounded-md bg-primary text-primary-foreground font-semibold">Accept</button>`})}
+      <div class="grid lg:grid-cols-[1fr_320px] gap-8">
+        <div class="space-y-6">
+          <div class="bg-card border border-border rounded-xl p-6">
+            <p class="font-semibold mb-3">Pet</p>
+            <div class="flex items-center gap-4">
+              <div class="w-14 h-14 rounded-full bg-muted grid place-items-center text-3xl">🐩</div>
+              <div>
+                <p class="font-semibold">Tito</p>
+                <p class="text-sm text-muted-foreground">Toy Poodle · 8 yrs · 4.2 kg</p>
+              </div>
+            </div>
+            <div class="grid sm:grid-cols-3 gap-4 mt-4 pt-4 border-t border-border">
+              <div><p class="text-xs uppercase tracking-wide text-muted-foreground">Type-1 diabetic</p><p class="font-medium mt-1">Since 2024</p></div>
+              <div><p class="text-xs uppercase tracking-wide text-muted-foreground">Insulin</p><p class="font-medium mt-1">2u twice daily Humulin N</p></div>
+              <div><p class="text-xs uppercase tracking-wide text-muted-foreground">Vet</p><p class="font-medium mt-1">Dr. Iqbal · Banani</p></div>
+            </div>
+          </div>
+
+          <div class="bg-card border border-border rounded-xl p-6">
+            <p class="font-semibold mb-3">Care requirements</p>
+            <div class="space-y-3">
+              <div class="p-3 rounded-lg bg-warning-soft border border-warning/30">
+                <p class="text-xs font-semibold uppercase tracking-wide">Medication</p>
+                <p class="text-sm mt-1">2 units insulin twice daily — 8am and 8pm. Humulin N. Inject subcutaneously.</p>
+              </div>
+              <div class="p-3 rounded-lg bg-muted border border-border">
+                <p class="text-xs font-semibold uppercase tracking-wide">Diet</p>
+                <p class="text-sm mt-1">Royal Canin adult — 1/2 cup twice daily.</p>
+              </div>
+              <div class="p-3 rounded-lg bg-muted border border-border">
+                <p class="text-xs font-semibold uppercase tracking-wide">Instructions</p>
+                <p class="text-sm mt-1">Sleeps on the bed. Soft voice only — loud noises make him hide.</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="bg-card border border-border rounded-xl p-6">
+            <p class="font-semibold mb-3">Owner note</p>
+            <p class="text-sm italic">"First time boarding Tito — please text me when he settles. He has a grey blanket I'm sending with him."</p>
+          </div>
+        </div>
+
+        <aside class="space-y-4">
+          <div class="bg-card border border-border rounded-xl p-5 sticky top-20">
+            <p class="font-semibold mb-3">Booking summary</p>
+            <div class="space-y-2 text-sm">
+              <div class="flex justify-between"><span class="text-muted-foreground">Dates</span><span>Apr 18 → Apr 25</span></div>
+              <div class="flex justify-between"><span class="text-muted-foreground">Nights</span><span class="tabular">7</span></div>
+              <div class="flex justify-between"><span class="text-muted-foreground">Total</span><span class="tabular font-semibold">${fmtBDT(2200*7 + 990)}</span></div>
+            </div>
+            <hr class="my-4 border-border" />
+            <p class="text-xs text-muted-foreground">You'll be paid 24h after the stay ends via bKash.</p>
+            <button class="block text-center w-full h-11 mt-4 rounded-md bg-primary text-primary-foreground font-semibold">Accept booking</button>
+            <button class="block text-center w-full h-11 mt-2 rounded-md bg-muted border border-border font-semibold">Counter-offer dates</button>
+          </div>
+        </aside>
+      </div>`;
+  }
+
+  function ScreenProviderCalendar() {
+    const days = Array.from({length:14}, (_,i) => {
+      const d = new Date(2026, 3, 1 + i);
+      const caps = { 2: 'partial', 3: 'partial', 5: 'full', 6: 'full', 7: 'full', 10: 'partial', 11: 'peak', 12: 'peak' };
+      const cap = caps[i];
+      const klass = cap==='full'?'bg-muted text-muted-foreground/50 border-border line-through'
+                   :cap==='partial'?'bg-info-soft text-info border-info/30'
+                   :cap==='peak'?'bg-primary-soft text-primary-soft-foreground border-primary/30'
+                   :'bg-muted/50 border-border text-muted-foreground';
+      return `<div class="aspect-square rounded-md border ${klass} grid place-items-center text-xs font-medium tabular">${d.getDate()}</div>`;
+    }).join('');
+    return `
+      ${PageHeader({ title: 'Calendar · April 2026', back: '#/provider',
+        actions: `<button class="h-10 px-4 rounded-md bg-muted border border-border text-sm font-medium">Mar</button>
+                  <button class="h-10 px-4 rounded-md bg-muted border border-border text-sm font-medium">May</button>`})}
+      <div class="bg-card border border-border rounded-xl p-6 mb-6">
+        <div class="flex items-center justify-between mb-4">
+          <p class="font-semibold">April 2026</p>
+          <div class="flex items-center gap-4 text-xs">
+            <span class="inline-flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-muted-foreground/40"></span>Empty</span>
+            <span class="inline-flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-info"></span>Partial</span>
+            <span class="inline-flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-primary"></span>Peak</span>
+            <span class="inline-flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-muted-foreground/50"></span>Full</span>
+          </div>
+        </div>
+        <div class="grid grid-cols-7 gap-2 mb-2">
+          ${['Mon','Tue','Wed','Thu','Fri','Sat','Sun'].map(d => `<p class="text-xs uppercase tracking-wide text-muted-foreground text-center">${d}</p>`).join('')}
+        </div>
+        <div class="grid grid-cols-7 gap-2">${days}</div>
+      </div>
+      <div class="grid sm:grid-cols-3 gap-4">
+        ${[
+          ['Capacity this month','14 / 30 nights','Tier-A utilization'],
+          ['Peak windows met','4 / 4','Eid, summer, December'],
+          ['Avg response time','2.4h','Last 30 days'],
+        ].map(([l,v,s]) => `
+          <div class="bg-card border border-border rounded-xl p-5">
+            <p class="text-xs uppercase tracking-wide text-muted-foreground font-semibold">${l}</p>
+            <p class="tabular text-2xl font-editorial font-semibold text-primary mt-2">${v}</p>
+            <p class="text-xs text-muted-foreground mt-1">${s}</p>
+          </div>
+        `).join('')}
+      </div>`;
+  }
+
+  function ScreenProviderInstay() {
+    return `
+      ${PageHeader({ kicker: 'Day 9 of 9 · Checkout tomorrow', title: 'Tito (Bibi R.)',
+        actions: `<button class="h-10 px-4 rounded-md bg-primary text-primary-foreground font-semibold inline-flex items-center gap-1.5">${Icon.msg} Message Bibi</button>`})}
+      <div class="grid lg:grid-cols-[1fr_320px] gap-8">
+        <div class="space-y-6">
+          <div class="border-l-4 border-destructive bg-destructive-soft px-5 py-4 rounded-r-md flex items-center justify-between">
+            <div>
+              <p class="text-sm font-semibold text-foreground">If something is wrong, tap here.</p>
+              <p class="text-xs text-muted-foreground">We'll notify the owner and start the runbook. Vet directory is on the next step.</p>
+            </div>
+            <a href="#/provider/trigger" data-action="nav" class="h-9 px-4 rounded-md bg-destructive text-destructive-foreground text-xs font-semibold hover:bg-destructive/90">Trigger acute event</a>
+          </div>
+
+          <div class="bg-card border border-border rounded-xl p-6">
+            <p class="font-semibold mb-4">Today's care log</p>
+            <ol class="space-y-4">
+              ${[
+                ['8:00','Insulin 2u Humulin N · given','bg-primary'],
+                ['8:30','Breakfast · 1/2 cup Royal Canin · ate all','bg-primary'],
+                ['10:00','Garden play · 25 min','bg-muted-foreground/30'],
+                ['12:00','Midday check · resting','bg-muted-foreground/30'],
+                ['14:30','Walk · 15 min','bg-muted-foreground/30'],
+              ].map(([t,label,dot]) => `
+                <li class="flex items-start gap-3">
+                  <span class="w-2 h-2 rounded-full ${dot} mt-2"></span>
+                  <div class="flex-1 grid grid-cols-[60px_1fr] gap-2"><span class="text-xs text-muted-foreground tabular">${t}</span><span class="text-sm">${label}</span></div>
+                </li>
+              `).join('')}
+            </ol>
+            <a href="#/provider/daily-update" data-action="nav" class="text-sm text-primary font-medium mt-4 inline-flex items-center gap-1">Compose daily update for Bibi ${Icon.chev}</a>
+          </div>
+
+          <div class="bg-card border border-border rounded-xl p-6">
+            <p class="font-semibold mb-4">Past acute events this stay</p>
+            <div class="space-y-3">
+              <a href="#/admin/runbook" data-action="nav" class="block p-4 rounded-lg bg-warning-soft border border-warning/30 hover:border-warning transition">
+                <div class="flex items-center justify-between">
+                  <div>
+                    <p class="text-sm font-semibold">AE-2026-0001 · Hypoglycemia</p>
+                    <p class="text-xs text-muted-foreground mt-1">Day 1 · 23:14 · vet contacted 23:35 · resolved 02:40</p>
+                  </div>
+                  <span class="text-xs text-warning font-medium">Resolved</span>
+                </div>
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <aside class="space-y-4">
+          <div class="bg-card border border-border rounded-xl p-5">
+            <p class="font-semibold mb-3">Pet profile</p>
+            <div class="flex items-center gap-3 mb-3">
+              <div class="w-12 h-12 rounded-full bg-muted grid place-items-center text-xl">🐩</div>
+              <div><p class="font-medium text-sm">Tito</p><p class="text-xs text-muted-foreground">Toy Poodle · 4.2 kg</p></div>
+            </div>
+            <div class="text-sm space-y-1">
+              <p><span class="text-muted-foreground">Insulin:</span> 2u twice daily</p>
+              <p><span class="text-muted-foreground">Vet:</span> Dr. Iqbal</p>
+              <p><span class="text-muted-foreground">Special:</span> Diabetic, senior</p>
+            </div>
+          </div>
+          <div class="bg-card border border-border rounded-xl p-5">
+            <p class="font-semibold mb-3">Vet directory</p>
+            <div class="space-y-3">
+              ${[
+                ['Banani Pet Clinic','Dr. Iqbal · 01711-222-333','0.6 km'],
+                ['Gulshan Animal Hospital','24/7 emergency','1.4 km'],
+              ].map(([n,p,d]) => `
+                <div class="p-3 border border-border rounded-md bg-card">
+                  <p class="font-semibold text-sm">${n}</p>
+                  <p class="text-xs text-muted-foreground">${p}</p>
+                  <p class="text-xs text-muted-foreground tabular">${d}</p>
+                </div>
+              `).join('')}
+            </div>
+          </div>
+        </aside>
+      </div>`;
+  }
+
+  function ScreenProviderDailyUpdate() {
+    return `
+      ${PageHeader({ title: 'Compose daily update', back: '#/provider/instay' })}
+      <div class="max-w-3xl">
+        <div class="bg-card border border-border rounded-xl p-6">
+          <p class="font-semibold mb-1">Day 9 morning · Tito</p>
+          <p class="text-sm text-muted-foreground mb-6">Posted to Bibi R. after you submit.</p>
+          <div class="grid sm:grid-cols-3 gap-3 mb-6">
+            ${['Insulin ✓','Breakfast ✓','Walk ✓','Anxious','Active','Resting'].map((c,i) => `
+              <button class="h-10 rounded-md border text-sm font-medium ${i<3?'bg-primary-soft text-primary-soft-foreground border-primary/30':'bg-muted text-foreground/80 border-border'}">${c}</button>
+            `).join('')}
+          </div>
+          <textarea rows="6" class="w-full p-4 rounded-md bg-input border border-border text-base leading-relaxed">Insulin at 8am went smoothly. Tito ate all his breakfast. He played in the garden for 20 minutes and is now napping on his blanket.</textarea>
+          <div class="mt-4">
+            <p class="text-sm font-medium mb-2">Add photos</p>
+            <div class="grid grid-cols-4 gap-2">
+              ${[1,2,3].map(i => `<div class="aspect-square rounded-md overflow-hidden bg-muted"><img src="${petPlaceholder('p'+i, '28 30%')}" class="svg-ph" /></div>`).join('')}
+              <div class="aspect-square rounded-md border-2 border-dashed border-border grid place-items-center text-xs text-muted-foreground">+ Add</div>
+            </div>
+          </div>
+          <div class="mt-6 p-3 rounded-md bg-warning-soft border border-warning/30 inline-flex items-center gap-2 text-sm">
+            <span class="text-warning">⚠</span>
+            <span><span class="font-medium">Concerning?</span> See <a href="#/provider/trigger" data-action="nav" class="text-primary underline-offset-2 hover:underline">acute-event runbook</a> — the daily update posts regardless.</span>
+          </div>
+          <div class="flex justify-end gap-3 mt-6">
+            <button class="h-11 px-5 rounded-md bg-muted border border-border font-semibold">Save draft</button>
+            <button class="h-11 px-5 rounded-md bg-primary text-primary-foreground font-semibold">Send to Bibi</button>
+          </div>
+        </div>
+      </div>`;
+  }
+
+  function ScreenProviderTrigger() {
+    return `
+      ${PageHeader({ kicker: 'Acute event · R-10 launch-blocking flow', title: 'Trigger acute event', back: '#/provider/instay' })}
+      <div class="max-w-2xl">
+        <div class="border-l-4 border-destructive bg-destructive-soft px-5 py-4 rounded-r-md mb-6">
+          <p class="text-sm font-semibold">Take a breath. We'll guide you through this.</p>
+          <p class="text-xs text-muted-foreground mt-1">This starts the runbook: Bibi gets notified, vet directory opens, and Admin is looped in within 60 seconds.</p>
+        </div>
+        <div class="bg-card border border-border rounded-xl p-6 space-y-5">
+          <div>
+            <label class="block text-sm font-medium mb-2">What's happening with Tito?</label>
+            <div class="grid sm:grid-cols-2 gap-2">
+              ${['Hypoglycemia (low glucose)','Refused food / skipped insulin','Vomiting or diarrhea','Lethargy / collapse','Injury','Anxious / hiding','Other concerning behavior'].map((c,i) => `
+                <button class="h-10 rounded-md border text-sm font-medium text-left px-3 ${i===0?'bg-primary-soft text-primary-soft-foreground border-primary/30':'bg-muted text-foreground/80 border-border'}">${c}</button>
+              `).join('')}
+            </div>
+          </div>
+          <div>
+            <label class="block text-sm font-medium mb-2">Severity</label>
+            <div class="grid grid-cols-3 gap-2">
+              ${['Stable — monitoring','Needs vet within hours','Emergency — call vet now'].map((c,i) => `
+                <button class="h-10 rounded-md border text-sm font-medium ${i===2?'bg-destructive text-destructive-foreground border-destructive':'bg-muted border-border text-foreground/80'}">${c}</button>
+              `).join('')}
+            </div>
+          </div>
+          <div>
+            <label class="block text-sm font-medium mb-2">What did you observe?</label>
+            <textarea rows="4" class="w-full p-4 rounded-md bg-input border border-border text-base leading-relaxed" placeholder="Glucose reading, behavior, time started, what you've done so far…"></textarea>
+          </div>
+          <div class="bg-warning-soft border-l-4 border-warning rounded-r-md p-4">
+            <p class="text-sm font-semibold">Vet on file</p>
+            <p class="text-sm text-muted-foreground">Banani Pet Clinic · Dr. Iqbal · 01711-222-333 (0.6 km)</p>
+            <button class="text-sm text-primary font-medium mt-2 inline-flex items-center gap-1">${Icon.flask} Call vet · log call time</button>
+          </div>
+          <button class="w-full h-12 rounded-md bg-destructive text-destructive-foreground font-semibold hover:bg-destructive/90">Confirm · start runbook</button>
+          <p class="text-[11px] text-muted-foreground text-center">This creates AE-2026-XXXX, notifies the owner + Admin, and starts a 24h resolution timer.</p>
+        </div>
+      </div>`;
+  }
+
+  function ScreenProviderCompleted() {
+    return `
+      ${PageHeader({ title: 'Completed stays' })}
+      <div class="space-y-3">
+        ${[
+          ['Tito (Bibi R.)','Mar 28 → Apr 6','9 nights',fmtBDT(2200*9 + 990),'★ 5.0'],
+          ['Mimi (Tahsin A.)','Feb 14 → Feb 21','7 nights',fmtBDT(2200*7 + 990),'★ 5.0'],
+          ['Coco (Tahsin A.)','Jan 5 → Jan 12','7 nights',fmtBDT(2200*7 + 990),'★ 4.8'],
+        ].map(([p,d,n,t,r]) => `
+          <div class="bg-card border border-border rounded-xl p-5 flex items-center justify-between">
+            <div>
+              <p class="font-semibold">${p}</p>
+              <p class="text-sm text-muted-foreground">${d} · ${n} · ${t}</p>
+            </div>
+            <div class="text-right">
+              <p class="text-sm text-primary font-medium">${r}</p>
+              <a href="#/provider/reviews" data-action="nav" class="text-xs text-muted-foreground">See review</a>
+            </div>
+          </div>
+        `).join('')}
+      </div>`;
+  }
+
+  function ScreenProviderReviews() {
+    return `
+      ${PageHeader({ title: 'Reviews · Rashid M.', back: '#/provider' })}
+      <div class="bg-primary-soft border border-primary/20 rounded-xl p-5 mb-6 flex items-center gap-6">
+        <div>
+          <p class="font-editorial text-5xl font-semibold tabular text-primary">4.9</p>
+          <p class="text-sm text-muted-foreground">47 reviews · 47 with photos</p>
+        </div>
+        <div class="flex-1 space-y-1">
+          ${[5,4,3,2,1].map(s => {
+            const pct = s===5?88:s===4?9:s===3?3:0;
+            return `<div class="flex items-center gap-2"><span class="text-xs text-muted-foreground w-3 tabular">${s}</span><div class="flex-1 h-1.5 bg-muted rounded-full overflow-hidden"><div class="h-full bg-primary" style="width:${pct}%"></div></div><span class="text-xs text-muted-foreground tabular w-8 text-right">${pct}%</span></div>`;
+          }).join('')}
+        </div>
+      </div>
+      <div class="space-y-5">
+        ${state.reviews.map(r => `
+          <article class="bg-card border border-border rounded-xl p-5">
+            <div class="flex items-center gap-2 mb-2">
+              <span class="tabular font-semibold text-primary">${r.rating}.0</span>
+              <span class="text-warning">${'★'.repeat(r.rating)}</span>
+              <span class="text-xs text-muted-foreground">· ${r.photosCount} photos · ${r.date}</span>
+            </div>
+            <p class="font-editorial text-lg leading-relaxed">${r.text}</p>
+            <p class="text-sm text-muted-foreground mt-2">— ${r.owner}</p>
+          </article>
+        `).join('')}
+      </div>`;
+  }
+
+  function ScreenProviderListings() {
+    return `
+      ${PageHeader({ kicker: 'Provider listing', title: 'My listing', back: '#/provider',
+        actions: `<button class="h-10 px-4 rounded-md bg-muted border border-border text-sm font-medium">View public profile</button>`})}
+      <div class="max-w-3xl space-y-6">
+        <div class="bg-card border border-border rounded-xl p-6">
+          <p class="font-semibold mb-4">Capacity & pricing</p>
+          <div class="grid sm:grid-cols-2 gap-4">
+            <div><label class="block text-sm font-medium mb-2">Max pets at once</label><input value="2 small dogs OR 1 dog + 1 cat" class="w-full h-11 px-4 bg-input border border-border rounded-md" /></div>
+            <div><label class="block text-sm font-medium mb-2">Per-night price</label><input value="BDT 2,200" class="w-full h-11 px-4 bg-input border border-border rounded-md tabular" /></div>
+            <div><label class="block text-sm font-medium mb-2">Accepts</label><div class="flex gap-2 mt-2">${['Small dogs','Cats','Senior pets','Medication'].map(a => `<span class="inline-flex items-center rounded-full bg-primary-soft text-primary-soft-foreground border border-primary/20 px-3 py-1 text-xs font-medium">✓ ${a}</span>`).join('')}</div></div>
+            <div><label class="block text-sm font-medium mb-2">Does not accept</label><div class="flex gap-2 mt-2">${['Large dogs','Puppies < 6mo','Unspayed females'].map(a => `<span class="inline-flex items-center rounded-full bg-muted text-muted-foreground border border-border px-3 py-1 text-xs font-medium">${a}</span>`).join('')}</div></div>
+          </div>
+        </div>
+        <div class="bg-card border border-border rounded-xl p-6">
+          <p class="font-semibold mb-4">Verification status</p>
+          <div class="space-y-3">
+            ${[
+              ['Identity verified','NID + selfie · approved Jan 2024','bg-success-soft border-success/30 text-success'],
+              ['Home inspection','In-person visit · passed Mar 2024','bg-success-soft border-success/30 text-success'],
+              ['Background check','Cleared','bg-success-soft border-success/30 text-success'],
+              ['Insurance','Active · expires Aug 2026','bg-warning-soft border-warning/30 text-foreground/80'],
+            ].map(([l,s,k]) => `
+              <div class="flex items-center justify-between p-3 rounded-lg border ${k}">
+                <div><p class="font-medium text-sm">${l}</p><p class="text-xs">${s}</p></div>
+                <span class="text-xs font-medium">✓</span>
+              </div>
+            `).join('')}
+          </div>
+        </div>
+        <button class="w-full h-12 rounded-md bg-primary text-primary-foreground font-semibold">Save changes</button>
+      </div>`;
+  }
+
+  // ===========================================================
+  // ---------------- SCREENS: ADMIN ----------------
+  // ===========================================================
+  function ScreenAdminDashboard() {
+    return `
+      ${PageHeader({ kicker: 'Operations', title: 'Today · Apr 6' })}
+      <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+        ${[
+          ['Active acute events','1','AE-2026-0001 · vet-contacted','bg-destructive-soft border-destructive/30'],
+          ['Provider supply','47','8 Tier-A · 39 Tier-B','bg-card'],
+          ['Bookings this cycle','128','92% capture rate','bg-card'],
+          ['Review queue','3','awaiting moderation','bg-card'],
+        ].map(([l,v,s,k]) => `
+          <div class="border ${k.includes('destructive')?k:'border-border'} rounded-xl p-5">
+            <p class="text-xs uppercase tracking-wide text-muted-foreground font-semibold">${l}</p>
+            <p class="font-editorial text-3xl font-semibold mt-2 tabular">${v}</p>
+            <p class="text-xs text-muted-foreground mt-1">${s}</p>
+          </div>
+        `).join('')}
+      </div>
+      <div class="grid lg:grid-cols-2 gap-6">
+        <a href="#/admin/runbook" data-action="nav" class="block bg-card border border-border rounded-xl p-5 hover:border-primary transition">
+          <p class="font-semibold mb-3">Acute event queue</p>
+          <div class="space-y-3">
+            ${state.acuteEvents.map(ae => `
+              <div class="p-3 rounded-lg bg-muted border border-border">
+                <div class="flex items-center justify-between">
+                  <p class="font-medium text-sm">${ae.id} · ${ae.category}</p>
+                  <span class="text-xs font-medium ${ae.status==='resolved'?'text-success':'text-destructive'}">${ae.status}</span>
+                </div>
+                <p class="text-xs text-muted-foreground mt-1">${ae.pet} at ${ae.provider} · ${ae.elapsedMin < 1440 ? ae.elapsedMin + ' min ago' : Math.round(ae.elapsedMin/1440) + ' days ago'}</p>
+              </div>
+            `).join('')}
+          </div>
+        </a>
+        <a href="#/admin/defection" data-action="nav" class="block bg-card border border-border rounded-xl p-5 hover:border-primary transition">
+          <p class="font-semibold mb-3">Counter-metrics · moat health</p>
+          <div class="space-y-3">
+            ${[
+              ['SM-C1 · Platform-booking share','73%','healthy','success'],
+              ['SM-C2 · Repeat-booking rate','68%','healthy','success'],
+              ['SM-C5 · Provider supply utilization','84%','watch','warning'],
+            ].map(([l,v,s,k]) => `
+              <div class="flex items-center justify-between p-3 rounded-lg bg-${k}-soft border border-${k}/30">
+                <div><p class="text-xs uppercase tracking-wide font-semibold">${l}</p><p class="tabular text-xl font-editorial font-semibold mt-1">${v}</p></div>
+                <span class="text-xs font-medium">${s==='healthy'?'✓ Healthy':s==='watch'?'⚠ Watch':'🔴 Breached'}</span>
+              </div>
+            `).join('')}
+          </div>
+        </a>
+      </div>`;
+  }
+
+  function ScreenAdminRunbook() {
+    const ae = state.acuteEvents[0];
+    return `
+      ${PageHeader({ kicker: 'Acute-event runbook · R-10', title: ae.id + ' · ' + ae.category, back: '#/admin',
+        actions: `<button class="h-10 px-4 rounded-md bg-muted border border-border text-sm font-medium">${Icon.refresh} Refresh</button>`})}
+      <div class="grid lg:grid-cols-[1fr_320px] gap-8">
+        <div class="space-y-6">
+          <div class="border-l-4 border-destructive bg-destructive-soft rounded-r-md p-5">
+            <div class="flex items-start justify-between">
+              <div>
+                <p class="text-sm font-semibold">${ae.severity} severity · ${ae.status}</p>
+                <p class="text-xs text-muted-foreground mt-1">Triggered ${ae.triggeredAt} · elapsed ${Math.round(ae.elapsedMin/60)}h ${ae.elapsedMin%60}m</p>
+              </div>
+              <span class="inline-flex items-center rounded-full bg-destructive text-destructive-foreground px-3 py-1 text-xs font-semibold">PRIORITY 1</span>
+            </div>
+          </div>
+
+          <div class="bg-card border border-border rounded-xl p-6">
+            <p class="font-semibold mb-4">Runbook · Step ${ae.runbookStep} of 7</p>
+            <ol class="space-y-3">
+              ${[
+                ['1','Provider triggers acute event','Completed 23:14','bg-success-soft border-success/30 text-success'],
+                ['2','Owner notified via SMS + push','Completed 23:14','bg-success-soft border-success/30 text-success'],
+                ['3','Vet directory opened · contact attempted','Completed 23:35','bg-success-soft border-success/30 text-success'],
+                ['4','Vet spoken · guidance received','In progress · on call now','bg-primary-soft border-primary/30 text-primary'],
+                ['5','Owner looped in · status update sent','Pending','bg-muted border-border'],
+                ['6','24h resolution timer · monitoring','Pending','bg-muted border-border'],
+                ['7','Post-mortem + runbook improvement','Pending','bg-muted border-border'],
+              ].map(([n,label,sub,k]) => `
+                <li class="p-3 rounded-lg border ${k} flex items-start gap-3">
+                  <span class="w-7 h-7 rounded-full bg-card grid place-items-center text-xs font-bold tabular">${n}</span>
+                  <div class="flex-1">
+                    <p class="text-sm font-medium">${label}</p>
+                    <p class="text-xs opacity-80 mt-0.5">${sub}</p>
+                  </div>
+                </li>
+              `).join('')}
+            </ol>
+          </div>
+
+          <div class="bg-card border border-border rounded-xl p-6">
+            <p class="font-semibold mb-3">Provider notes</p>
+            <p class="text-sm leading-relaxed">${ae.notes}</p>
+          </div>
+
+          <div class="bg-card border border-border rounded-xl p-6">
+            <p class="font-semibold mb-3">Pattern detection</p>
+            <div class="p-4 rounded-lg bg-muted border border-border">
+              <p class="text-xs uppercase tracking-wide text-muted-foreground font-semibold">Hypoglycemia overnight · 3 occurrences in 90 days</p>
+              <p class="text-sm mt-2">Median time 11pm. All Tier-A providers. Owner education: pre-stay briefing on nocturnal glucose checks.</p>
+              <div class="flex items-center justify-between mt-3">
+                <p class="tabular text-sm font-semibold text-primary">3× · median 11pm · all Tier-A</p>
+                <button class="text-sm text-primary font-medium">Apply to runbook v9 →</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <aside class="space-y-4">
+          <div class="bg-card border border-border rounded-xl p-5 sticky top-20">
+            <p class="text-xs uppercase tracking-wide text-muted-foreground font-semibold">Booking</p>
+            <p class="font-mono text-sm mt-1">${ae.bookingId}</p>
+            <a href="#/admin/booking" data-action="nav" class="text-xs text-primary font-medium mt-2 inline-flex items-center gap-1">View booking ${Icon.chev}</a>
+            <hr class="my-4 border-border" />
+            <p class="text-xs uppercase tracking-wide text-muted-foreground font-semibold">3 actors</p>
+            <div class="mt-3 space-y-2 text-sm">
+              <div class="flex items-center gap-2"><div class="w-7 h-7 rounded-full bg-primary-soft text-primary-soft-foreground grid place-items-center text-[10px] font-bold">BR</div><span>Bibi R. (owner)</span></div>
+              <div class="flex items-center gap-2"><div class="w-7 h-7 rounded-full bg-muted text-foreground grid place-items-center text-[10px] font-bold">R</div><span>Rashid M. (provider)</span></div>
+              <div class="flex items-center gap-2"><div class="w-7 h-7 rounded-full bg-accent-soft text-accent-soft-foreground grid place-items-center text-[10px] font-bold">A</div><span>Ayaat (you)</span></div>
+            </div>
+            <hr class="my-4 border-border" />
+            <button class="block text-center w-full h-11 rounded-md bg-primary text-primary-foreground font-semibold">Open incident chat</button>
+            <button class="block text-center w-full h-11 mt-2 rounded-md bg-muted border border-border font-semibold">Mark step 4 complete</button>
+          </div>
+        </aside>
+      </div>`;
+  }
+
+  function ScreenAdminBooking() {
+    return `
+      ${PageHeader({ kicker: 'Booking detail · read-only', title: 'BK-2026-0142 · Tito at Rashid M.', back: '#/admin/runbook' })}
+      <div class="grid lg:grid-cols-[1fr_320px] gap-8">
+        <div class="space-y-6">
+          <div class="bg-card border border-border rounded-xl p-6">
+            <div class="flex items-center justify-between mb-4">
+              <p class="font-semibold">Status</p>
+              ${BookingStateBadge('in-stay')}
+            </div>
+            <div class="grid sm:grid-cols-4 gap-4">
+              <div><p class="text-xs uppercase tracking-wide text-muted-foreground">Owner</p><p class="font-medium mt-1">Bibi R.</p></div>
+              <div><p class="text-xs uppercase tracking-wide text-muted-foreground">Provider</p><p class="font-medium mt-1">Rashid M.</p></div>
+              <div><p class="text-xs uppercase tracking-wide text-muted-foreground">Dates</p><p class="font-medium mt-1">Mar 28 → Apr 6</p></div>
+              <div><p class="text-xs uppercase tracking-wide text-muted-foreground">Total</p><p class="font-medium tabular mt-1">${fmtBDT(2200*9 + 990)}</p></div>
+            </div>
+          </div>
+          <div class="bg-card border border-border rounded-xl p-6">
+            <p class="font-semibold mb-3">Care configuration</p>
+            <div class="space-y-3 text-sm">
+              <div class="flex justify-between p-3 rounded-lg bg-muted"><span class="text-muted-foreground">Insulin</span><span>2u twice daily Humulin N</span></div>
+              <div class="flex justify-between p-3 rounded-lg bg-muted"><span class="text-muted-foreground">Diet</span><span>Royal Canin</span></div>
+              <div class="flex justify-between p-3 rounded-lg bg-muted"><span class="text-muted-foreground">Vet</span><span>Dr. Iqbal · Banani</span></div>
+            </div>
+          </div>
+        </div>
+        <aside class="space-y-4">
+          <div class="bg-card border border-border rounded-xl p-5">
+            <p class="text-xs uppercase tracking-wide text-muted-foreground font-semibold">Linked events</p>
+            <a href="#/admin/runbook" data-action="nav" class="block mt-3 p-3 rounded-lg bg-warning-soft border border-warning/30 hover:border-warning transition">
+              <p class="text-sm font-semibold">AE-2026-0001</p>
+              <p class="text-xs text-muted-foreground">Hypoglycemia · resolved</p>
+            </a>
+          </div>
+        </aside>
+      </div>`;
+  }
+
+  function ScreenAdminModeration() {
+    return `
+      ${PageHeader({ kicker: 'Review moderation', title: 'Review queue · 3 awaiting' })}
+      <div class="border-l-4 border-warning bg-warning-soft px-5 py-4 rounded-r-md mb-6">
+        <p class="text-sm font-semibold">Star-rating optimization is NOT a moderation goal.</p>
+        <p class="text-sm text-muted-foreground mt-1">Reviews are moderated for cause — not averaged. Critical reviews stay visible if factually accurate.</p>
+      </div>
+      <div class="space-y-4">
+        ${state.reviews.filter(r => r.flag).map(r => `
+          <div class="bg-card border border-border rounded-xl p-5">
+            <div class="flex items-start gap-5">
+              <div class="aspect-[4/3] w-32 rounded-md overflow-hidden bg-muted flex-shrink-0">
+                <img src="${reviewPlaceholder()}" class="svg-ph" />
+              </div>
+              <div class="flex-1">
+                <div class="flex items-center gap-2 mb-2">
+                  <span class="tabular font-semibold text-primary">${r.rating}.0</span>
+                  <span class="text-warning">${'★'.repeat(r.rating)}</span>
+                  <span class="inline-flex items-center rounded-full bg-warning-soft border border-warning/30 px-2 py-0.5 text-xs font-medium text-foreground/80">⚠ Flagged</span>
+                </div>
+                <p class="font-editorial text-lg leading-relaxed">${r.text}</p>
+                <p class="text-sm text-muted-foreground mt-2">— ${r.owner} · ${r.date} · ${r.flagReason}</p>
+                <div class="flex items-center gap-3 mt-4">
+                  <button class="h-9 px-4 rounded-md bg-primary text-primary-foreground text-sm font-semibold">Approve</button>
+                  <button class="h-9 px-4 rounded-md bg-muted border border-border text-sm font-semibold">Edit & approve</button>
+                  <button class="h-9 px-4 rounded-md bg-destructive-soft text-destructive border border-destructive/30 text-sm font-semibold">Remove</button>
+                  <button class="text-xs text-muted-foreground ml-auto">${r.id}</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        `).join('')}
+      </div>`;
+  }
+
+  function ScreenAdminProviders() {
+    return `
+      ${PageHeader({ title: 'Provider supply · 47 active',
+        actions: `<button class="h-10 px-4 rounded-md bg-primary text-primary-foreground font-semibold inline-flex items-center gap-1.5">${Icon.plus} Onboard provider</button>`})}
+      <div class="bg-card border border-border rounded-xl overflow-hidden">
+        <div class="grid grid-cols-[2rem_1fr_8rem_8rem_8rem_8rem] gap-4 px-5 py-3 bg-muted border-b border-border text-xs uppercase tracking-wide text-muted-foreground font-semibold">
+          <span></span><span>Provider</span><span>Tier</span><span>Reviews</span><span>Utilization</span><span>Status</span>
+        </div>
+        ${state.providers.map(p => `
+          <div class="grid grid-cols-[2rem_1fr_8rem_8rem_8rem_8rem] gap-4 px-5 py-4 border-b border-border hover:bg-muted/50 items-center text-sm">
+            <span class="w-7 h-7 rounded-full bg-muted grid place-items-center">${p.name.charAt(0)}</span>
+            <div><p class="font-medium">${p.name}</p><p class="text-xs text-muted-foreground">${p.neighborhood} · ${p.yearsHosting} yrs</p></div>
+            <span>${p.tier==='A'?TierABadge():TierBTag()}</span>
+            <span class="tabular">${p.reviewsCount}</span>
+            <span class="tabular text-xs">${Math.round((p.capacityThisWindow.total - p.capacityThisWindow.available) / p.capacityThisWindow.total * 100)}%</span>
+            <span class="inline-flex items-center rounded-full bg-success-soft text-success border border-success/30 px-2.5 py-1 text-xs font-medium w-fit">Active</span>
+          </div>
+        `).join('')}
+      </div>`;
+  }
+
+  function ScreenAdminDefection() {
+    return `
+      ${PageHeader({ title: 'Defection detection · moat health' })}
+      <div class="grid sm:grid-cols-3 gap-4 mb-8">
+        ${[
+          ['SM-C1 · Platform-booking share','73%','healthy','success'],
+          ['SM-C2 · Repeat-booking rate','68%','healthy','success'],
+          ['SM-C5 · Provider supply utilization','84%','watch','warning'],
+        ].map(([l,v,s,k]) => `
+          <div class="bg-card border border-${k}/30 border-l-4 rounded-xl p-5">
+            <p class="text-xs uppercase tracking-wide text-muted-foreground font-semibold">${l}</p>
+            <p class="tabular text-3xl font-editorial font-semibold mt-2">${v}</p>
+            <span class="text-xs font-medium mt-2 inline-block px-2 py-1 rounded-full bg-${k}-soft">${s==='healthy'?'✓ Healthy':s==='watch'?'⚠ Watch':'🔴 Breached'}</span>
+          </div>
+        `).join('')}
+      </div>
+      <div class="bg-warning-soft border-l-4 border-warning rounded-r-md p-5 mb-6">
+        <p class="text-sm font-semibold">Trending signal: 6 owners viewed profiles without booking in the last 7 days.</p>
+        <p class="text-xs text-muted-foreground mt-1">Aggregate-only. No individual owner identifiers are ever surfaced at this scale.</p>
+        <div class="flex items-center gap-4 mt-3 text-xs">
+          <span class="inline-flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-warning"></span>4 owner-initiated</span>
+          <span class="inline-flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-accent"></span>1 provider-initiated</span>
+          <span class="inline-flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-destructive"></span>1 cross-group</span>
+        </div>
+      </div>
+      <div class="grid lg:grid-cols-2 gap-6">
+        <div class="bg-card border border-border rounded-xl p-5">
+          <p class="font-semibold mb-3">By signal category</p>
+          <div class="space-y-3">
+            ${[['Profile-view without booking','12','owner'],['Capacity-locked but profile-updated','3','provider'],['Off-platform review mention','1','cross']].map(([l,n,t]) => `
+              <div class="flex items-center justify-between p-3 rounded-lg bg-muted">
+                <div class="flex items-center gap-3">
+                  <span class="w-2 h-2 rounded-full bg-${t==='owner'?'warning':t==='provider'?'accent':'destructive'}"></span>
+                  <span class="text-sm">${l}</span>
+                </div>
+                <span class="tabular text-sm font-semibold">${n}</span>
+              </div>
+            `).join('')}
+          </div>
+        </div>
+        <div class="bg-card border border-border rounded-xl p-5">
+          <p class="font-semibold mb-3">Cohorts at risk</p>
+          <ul class="space-y-2 text-sm">
+            <li class="flex justify-between p-3 rounded-lg bg-muted"><span>First-time boarders · last 30d</span><span class="tabular text-success font-medium">↓ 4%</span></li>
+            <li class="flex justify-between p-3 rounded-lg bg-muted"><span>Eid-window returners</span><span class="tabular text-success font-medium">73%</span></li>
+            <li class="flex justify-between p-3 rounded-lg bg-muted"><span>Tier-B → Tier-A path</span><span class="tabular text-warning font-medium">watch</span></li>
+          </ul>
+        </div>
+      </div>`;
+  }
+
+  // ===========================================================
+  // ---------------- RENDER LOOP ----------------
+  // ===========================================================
+  const screens = {
+    landing: ScreenLanding,
+    ownerHome: ScreenOwnerHome,
+    ownerSearch: ScreenOwnerSearch,
+    ownerResults: ScreenOwnerResults,
+    ownerProviderDetail: ScreenOwnerProviderDetail,
+    ownerConfigure: ScreenOwnerConfigure,
+    ownerPayment: ScreenOwnerPayment,
+    ownerConfirmation: ScreenOwnerConfirmation,
+    ownerBookings: ScreenOwnerBookings,
+    ownerInstay: ScreenOwnerInstay,
+    ownerDailyUpdate: ScreenOwnerDailyUpdate,
+    ownerCareHistory: ScreenOwnerCareHistory,
+    ownerBookAgain: ScreenOwnerBookAgain,
+    ownerReview: ScreenOwnerReview,
+    ownerPets: ScreenOwnerPets,
+    ownerMessages: ScreenOwnerMessages,
+    providerDashboard: ScreenProviderDashboard,
+    providerQueue: ScreenProviderQueue,
+    providerBookingDetail: ScreenProviderBookingDetail,
+    providerCalendar: ScreenProviderCalendar,
+    providerInstay: ScreenProviderInstay,
+    providerDailyUpdate: ScreenProviderDailyUpdate,
+    providerTrigger: ScreenProviderTrigger,
+    providerCompleted: ScreenProviderCompleted,
+    providerReviews: ScreenProviderReviews,
+    providerListings: ScreenProviderListings,
+    adminDashboard: ScreenAdminDashboard,
+    adminRunbook: ScreenAdminRunbook,
+    adminBooking: ScreenAdminBooking,
+    adminModeration: ScreenAdminModeration,
+    adminProviders: ScreenAdminProviders,
+    adminDefection: ScreenAdminDefection,
+  };
+
+  function render() {
+    const r = currentRoute();
+    const screenFn = screens[r.screen] || ScreenLanding;
+    const html = Shell(screenFn());
+    const app = document.getElementById('app');
+    app.innerHTML = html;
+    app.scrollTop = 0;
+    window.scrollTo({top: 0, behavior: 'instant'});
+  }
+
+  // ---------------- EVENT DELEGATION ----------------
+  document.addEventListener('click', (e) => {
+    const target = e.target.closest('[data-action]');
+    if (!target) return;
+    const action = target.getAttribute('data-action');
+    if (action === 'nav') {
+      const href = target.getAttribute('href') || target.getAttribute('data-href');
+      if (href && href.startsWith('#')) { e.preventDefault(); go(href); }
+    } else if (action.startsWith('role:')) {
+      e.preventDefault();
+      const role = action.split(':')[1];
+      state.currentUser = role;
+      go(`#/${role}`);
+    }
+  });
+
+  // ---------------- KEYBOARD ----------------
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') { location.hash = '#/'; }
+  });
+
+  // ---------------- INIT ----------------
+  window.addEventListener('hashchange', render);
+  if (!location.hash || !routes[location.hash]) location.hash = '#/';
+  render();
+  </script>
+</body>
+</html>
+</body>
+</html>

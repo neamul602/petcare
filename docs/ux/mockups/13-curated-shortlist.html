@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PetCare · Curated Shortlist — Search Results</title>
+  <meta name="page-id" content="1.3" />
+  <meta name="scenario" content="01 — Bibi's First Eid Booking" />
+  <meta name="design-status" content="dream-mode build · 2026-08-30" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Source+Serif+4:wght@400;600;700&family=Noto+Sans+Bengali:wght@400;500;600&display=swap" rel="stylesheet" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    // Tokens mirror DESIGN.md exactly
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'Noto Sans Bengali', 'system-ui', 'sans-serif'],
+            editorial: ['"Source Serif 4"', '"Noto Serif Bengali"', 'Georgia', 'serif'],
+          },
+          colors: {
+            background: 'hsl(38 35% 97%)',
+            foreground: 'hsl(30 12% 14%)',
+            muted: 'hsl(36 18% 92%)',
+            'muted-foreground': 'hsl(30 8% 38%)',
+            card: 'hsl(0 0% 100%)',
+            'card-foreground': 'hsl(30 12% 14%)',
+            border: 'hsl(34 14% 86%)',
+            input: 'hsl(34 14% 90%)',
+            ring: 'hsl(150 32% 32%)',
+            primary: {
+              DEFAULT: 'hsl(150 32% 32%)',
+              foreground: 'hsl(38 35% 97%)',
+              soft: 'hsl(150 22% 92%)',
+              'soft-foreground': 'hsl(150 38% 22%)',
+            },
+            accent: {
+              DEFAULT: 'hsl(14 64% 56%)',
+              foreground: 'hsl(38 35% 97%)',
+              soft: 'hsl(14 70% 94%)',
+              'soft-foreground': 'hsl(14 64% 32%)',
+            },
+            info: {
+              DEFAULT: 'hsl(212 56% 48%)',
+              soft: 'hsl(212 56% 94%)',
+            },
+            warning: {
+              DEFAULT: 'hsl(36 78% 46%)',
+              soft: 'hsl(36 78% 94%)',
+            },
+          },
+          boxShadow: {
+            'sm-soft': '0 1px 2px 0 rgba(30, 22, 12, 0.04)',
+            'md-soft': '0 2px 4px -1px rgba(30, 22, 12, 0.06), 0 1px 2px 0 rgba(30, 22, 12, 0.04)',
+            'lg-soft': '0 8px 16px -4px rgba(30, 22, 12, 0.08), 0 4px 8px -2px rgba(30, 22, 12, 0.04)',
+            'xl-soft': '0 16px 32px -8px rgba(30, 22, 12, 0.12), 0 8px 16px -4px rgba(30, 22, 12, 0.06)',
+            ring: '0 0 0 3px hsl(150 32% 32% / 0.18)',
+          },
+        },
+      },
+    };
+  </script>
+  <style>
+    body { font-family: 'Inter', 'Noto Sans Bengali', system-ui, sans-serif; background: hsl(36 18% 92%); color: hsl(30 12% 14%); }
+    .tabular { font-variant-numeric: tabular-nums; }
+    .phone-frame { width: 390px; min-height: 844px; background: hsl(38 35% 97%); }
+    /* Editorial serif for headings */
+    .font-editorial { font-family: '"Source Serif 4"', 'Noto Serif Bengali', Georgia, serif; }
+    /* Tier-A badge ring */
+    .tier-a-badge {
+      display: inline-flex; align-items: center; gap: 0.375rem;
+      border-radius: 9999px; border: 2px solid hsl(150 32% 32%);
+      background: hsl(150 22% 92%); padding: 0.25rem 0.75rem;
+      font-size: 0.6875rem; font-weight: 600;
+      color: hsl(150 38% 22%); letter-spacing: 0.04em;
+    }
+    .tier-a-badge .dot {
+      width: 0.375rem; height: 0.375rem; border-radius: 9999px; background: hsl(150 32% 32%);
+    }
+    /* Focus ring utility (matches DESIGN.md elevation.ring) */
+    button:focus-visible, a:focus-visible, [role="button"]:focus-visible {
+      outline: none; box-shadow: 0 0 0 3px hsl(150 32% 32% / 0.18);
+    }
+    /* Bangla-script fallback silently works via Noto Sans Bengali in the stack */
+  </style>
+</head>
+<body>
+  <!--
+    Page 1.3 — Curated 3–5 Shortlist
+    Scenario 01 · Bibi's First Eid Booking with Tito
+    Spec: design-process/C-UX-Scenarios/01-bibis-first-eid-booking/1.3-curated-shortlist/1.3-curated-shortlist.spec.md
+    Reconciles against: _bmad-output/planning-artifacts/ux-designs/ux-PetCare-2026-08-29/mockups/02-search-results.html
+    Design tokens: _bmad-output/planning-artifacts/ux-designs/ux-PetCare-2026-08-29/DESIGN.md
+    Result count declared for analytics:
+  -->
+  <div
+    class="phone-frame mx-auto my-8 border-[14px] border-foreground/90 rounded-[40px] shadow-xl overflow-hidden"
+    data-result-count="4"
+  >
+    <!-- iOS-style status bar -->
+    <div class="h-11 flex items-center justify-between px-6 text-xs text-foreground/70">
+      <span class="tabular">9:41</span>
+      <span class="font-medium">PetCare</span>
+      <span class="tabular">●●● 4G</span>
+    </div>
+
+    <!-- D1. Top bar -->
+    <div class="px-5 pt-3 pb-2 flex items-center gap-3">
+      <button aria-label="Back" class="text-muted-foreground text-base w-8 h-8 grid place-items-center -ml-2 rounded-md hover:bg-muted">←</button>
+      <h1 class="text-base font-semibold flex-1">Search</h1>
+      <button aria-label="Save this search" class="text-xs font-medium text-primary px-3 h-8 rounded-full hover:bg-primary-soft">Save</button>
+    </div>
+
+    <!-- D2. Filter bar (sticky) -->
+    <div class="sticky top-0 bg-background/95 backdrop-blur z-10 border-b border-border">
+      <!-- Summary chip -->
+      <div class="px-5 pt-2">
+        <button class="w-full flex items-center justify-between gap-3 h-11 px-4 rounded-full bg-muted text-sm">
+          <span class="tabular text-foreground font-medium truncate">Banani · Dog · Eid-1 → Eid+9 · 9 nights</span>
+          <span class="text-muted-foreground">▾</span>
+        </button>
+      </div>
+      <!-- Filter chips (horizontal scroll) -->
+      <div class="mt-3 px-5 pb-3 flex gap-2 overflow-x-auto">
+        <button aria-pressed="true" class="flex-shrink-0 h-8 px-3 rounded-full bg-primary-soft text-primary-soft-foreground text-xs font-medium border border-primary/20 inline-flex items-center gap-1.5">
+          ✓ Medication
+        </button>
+        <button aria-pressed="true" class="flex-shrink-0 h-8 px-3 rounded-full bg-primary-soft text-primary-soft-foreground text-xs font-medium border border-primary/20 inline-flex items-center gap-1.5">
+          ✓ Daily routine
+        </button>
+        <button aria-pressed="false" class="flex-shrink-0 h-8 px-3 rounded-full bg-muted text-foreground/80 text-xs font-medium border border-border">
+          Senior pets
+        </button>
+        <button aria-pressed="false" class="flex-shrink-0 h-8 px-3 rounded-full bg-muted text-foreground/80 text-xs font-medium border border-border">
+          Special diet
+        </button>
+        <button aria-pressed="false" class="flex-shrink-0 h-8 px-3 rounded-full bg-muted text-foreground/80 text-xs font-medium border border-border">
+          Tier ▾
+        </button>
+      </div>
+    </div>
+
+    <!-- Result count + sort -->
+    <div class="px-5 py-3 flex items-center justify-between border-b border-border">
+      <p class="text-xs text-muted-foreground tabular">4 providers match your search</p>
+      <div class="flex items-center gap-1 text-xs text-muted-foreground">
+        <span>Sort:</span>
+        <button class="font-medium text-foreground underline underline-offset-2">Tier-A first</button>
+      </div>
+    </div>
+
+    <!--
+      D3. Shortlist
+      Card 1 — RASHID (top-ranked Tier-A, fully expanded demonstrated-Fit)
+      This is the hero card for Bibi's first Eid booking.
+    -->
+    <div class="px-5 py-4">
+      <div class="bg-card rounded-xl border border-border shadow-md-soft overflow-hidden">
+        <!-- Hero photo + tier-a badge overlay -->
+        <div class="relative aspect-[4/3] bg-muted">
+          <img
+            src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 80 60'%3E%3Crect width='80' height='60' fill='%23d6cfc0'/%3E%3Crect x='6' y='12' width='68' height='42' fill='%23c4b89e' rx='3'/%3E%3Ccircle cx='30' cy='34' r='9' fill='%23a8957a'/%3E%3Ccircle cx='52' cy='38' r='10' fill='%23bfac8e'/%3E%3Crect x='10' y='50' width='60' height='6' fill='%2394866f'/%3E%3Cpath d='M28 22 l-2 -4 l4 0 z' fill='%23a8957a'/%3E%3Cpath d='M32 22 l-2 -4 l4 0 z' fill='%23a8957a'/%3E%3C/svg%3E"
+            alt="Rashid's Gulshan home — dedicated pet room with two small dogs"
+            class="w-full h-full object-cover"
+          />
+          <div class="absolute top-3 right-3 tier-a-badge">
+            <span class="dot"></span>
+            Tier-A · Admin-vetted
+          </div>
+        </div>
+        <div class="p-4">
+          <!-- Identity block -->
+          <div class="flex items-start justify-between gap-3">
+            <div class="min-w-0">
+              <h2 class="font-semibold text-lg leading-tight truncate">Rashid M.</h2>
+              <p class="text-xs text-muted-foreground mt-0.5 flex items-center gap-1">
+                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>
+                Gulshan · 2.4 km from Banani
+              </p>
+            </div>
+            <div class="text-right flex-shrink-0">
+              <p class="tabular text-base font-semibold text-primary leading-none">4.9<span class="text-muted-foreground text-sm font-normal"> ★</span></p>
+              <p class="text-[11px] text-muted-foreground mt-1 tabular">47 reviews w/ photos</p>
+            </div>
+          </div>
+
+          <!-- Availability pill -->
+          <div class="mt-3">
+            <span class="inline-flex items-center gap-1.5 rounded-full bg-primary-soft text-primary-soft-foreground border border-primary/20 px-2.5 py-1 text-xs font-medium">
+              <span class="w-1.5 h-1.5 rounded-full bg-primary"></span>
+              Available all 9 nights
+            </span>
+          </div>
+
+          <!-- Quick stats -->
+          <p class="text-[11px] text-muted-foreground mt-2 tabular">
+            6 yrs hosting · 12 repeat owners
+          </p>
+
+          <!-- Demonstrated-Fit band (THE differentiator) -->
+          <div class="mt-4 pt-4 border-t border-border">
+            <p class="text-xs font-semibold text-foreground flex items-center gap-1.5">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="text-primary"><path d="M20 6 9 17l-5-5"/></svg>
+              Demonstrated experience
+            </p>
+            <p class="text-[11px] text-muted-foreground mt-0.5">What Rashid has actually handled well</p>
+
+            <!-- Fit-cards (horizontally scrollable in production) -->
+            <div class="mt-3 flex gap-2 overflow-x-auto -mx-4 px-4 pb-1">
+              <div class="flex-shrink-0 w-[140px] p-3 rounded-lg bg-muted border border-border">
+                <p class="tabular text-xl font-editorial font-semibold text-primary leading-none">12</p>
+                <p class="text-[11px] text-foreground/80 leading-snug mt-1">diabetic small dogs handled successfully</p>
+              </div>
+              <div class="flex-shrink-0 w-[140px] p-3 rounded-lg bg-muted border border-border">
+                <p class="tabular text-xl font-editorial font-semibold text-primary leading-none">6</p>
+                <p class="text-[11px] text-foreground/80 leading-snug mt-1">cat boardings · 5 with medication</p>
+              </div>
+              <div class="flex-shrink-0 w-[140px] p-3 rounded-lg bg-muted border border-border">
+                <p class="tabular text-xl font-editorial font-semibold text-primary leading-none">4</p>
+                <p class="text-[11px] text-foreground/80 leading-snug mt-1">repeat owners · 3 with senior pets</p>
+              </div>
+              <div class="flex-shrink-0 w-[140px] p-3 rounded-lg bg-muted border border-border">
+                <p class="tabular text-xl font-editorial font-semibold text-primary leading-none">4/4</p>
+                <p class="text-[11px] text-foreground/80 leading-snug mt-1">Eid-week capacity honored</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Price + CTA -->
+          <div class="mt-4 pt-4 border-t border-border flex items-end justify-between gap-3">
+            <div class="min-w-0">
+              <p class="tabular text-sm font-medium">BDT 2,200<span class="text-muted-foreground text-xs font-normal"> / night</span></p>
+              <p class="tabular text-[11px] text-muted-foreground mt-0.5">9 nights = BDT 19,800</p>
+            </div>
+            <button class="px-4 h-10 rounded-md bg-primary text-primary-foreground text-sm font-semibold inline-flex items-center gap-1.5 hover:bg-primary/90 active:scale-[0.98] transition">
+              Book
+              <span aria-hidden="true">→</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Card 2 — FARZANA (Tier-A, second match, condensed for variety) -->
+    <div class="px-5 py-2">
+      <div class="bg-card rounded-xl border border-border shadow-md-soft overflow-hidden">
+        <div class="relative aspect-[4/3] bg-muted">
+          <img
+            src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 80 60'%3E%3Crect width='80' height='60' fill='%23d8d0c2'/%3E%3Crect x='14' y='10' width='52' height='40' fill='%23b8a988' rx='3'/%3E%3Ccircle cx='40' cy='32' r='11' fill='%23a89479'/%3E%3Ccircle cx='36' cy='29' r='1.6' fill='%23313027'/%3E%3Ccircle cx='44' cy='29' r='1.6' fill='%23313027'/%3E%3Cpath d='M34 38 Q40 42 46 38' stroke='%23313027' fill='none' stroke-width='1'/%3E%3C/svg%3E"
+            alt="Farzana's Banani apartment with single calm dog"
+            class="w-full h-full object-cover"
+          />
+          <div class="absolute top-3 right-3 tier-a-badge">
+            <span class="dot"></span>
+            Tier-A · Admin-vetted
+          </div>
+        </div>
+        <div class="p-4">
+          <div class="flex items-start justify-between gap-3">
+            <div class="min-w-0">
+              <h2 class="font-semibold text-base leading-tight truncate">Farzana A.</h2>
+              <p class="text-xs text-muted-foreground mt-0.5">Banani · 3.1 km away</p>
+            </div>
+            <div class="text-right flex-shrink-0">
+              <p class="tabular text-base font-semibold text-primary leading-none">4.8<span class="text-muted-foreground text-sm font-normal"> ★</span></p>
+              <p class="text-[11px] text-muted-foreground mt-1 tabular">28 reviews</p>
+            </div>
+          </div>
+          <div class="mt-2">
+            <span class="inline-flex items-center gap-1.5 rounded-full bg-primary-soft text-primary-soft-foreground border border-primary/20 px-2.5 py-1 text-xs font-medium">
+              <span class="w-1.5 h-1.5 rounded-full bg-primary"></span>
+              Available all 9 nights
+            </span>
+          </div>
+          <!-- Demonstrated fit (condensed line) -->
+          <div class="mt-3 pt-3 border-t border-border">
+            <p class="text-xs font-semibold text-foreground flex items-center gap-1.5">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="text-primary"><path d="M20 6 9 17l-5-5"/></svg>
+              Demonstrated experience
+            </p>
+            <p class="text-xs text-foreground/80 mt-2 leading-relaxed">
+              <span class="tabular font-medium text-primary">9</span> anxious small-breed dogs ·
+              <span class="tabular font-medium text-primary">5</span> diabetic pets ·
+              <span class="tabular font-medium text-primary">3</span> repeat owners
+            </p>
+          </div>
+          <div class="mt-3 pt-3 border-t border-border flex items-end justify-between gap-3">
+            <div>
+              <p class="tabular text-sm font-medium">BDT 1,950<span class="text-muted-foreground text-xs font-normal"> / night</span></p>
+              <p class="tabular text-[11px] text-muted-foreground mt-0.5">9 nights = BDT 17,550</p>
+            </div>
+            <button class="px-4 h-10 rounded-md bg-primary text-primary-foreground text-sm font-semibold inline-flex items-center gap-1.5">
+              Book<span aria-hidden="true">→</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Card 3 — TIER-B (de-emphasized — different visual weight on purpose) -->
+    <div class="px-5 py-4 border-t border-border">
+      <div class="bg-card rounded-xl border border-border opacity-90">
+        <div class="p-4 flex items-start gap-3">
+          <div class="w-16 h-16 rounded-md bg-muted grid place-items-center text-2xl flex-shrink-0">🐕</div>
+          <div class="flex-1 min-w-0">
+            <div class="flex items-start justify-between gap-2">
+              <div>
+                <h3 class="font-semibold text-sm">Kamrul H.</h3>
+                <p class="text-[11px] text-muted-foreground mt-0.5">Bashundhara · 5.4 km</p>
+              </div>
+              <div class="text-right">
+                <p class="tabular text-sm font-medium">4.4</p>
+                <p class="text-[11px] text-muted-foreground tabular">6 stays</p>
+              </div>
+            </div>
+            <p class="text-[11px] text-foreground/70 mt-2 leading-snug">
+              New to PetCare. Open to small-breed dogs. Limited special-care experience.
+            </p>
+            <div class="mt-2 flex items-center gap-2">
+              <span class="inline-flex items-center rounded-full bg-muted text-muted-foreground border border-border px-2 py-0.5 text-[10px] font-medium tracking-wide">TIER-B</span>
+              <span class="text-[11px] text-muted-foreground tabular">2 verified reviews</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- D4. Full-catalog CTA -->
+    <div class="px-5 py-6 border-t border-border">
+      <a
+        href="#"
+        class="block text-center text-sm font-medium text-primary underline underline-offset-4 decoration-primary/40"
+      >
+        View all 14 approved providers in Banani &amp; nearby
+      </a>
+      <p class="text-[11px] text-muted-foreground mt-2 text-center leading-relaxed px-4">
+        We've shown you 4 providers most likely to be a great match. See the full approved catalog if you want to compare more.
+      </p>
+    </div>
+
+    <div class="h-12"></div>
+  </div>
+
+  <!--
+    ========================================
+    IMPLEMENTATION NOTES (component-level)
+    See: 1.3-curated-shortlist.component.md (companion file)
+    ========================================
+  -->
+</body>
+</html>

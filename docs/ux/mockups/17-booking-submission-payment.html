@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>PetCare — 1.7 Booking Submission + Payment Authorization (Owner · Commit Moment)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Source+Serif+4:wght@400;600&display=swap" rel="stylesheet" />
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+  tailwind.config = {
+    theme: {
+      extend: {
+        fontFamily: { sans: ['Inter', 'system-ui', 'sans-serif'], editorial: ['"Source Serif 4"', 'Georgia', 'serif'] },
+        colors: {
+          background: 'hsl(38 35% 97%)',
+          foreground: 'hsl(30 12% 14%)',
+          muted: 'hsl(36 18% 92%)',
+          'muted-foreground': 'hsl(30 8% 38%)',
+          card: 'hsl(0 0% 100%)',
+          'card-foreground': 'hsl(30 12% 14%)',
+          border: 'hsl(34 14% 86%)',
+          input: 'hsl(34 14% 90%)',
+          ring: 'hsl(150 32% 32%)',
+          primary: 'hsl(150 32% 32%)',
+          'primary-foreground': 'hsl(38 35% 97%)',
+          'primary-soft': 'hsl(150 22% 92%)',
+          'primary-soft-foreground': 'hsl(150 38% 22%)',
+          accent: 'hsl(14 64% 56%)',
+          'accent-foreground': 'hsl(38 35% 97%)',
+          'accent-soft': 'hsl(14 70% 94%)',
+          'accent-soft-foreground': 'hsl(14 64% 32%)',
+          destructive: 'hsl(0 62% 48%)',
+          'destructive-foreground': 'hsl(38 35% 97%)',
+          'destructive-soft': 'hsl(0 62% 94%)',
+          'destructive-soft-foreground': 'hsl(0 62% 28%)',
+          success: 'hsl(150 32% 32%)',
+          'success-soft': 'hsl(150 22% 92%)',
+          'success-soft-foreground': 'hsl(150 38% 22%)',
+          warning: 'hsl(36 78% 46%)',
+          'warning-soft': 'hsl(36 78% 94%)',
+          'warning-soft-foreground': 'hsl(36 78% 26%)',
+          info: 'hsl(212 56% 48%)',
+          'info-soft': 'hsl(212 56% 94%)',
+          'info-soft-foreground': 'hsl(212 56% 28%)',
+        },
+      },
+    },
+  };
+</script>
+<style>
+  body { font-family: 'Inter', system-ui, sans-serif; background: hsl(38 35% 97%); color: hsl(30 12% 14%); }
+  .tabular { font-variant-numeric: tabular-nums; }
+  .phone-frame { width: 390px; min-height: 844px; background: hsl(38 35% 97%); }
+</style>
+</head>
+<body class="min-h-screen">
+<div class="bg-emerald-50 border-b border-emerald-200 px-6 py-2 text-xs text-emerald-900 text-center">
+  <strong>THE COMMIT MOMENT</strong> · FR-1 / FR-17 / FR-18 · Authorization hold (not capture) · Per Scenario 01 / 1.7 spec
+</div>
+
+<div class="phone-frame mx-auto my-6 border-[14px] border-foreground/90 rounded-[40px] shadow-xl overflow-hidden">
+
+  <!-- Status bar -->
+  <div class="h-11 flex items-center justify-between px-6 text-xs text-foreground/70 bg-card">
+    <span class="tabular">9:41</span>
+    <span class="font-medium">Review your booking</span>
+    <span class="tabular">●●● 4G</span>
+  </div>
+
+  <!-- Back nav -->
+  <header class="flex items-center px-5 py-3 bg-card border-b border-border">
+    <a href="#" class="flex items-center gap-1 text-sm text-muted-foreground">
+      <span aria-hidden="true">←</span> Configure your booking
+    </a>
+  </header>
+
+  <!-- Body -->
+  <div class="bg-background px-5 py-5 space-y-5 overflow-y-auto" style="max-height: 620px;">
+
+    <!-- D2: Provider card -->
+    <section class="bg-muted border border-border rounded-lg p-4">
+      <div class="flex items-center gap-3">
+        <div class="w-12 h-12 rounded-md bg-card grid place-items-center text-2xl border border-border">👤</div>
+        <div class="flex-1">
+          <p class="font-editorial text-base font-semibold leading-tight">Rashid · Gulshan</p>
+          <div class="flex items-center gap-2 mt-1">
+            <span class="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-full border border-primary bg-primary-soft text-primary-soft-foreground text-[9px] font-bold tracking-wide">TIER-A</span>
+            <p class="text-xs text-muted-foreground tabular">★ 4.9 · 47 reviews · 12 diabetic dogs</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- D3-D8: Care-dimension review cards -->
+    <div class="space-y-2">
+
+      <!-- Pet -->
+      <article class="bg-card border border-border rounded-md p-3">
+        <div class="flex items-start justify-between">
+          <div class="flex-1">
+            <p class="text-xs text-muted-foreground mb-0.5">Pet</p>
+            <p class="text-sm font-medium">Tito · Shih Tzu · Diabetic · 4y · 7kg</p>
+          </div>
+          <a href="#" class="text-xs text-primary underline underline-offset-2 whitespace-nowrap">Edit</a>
+        </div>
+      </article>
+
+      <!-- Dates -->
+      <article class="bg-card border border-border rounded-md p-3">
+        <div class="flex items-start justify-between">
+          <div class="flex-1">
+            <p class="text-xs text-muted-foreground mb-0.5">Dates</p>
+            <p class="text-sm font-medium tabular">Eid-1 → Eid+9 · 9 nights</p>
+          </div>
+          <a href="#" class="text-xs text-primary underline underline-offset-2 whitespace-nowrap">Edit</a>
+        </div>
+      </article>
+
+      <!-- Food -->
+      <article class="bg-card border border-border rounded-md p-3">
+        <div class="flex items-start justify-between">
+          <div class="flex-1">
+            <p class="text-xs text-muted-foreground mb-0.5">Food</p>
+            <p class="text-sm font-medium">Low-carb kibble · Hill's w/d</p>
+            <p class="text-xs text-muted-foreground mt-0.5">2 meals/day · 8am + 8pm · Treats: vet-approved only</p>
+          </div>
+          <a href="#" class="text-xs text-primary underline underline-offset-2 whitespace-nowrap">Edit</a>
+        </div>
+      </article>
+
+      <!-- Medication -->
+      <article class="bg-warning-soft/40 border border-warning/30 rounded-md p-3">
+        <div class="flex items-start justify-between">
+          <div class="flex-1">
+            <div class="flex items-center gap-1.5 mb-0.5">
+              <span aria-hidden="true" class="text-warning text-xs">⚠</span>
+              <p class="text-xs text-warning-soft-foreground font-medium">Medication · special handling</p>
+            </div>
+            <p class="text-sm font-medium">Insulin · 2 units · BID 8am + 8pm</p>
+            <p class="text-xs text-muted-foreground mt-0.5">Refrigerated · cooler pack required</p>
+          </div>
+          <a href="#" class="text-xs text-primary underline underline-offset-2 whitespace-nowrap">Edit</a>
+        </div>
+      </article>
+
+      <!-- Additional services -->
+      <article class="bg-card border border-border rounded-md p-3">
+        <div class="flex items-start justify-between">
+          <div class="flex-1">
+            <p class="text-xs text-muted-foreground mb-0.5">Additional services</p>
+            <p class="text-sm font-medium flex items-center gap-1.5">
+              <span class="text-success">✓</span> Basic medication administration
+              <span class="text-xs text-muted-foreground font-normal">(included)</span>
+            </p>
+          </div>
+          <a href="#" class="text-xs text-primary underline underline-offset-2 whitespace-nowrap">Edit</a>
+        </div>
+      </article>
+
+      <!-- Special instructions -->
+      <article class="bg-card border border-border rounded-md p-3">
+        <div class="flex items-start justify-between">
+          <div class="flex-1">
+            <p class="text-xs text-muted-foreground mb-0.5">Special instructions</p>
+            <p class="text-xs font-editorial italic leading-relaxed">"Insulin log on the white board in the dedicated pet room; please text me if glucose looks off."</p>
+          </div>
+          <a href="#" class="text-xs text-primary underline underline-offset-2 whitespace-nowrap">Edit</a>
+        </div>
+      </article>
+
+      <!-- Emergency contact -->
+      <article class="bg-card border border-border rounded-md p-3">
+        <p class="text-xs text-muted-foreground mb-1">Emergency contact</p>
+        <p class="text-sm font-medium tabular">Vet: Dr. Rahman · Gulshan Vet</p>
+        <p class="text-xs text-muted-foreground tabular">Backup: Bibi · +880-XXX-XXXX</p>
+      </article>
+
+    </div>
+
+    <!-- D9: Price breakdown -->
+    <section class="bg-card border border-border rounded-lg overflow-hidden">
+      <header class="px-4 py-3 border-b border-border">
+        <h2 class="text-sm font-semibold">Price breakdown</h2>
+      </header>
+      <div class="px-4 py-3 space-y-1.5 text-sm tabular">
+        <div class="flex items-center justify-between">
+          <span class="text-muted-foreground">Base · BDT 2,200 × 9 nights</span>
+          <span class="font-medium">BDT 19,800</span>
+        </div>
+        <div class="flex items-center justify-between">
+          <span class="text-muted-foreground">Additional services</span>
+          <span class="font-medium">BDT 0</span>
+        </div>
+        <div class="flex items-center justify-between">
+          <span class="text-muted-foreground">Platform fee</span>
+          <span class="text-xs text-muted-foreground italic">included</span>
+        </div>
+        <div class="border-t border-border pt-2 flex items-baseline justify-between">
+          <span class="text-xs text-muted-foreground uppercase tracking-wide">Total authorization hold</span>
+          <span aria-label="Total authorization hold: BDT 19,800" class="font-editorial text-lg font-semibold tabular">BDT 19,800</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- D10: Payment method -->
+    <section>
+      <h2 class="text-sm font-semibold mb-2">Payment method</h2>
+      <fieldset class="grid grid-cols-3 gap-2">
+        <label class="flex flex-col items-center gap-1 px-3 py-3 rounded-lg border-2 border-primary bg-primary-soft cursor-pointer">
+          <input type="radio" name="pay" checked class="sr-only" />
+          <span class="text-xs font-semibold text-primary-soft-foreground">bKash</span>
+          <span class="text-[10px] text-primary-soft-foreground/70">default</span>
+        </label>
+        <label class="flex items-center justify-center px-3 py-3 rounded-lg border border-border bg-card cursor-pointer hover:border-muted-foreground">
+          <input type="radio" name="pay" class="sr-only" />
+          <span class="text-xs">Nagad</span>
+        </label>
+        <label class="flex items-center justify-center px-3 py-3 rounded-lg border border-border bg-card cursor-pointer hover:border-muted-foreground">
+          <input type="radio" name="pay" class="sr-only" />
+          <span class="text-xs">Card</span>
+        </label>
+      </fieldset>
+    </section>
+
+    <!-- D11: bKash sub-form -->
+    <section class="bg-card border border-border rounded-lg p-4 space-y-3">
+      <div>
+        <label for="bkash-phone" class="block text-xs text-muted-foreground mb-1">bKash-registered phone</label>
+        <div class="flex items-center gap-2">
+          <span class="text-sm font-medium tabular">+880</span>
+          <input id="bkash-phone" type="tel" value="1712-345-678" class="flex-1 bg-muted border border-border rounded-md px-3 py-2 text-sm tabular focus:outline-none focus:ring-2 focus:ring-ring" />
+        </div>
+      </div>
+      <button class="w-full h-9 rounded-md bg-card border border-primary text-primary text-xs font-medium">
+        Continue to bKash OTP →
+      </button>
+    </section>
+
+    <!-- D12: Authorization callout -->
+    <aside role="note" aria-labelledby="auth-callout-title" class="bg-info-soft border-l-4 border-info rounded-r-md p-4">
+      <p class="text-xs font-semibold text-info-soft-foreground mb-1.5" id="auth-callout-title">How authorization works</p>
+      <p class="text-xs text-info-soft-foreground leading-relaxed">
+        By tapping Submit, you authorize PetCare to place a <strong>hold</strong> on your bKash for <strong class="tabular">BDT 19,800</strong>. Your account is <strong>charged only when Rashid confirms</strong>. If he declines or doesn't respond in 24 hours, the hold is released automatically.
+      </p>
+    </aside>
+
+    <!-- D13: Cancellation policy -->
+    <details class="bg-card border border-border rounded-md">
+      <summary class="px-4 py-3 cursor-pointer flex items-center justify-between">
+        <span class="text-sm font-medium">Cancellation policy</span>
+        <span class="text-xs text-primary underline underline-offset-2">See full policy</span>
+      </summary>
+      <div class="px-4 pb-3 text-xs text-muted-foreground leading-relaxed">
+        Free cancellation up to 48 hours before the booking start. Within 48 hours, a 50% cancellation fee applies if the provider has already confirmed. Acute-event incidents covered separately under our post-mortem policy.
+      </div>
+    </details>
+
+  </div>
+
+  <!-- D14: Sticky CTA -->
+  <footer class="sticky bottom-0 z-10 bg-card border-t border-border px-5 py-3 backdrop-blur space-y-2">
+    <button class="w-full h-12 rounded-md bg-primary text-primary-foreground text-base font-medium hover:bg-primary/90">
+      Submit booking request →
+    </button>
+    <button class="w-full h-9 rounded-md text-xs font-medium text-muted-foreground underline underline-offset-4">
+      Save as draft
+    </button>
+  </footer>
+
+</div>
+
+</body>
+</html>

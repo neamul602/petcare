@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>PetCare — 4.2 R-10 Acute Event Runbook (Admin · THE launch-blocking surface)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Source+Serif+4:wght@400;600&display=swap" rel="stylesheet" />
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+  tailwind.config = {
+    theme: {
+      extend: {
+        fontFamily: { sans: ['Inter', 'system-ui', 'sans-serif'], editorial: ['"Source Serif 4"', 'Georgia', 'serif'] },
+        colors: {
+          background: 'hsl(38 35% 97%)',
+          foreground: 'hsl(30 12% 14%)',
+          muted: 'hsl(36 18% 92%)',
+          'muted-foreground': 'hsl(30 8% 38%)',
+          card: 'hsl(0 0% 100%)',
+          'card-foreground': 'hsl(30 12% 14%)',
+          border: 'hsl(34 14% 86%)',
+          input: 'hsl(34 14% 90%)',
+          ring: 'hsl(150 32% 32%)',
+          primary: 'hsl(150 32% 32%)',
+          'primary-foreground': 'hsl(38 35% 97%)',
+          'primary-soft': 'hsl(150 22% 92%)',
+          'primary-soft-foreground': 'hsl(150 38% 22%)',
+          accent: 'hsl(14 64% 56%)',
+          'accent-foreground': 'hsl(38 35% 97%)',
+          'accent-soft': 'hsl(14 70% 94%)',
+          'accent-soft-foreground': 'hsl(14 64% 32%)',
+          destructive: 'hsl(0 62% 48%)',
+          'destructive-foreground': 'hsl(38 35% 97%)',
+          'destructive-soft': 'hsl(0 62% 94%)',
+          'destructive-soft-foreground': 'hsl(0 62% 28%)',
+          success: 'hsl(150 32% 32%)',
+          'success-soft': 'hsl(150 22% 92%)',
+          'success-soft-foreground': 'hsl(150 38% 22%)',
+          warning: 'hsl(36 78% 46%)',
+          'warning-soft': 'hsl(36 78% 94%)',
+          'warning-soft-foreground': 'hsl(36 78% 26%)',
+          info: 'hsl(212 56% 48%)',
+          'info-soft': 'hsl(212 56% 94%)',
+          'info-soft-foreground': 'hsl(212 56% 28%)',
+        },
+      },
+    },
+  };
+</script>
+<style>
+  body { font-family: 'Inter', system-ui, sans-serif; background: hsl(38 35% 97%); color: hsl(30 12% 14%); }
+  .tabular { font-variant-numeric: tabular-nums; }
+  .phone-frame { width: 390px; min-height: 844px; background: hsl(38 35% 97%); }
+  .desktop-frame { width: 1280px; min-height: 880px; background: hsl(38 35% 97%); }
+</style>
+</head>
+<body class="min-h-screen">
+<div class="bg-amber-50 border-b border-amber-200 px-6 py-2 text-xs text-amber-900 text-center">
+  <strong>R-10 LAUNCH-BLOCKING SURFACE</strong> · Per Scenario 04 / 4.2 spec · SM-20 (first timeline entry &lt; 5 min) · SM-19 (post-mortem closure)
+</div>
+
+<div class="desktop-frame mx-auto my-6 border border-border rounded-xl shadow-md overflow-hidden">
+
+  <!-- Header -->
+  <header class="flex items-center justify-between px-8 py-4 bg-card border-b border-border">
+    <div class="flex items-center gap-4">
+      <a href="#" class="flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground">
+        <span aria-hidden="true">←</span> Queue
+      </a>
+      <div class="h-6 w-px bg-border"></div>
+      <div>
+        <h1 class="font-editorial text-xl font-semibold">Acute Event · #AE-2026-0001 · Glucose drop</h1>
+        <p class="text-xs text-muted-foreground">Tito · Shih Tzu · Diabetic · Eid stay · Day 4 of 9 · Provider: Rashid · Owner: Bibi</p>
+      </div>
+    </div>
+    <div class="flex items-center gap-3">
+      <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-destructive-soft text-destructive-soft-foreground text-xs font-semibold border border-destructive/30">
+        <span class="w-1.5 h-1.5 rounded-full bg-destructive animate-pulse"></span>
+        ACUTE ACTIVE
+      </span>
+      <span class="text-xs text-muted-foreground tabular">11:07pm · 31 Aug 2026</span>
+    </div>
+  </header>
+
+  <div class="grid grid-cols-12 gap-6 p-8 bg-background">
+
+    <!-- LEFT: Runbook steps + notification template -->
+    <main class="col-span-8 space-y-6">
+
+      <!-- D2: Alert banner with live elapsed timer -->
+      <div role="alert" aria-live="assertive" class="rounded-xl border-l-4 border-destructive bg-destructive-soft px-5 py-4 shadow-sm">
+        <div class="flex items-start justify-between">
+          <div class="flex items-start gap-3">
+            <div class="w-10 h-10 rounded-full bg-destructive text-destructive-foreground grid place-items-center text-lg font-bold flex-shrink-0">!</div>
+            <div>
+              <p class="text-sm font-semibold text-destructive-soft-foreground">Acute Event Active · Glucose drop (diabetic small dog)</p>
+              <p class="text-xs text-destructive-soft-foreground/80 mt-1 leading-relaxed">
+                Tito (Shih Tzu, diabetic) · Eid stay · Provider: Rashid (Gulshan) · Owner: Bibi (Banani) · Triggered 11:02pm
+              </p>
+            </div>
+          </div>
+          <div class="flex flex-col items-end">
+            <span class="text-xs text-muted-foreground">Elapsed</span>
+            <span role="timer" aria-label="5 minutes elapsed, on target" class="tabular text-2xl font-editorial font-semibold text-success flex items-center gap-1.5">
+              <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="7" stroke="currentColor" stroke-width="1.5"/><path d="M5 8l2 2 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              05:00
+            </span>
+            <span class="text-[10px] text-success font-medium uppercase tracking-wide">SM-20 met</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- D3: Runbook steps -->
+      <section class="bg-card border border-border rounded-xl shadow-md overflow-hidden">
+        <header class="px-5 py-3 border-b border-border flex items-center justify-between">
+          <div>
+            <h2 class="text-sm font-semibold">Runbook steps (predefined)</h2>
+            <p class="text-xs text-muted-foreground mt-0.5">Follow the path — every step is logged.</p>
+          </div>
+          <span class="text-xs text-muted-foreground tabular">2 / 7 done</span>
+        </header>
+
+        <ol class="divide-y divide-border">
+
+          <li class="px-5 py-3 flex items-start gap-4 bg-success-soft/30">
+            <span class="flex-shrink-0 w-7 h-7 rounded-full bg-success text-success-foreground grid place-items-center text-sm font-bold mt-0.5">✓</span>
+            <div class="flex-1">
+              <div class="flex items-center justify-between">
+                <p class="text-sm font-medium text-foreground">Step 1: Confirm trigger</p>
+                <span class="text-xs text-muted-foreground tabular">done 11:02pm</span>
+              </div>
+              <p class="text-xs text-muted-foreground mt-0.5">Rashid's structured trigger accepted — category: Glucose drop · severity: Urgent.</p>
+            </div>
+          </li>
+
+          <li class="px-5 py-3 flex items-start gap-4 bg-success-soft/30">
+            <span class="flex-shrink-0 w-7 h-7 rounded-full bg-success text-success-foreground grid place-items-center text-sm font-bold mt-0.5">✓</span>
+            <div class="flex-1">
+              <div class="flex items-center justify-between">
+                <p class="text-sm font-medium text-foreground">Step 2: Provider role</p>
+                <span class="text-xs text-muted-foreground tabular">done 11:03pm</span>
+              </div>
+              <p class="text-xs text-muted-foreground mt-0.5">Rashid in-the-moment · vet lookup used · owner notification acknowledged · glucose gel administered per care instructions.</p>
+            </div>
+          </li>
+
+          <li aria-current="step" class="px-5 py-4 flex items-start gap-4 bg-primary-soft border-l-4 border-primary">
+            <span class="flex-shrink-0 w-7 h-7 rounded-full bg-primary text-primary-foreground grid place-items-center text-sm font-bold mt-0.5">▶</span>
+            <div class="flex-1">
+              <div class="flex items-center justify-between">
+                <p class="text-sm font-semibold text-foreground">Step 3: Admin role (you)</p>
+                <span class="inline-flex items-center gap-1 text-xs font-medium text-primary">
+                  <span class="w-1.5 h-1.5 rounded-full bg-primary animate-pulse"></span> active now
+                </span>
+              </div>
+              <p class="text-xs text-muted-foreground mt-1 leading-relaxed">Platform coordination · confirm vet contact · owner notification cadence · payout hold.</p>
+              <div class="mt-3 flex items-center gap-2">
+                <button class="h-8 px-3 rounded-md bg-primary text-primary-foreground text-xs font-medium">Mark complete</button>
+                <button class="h-8 px-3 rounded-md border border-border bg-card text-xs font-medium">Skip (with note)</button>
+              </div>
+            </div>
+          </li>
+
+          <li class="px-5 py-3 flex items-start gap-4">
+            <span class="flex-shrink-0 w-7 h-7 rounded-full bg-muted text-muted-foreground grid place-items-center text-sm font-bold border border-border mt-0.5">4</span>
+            <div class="flex-1">
+              <p class="text-sm font-medium text-muted-foreground">Step 4: Vet-Clinic lookup</p>
+              <p class="text-xs text-muted-foreground mt-0.5">Dr. Rahman · Gulshan Vet · 1.2 km · +880-2-XXX-XXXX · open until midnight</p>
+            </div>
+          </li>
+
+          <li class="px-5 py-3 flex items-start gap-4">
+            <span class="flex-shrink-0 w-7 h-7 rounded-full bg-muted text-muted-foreground grid place-items-center text-sm font-bold border border-border mt-0.5">5</span>
+            <div class="flex-1">
+              <p class="text-sm font-medium text-muted-foreground">Step 5: Owner notification (Bibi)</p>
+              <p class="text-xs text-muted-foreground mt-0.5">Template ready · Bangla + English · one-tap send</p>
+            </div>
+          </li>
+
+          <li class="px-5 py-3 flex items-start gap-4">
+            <span class="flex-shrink-0 w-7 h-7 rounded-full bg-muted text-muted-foreground grid place-items-center text-sm font-bold border border-border mt-0.5">6</span>
+            <div class="flex-1">
+              <p class="text-sm font-medium text-muted-foreground">Step 6: Payout implications</p>
+              <p class="text-xs text-muted-foreground mt-0.5">Hold pending resolution · no automated penalty</p>
+            </div>
+          </li>
+
+          <li class="px-5 py-3 flex items-start gap-4">
+            <span class="flex-shrink-0 w-7 h-7 rounded-full bg-muted text-muted-foreground grid place-items-center text-sm font-bold border border-border mt-0.5">7</span>
+            <div class="flex-1">
+              <p class="text-sm font-medium text-muted-foreground">Step 7: Post-mortem entry <a href="#postmortem" class="text-primary underline underline-offset-2">(4.9)</a></p>
+              <p class="text-xs text-muted-foreground mt-0.5">Closes the loop · feeds runbook v[N+1] · SM-19</p>
+            </div>
+          </li>
+
+        </ol>
+      </section>
+
+      <!-- D4: Owner-notification template -->
+      <section class="bg-muted border border-border rounded-xl p-5">
+        <div class="flex items-center justify-between mb-3">
+          <h2 class="text-sm font-semibold">Owner-notification template (Bibi)</h2>
+          <div role="radiogroup" aria-label="Notification language" class="inline-flex rounded-full border border-border bg-card p-0.5">
+            <button role="radio" aria-checked="true" class="px-3 py-1 rounded-full bg-primary-soft text-primary-soft-foreground text-xs font-semibold">EN</button>
+            <button role="radio" aria-checked="false" class="px-3 py-1 rounded-full text-xs font-medium text-muted-foreground">বাংলা</button>
+          </div>
+        </div>
+        <textarea readonly class="w-full bg-card border border-border rounded-lg p-4 text-sm leading-relaxed text-foreground resize-none focus:outline-none focus:ring-2 focus:ring-ring" rows="5">
+Tito's glucose dropped at 11pm. Rashid has administered glucose gel per your care instructions. Dr. Rahman at Gulshan Vet has been contacted and is standing by. You can reach Rashid at +880-XXX-XXXX or Ayaat at +880-XXX-XXXX. We'll update you within 30 min.</textarea>
+        <div class="mt-3 flex items-center gap-3">
+          <button class="h-10 px-5 rounded-md bg-primary text-primary-foreground text-sm font-medium hover:bg-primary/90">Send via PetCare</button>
+          <button class="h-10 px-4 rounded-md text-sm font-medium text-primary underline underline-offset-4 hover:no-underline">Send via SMS</button>
+          <span class="text-xs text-muted-foreground ml-auto">Last edited by Ayaat · 31 Aug 11:03pm</span>
+        </div>
+      </section>
+
+    </main>
+
+    <!-- RIGHT: Vet lookup + Timeline -->
+    <aside class="col-span-4 space-y-6">
+
+      <!-- Vet-clinic lookup -->
+      <section class="bg-card border border-border rounded-xl p-5">
+        <div class="flex items-center justify-between mb-3">
+          <h2 class="text-sm font-semibold">Vet-Clinic lookup</h2>
+          <span class="text-xs text-muted-foreground tabular">Gulshan · 3 clinics</span>
+        </div>
+        <div class="space-y-2">
+          <article class="border-2 border-primary rounded-md p-3 bg-primary-soft/30">
+            <div class="flex items-start justify-between">
+              <div>
+                <p class="font-semibold text-sm">Gulshan Veterinary Clinic</p>
+                <p class="text-xs text-muted-foreground mt-0.5 tabular">1.2 km · open until midnight</p>
+              </div>
+              <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-primary text-primary-foreground text-[10px] font-semibold">PRIMARY</span>
+            </div>
+            <div class="mt-2 flex items-center gap-2">
+              <a href="tel:+8802XXXXXXX" class="text-xs font-medium text-primary underline underline-offset-2">+880-2-XXX-XXXX</a>
+              <span class="text-xs text-muted-foreground">· Dr. Rahman on call</span>
+            </div>
+          </article>
+          <article class="border border-border rounded-md p-3 bg-card">
+            <div class="flex items-start justify-between">
+              <div>
+                <p class="font-semibold text-sm">Banani Pet Hospital</p>
+                <p class="text-xs text-muted-foreground mt-0.5 tabular">2.1 km · open until 10pm</p>
+              </div>
+            </div>
+            <a href="tel:+8802XXXXXXX" class="mt-2 inline-block text-xs font-medium text-primary underline underline-offset-2">+880-2-XXX-XXXX</a>
+          </article>
+          <article class="border border-border rounded-md p-3 bg-card">
+            <div class="flex items-start justify-between">
+              <div>
+                <p class="font-semibold text-sm">Gulshan 2 Animal Care</p>
+                <p class="text-xs text-muted-foreground mt-0.5 tabular">3.4 km · 24h</p>
+              </div>
+            </div>
+            <a href="tel:+8802XXXXXXX" class="mt-2 inline-block text-xs font-medium text-primary underline underline-offset-2">+880-2-XXX-XXXX</a>
+          </article>
+        </div>
+      </section>
+
+      <!-- D5: Timeline (chronological) -->
+      <section class="bg-muted border border-border rounded-xl p-5">
+        <div class="flex items-center justify-between mb-3">
+          <h2 class="text-sm font-semibold">Timeline</h2>
+          <span class="text-xs text-muted-foreground tabular">4 entries · live</span>
+        </div>
+
+        <ol class="space-y-2.5">
+          <li class="flex items-start gap-2 text-xs">
+            <span aria-hidden="true" class="text-sm flex-shrink-0">🔴</span>
+            <div class="flex-1">
+              <span class="font-medium tabular">11:02pm</span>
+              <span class="text-muted-foreground"> · </span>
+              <span>Trigger: Provider reported glucose drop</span>
+            </div>
+          </li>
+          <li class="flex items-start gap-2 text-xs">
+            <span aria-hidden="true" class="text-sm flex-shrink-0">💉</span>
+            <div class="flex-1">
+              <span class="font-medium tabular">11:03pm</span>
+              <span class="text-muted-foreground"> · </span>
+              <span>Rashid: Glucose gel administered per care instructions</span>
+            </div>
+          </li>
+          <li class="flex items-start gap-2 text-xs">
+            <span aria-hidden="true" class="text-sm flex-shrink-0">🏥</span>
+            <div class="flex-1">
+              <span class="font-medium tabular">11:04pm</span>
+              <span class="text-muted-foreground"> · </span>
+              <span>Vet clinic contacted · Dr. Rahman standing by</span>
+            </div>
+          </li>
+          <li class="flex items-start gap-2 text-xs">
+            <span aria-hidden="true" class="text-sm flex-shrink-0">✍️</span>
+            <div class="flex-1">
+              <span class="font-medium tabular">11:05pm</span>
+              <span class="text-muted-foreground"> · </span>
+              <span><span class="font-medium">[Ayaat]</span> "Following up in 30 min · glucose stable · timeline updated"</span>
+            </div>
+          </li>
+        </ol>
+
+        <!-- Live timeline input -->
+        <form class="mt-4 flex items-center gap-2">
+          <label for="timeline-input" class="sr-only">Add timeline entry</label>
+          <input id="timeline-input" type="text" placeholder="Add timeline entry…" class="flex-1 h-9 px-3 rounded-md bg-card border border-border text-sm focus:outline-none focus:ring-2 focus:ring-ring" />
+          <button class="h-9 px-3 rounded-md bg-primary text-primary-foreground text-xs font-medium">Post</button>
+        </form>
+      </section>
+
+    </aside>
+  </div>
+
+  <!-- D6: Helper line footer -->
+  <footer class="bg-muted border-t border-border px-8 py-3 text-xs text-muted-foreground text-center">
+    Aim: first timeline entry within <strong class="text-success">5 min</strong> · post-mortem within <strong>48 hr</strong> · no improvisation · no contradictory comms · no penalty if elapsed &gt; 5 min
+  </footer>
+
+</div>
+
+</body>
+</html>

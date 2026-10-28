@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>PetCare — Admin Queue</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Source+Serif+4:wght@400;600&display=swap" rel="stylesheet" />
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+  tailwind.config = {
+    theme: {
+      extend: {
+        fontFamily: { sans: ['Inter', 'system-ui', 'sans-serif'], editorial: ['"Source Serif 4"', 'Georgia', 'serif'] },
+        colors: {
+          background: 'hsl(38 35% 97%)',
+          foreground: 'hsl(30 12% 14%)',
+          muted: 'hsl(36 18% 92%)',
+          'muted-foreground': 'hsl(30 8% 38%)',
+          card: 'hsl(0 0% 100%)',
+          'card-foreground': 'hsl(30 12% 14%)',
+          border: 'hsl(34 14% 86%)',
+          input: 'hsl(34 14% 90%)',
+          primary: 'hsl(150 32% 32%)',
+          'primary-foreground': 'hsl(38 35% 97%)',
+          'primary-soft': 'hsl(150 22% 92%)',
+          'primary-soft-foreground': 'hsl(150 38% 22%)',
+          accent: 'hsl(14 64% 56%)',
+          'accent-foreground': 'hsl(38 35% 97%)',
+          'accent-soft': 'hsl(14 70% 94%)',
+          'accent-soft-foreground': 'hsl(14 64% 32%)',
+          destructive: 'hsl(0 62% 48%)',
+          'destructive-soft': 'hsl(0 62% 94%)',
+          warning: 'hsl(36 78% 46%)',
+          'warning-soft': 'hsl(36 78% 94%)',
+          info: 'hsl(212 56% 48%)',
+          'info-soft': 'hsl(212 56% 94%)',
+        },
+      },
+    },
+  };
+</script>
+<style>
+  body { font-family: 'Inter', system-ui, sans-serif; background: hsl(38 35% 97%); color: hsl(30 12% 14%); }
+  .tabular { font-variant-numeric: tabular-nums; }
+</style>
+</head>
+<body class="min-h-screen">
+  <div class="max-w-[1280px] mx-auto my-8 bg-card rounded-xl border border-border shadow-xl overflow-hidden">
+
+    <!-- Top admin bar -->
+    <header class="bg-background border-b border-border px-6 py-4 flex items-center justify-between">
+      <div class="flex items-center gap-6">
+        <div class="flex items-center gap-2">
+          <div class="w-7 h-7 rounded-full bg-primary text-primary-foreground grid place-items-center font-semibold text-sm">P</div>
+          <span class="font-semibold tracking-tight">PetCare Admin</span>
+        </div>
+        <nav class="flex items-center gap-1 text-sm">
+          <button class="px-3 py-1.5 rounded-md bg-primary-soft text-primary-soft-foreground font-medium">Queue</button>
+          <button class="px-3 py-1.5 rounded-md text-foreground/80 hover:bg-muted">Providers</button>
+          <button class="px-3 py-1.5 rounded-md text-foreground/80 hover:bg-muted">Audit log</button>
+          <button class="px-3 py-1.5 rounded-md text-foreground/80 hover:bg-muted">Reports</button>
+        </nav>
+      </div>
+      <div class="flex items-center gap-3">
+        <div class="text-right">
+          <p class="text-xs text-muted-foreground tabular">Eid week · Day 3</p>
+          <p class="text-xs font-medium tabular">Operating at 87% of ceiling</p>
+        </div>
+        <div class="w-9 h-9 rounded-full bg-muted grid place-items-center text-sm font-semibold">SA</div>
+      </div>
+    </header>
+
+    <!-- KPI strip -->
+    <div class="px-6 py-5 border-b border-border grid grid-cols-5 gap-4">
+      <div class="bg-card border border-border rounded-lg p-4">
+        <p class="text-xs text-muted-foreground uppercase tracking-wide font-medium">P1 Acute</p>
+        <p class="tabular text-3xl font-semibold text-accent mt-2">2</p>
+        <p class="text-xs text-muted-foreground mt-1">+1 in last 30m</p>
+      </div>
+      <div class="bg-card border border-border rounded-lg p-4">
+        <p class="text-xs text-muted-foreground uppercase tracking-wide font-medium">P2 Dispute</p>
+        <p class="tabular text-3xl font-semibold text-destructive mt-2">4</p>
+        <p class="text-xs text-muted-foreground mt-1">2 awaiting review</p>
+      </div>
+      <div class="bg-card border border-border rounded-lg p-4">
+        <p class="text-xs text-muted-foreground uppercase tracking-wide font-medium">P3 Vetting</p>
+        <p class="tabular text-3xl font-semibold text-warning mt-2">11</p>
+        <p class="text-xs text-muted-foreground mt-1">85% complete queue</p>
+      </div>
+      <div class="bg-card border border-border rounded-lg p-4">
+        <p class="text-xs text-muted-foreground uppercase tracking-wide font-medium">In-stay</p>
+        <p class="tabular text-3xl font-semibold text-primary mt-2">58</p>
+        <p class="text-xs text-muted-foreground mt-1">Across 18 Providers</p>
+      </div>
+      <div class="bg-card border border-border rounded-lg p-4">
+        <p class="text-xs text-muted-foreground uppercase tracking-wide font-medium">Today</p>
+        <p class="tabular text-3xl font-semibold text-foreground mt-2">৳ 64k</p>
+        <p class="text-xs text-muted-foreground mt-1">Payouts scheduled</p>
+      </div>
+    </div>
+
+    <!-- Queue controls -->
+    <div class="px-6 py-4 border-b border-border flex items-center justify-between bg-background">
+      <div class="flex items-center gap-2">
+        <h2 class="font-semibold text-base">Queue · priority-ordered</h2>
+        <span class="text-xs text-muted-foreground tabular ml-2">75 active items</span>
+      </div>
+      <div class="flex items-center gap-2">
+        <div class="flex items-center gap-1.5 text-xs">
+          <span class="inline-flex items-center gap-1.5">
+            <span class="w-2 h-2 rounded-full bg-accent"></span>
+            <span class="text-muted-foreground">Acute</span>
+          </span>
+          <span class="inline-flex items-center gap-1.5 ml-3">
+            <span class="w-2 h-2 rounded-full bg-destructive"></span>
+            <span class="text-muted-foreground">Dispute</span>
+          </span>
+          <span class="inline-flex items-center gap-1.5 ml-3">
+            <span class="w-2 h-2 rounded-full bg-warning"></span>
+            <span class="text-muted-foreground">Vetting</span>
+          </span>
+          <span class="inline-flex items-center gap-1.5 ml-3">
+            <span class="w-2 h-2 rounded-full bg-primary"></span>
+            <span class="text-muted-foreground">In-stay</span>
+          </span>
+        </div>
+        <button class="ml-4 h-8 px-3 rounded-md border border-border text-xs font-medium">Filter</button>
+        <button class="h-8 px-3 rounded-md border border-border text-xs font-medium">Sort</button>
+      </div>
+    </div>
+
+    <!-- Queue rows -->
+    <div class="bg-card">
+
+      <!-- Row 1 — P1 Acute -->
+      <div class="grid grid-cols-[3rem_3rem_1fr_8rem_8rem_6rem_4rem] gap-4 items-center px-6 py-3 border-b border-border hover:bg-muted/50 border-l-4 border-l-accent cursor-pointer">
+        <span class="tabular text-sm font-semibold text-accent">P1</span>
+        <span class="bg-accent text-accent-foreground text-xs px-2 py-0.5 rounded-full font-semibold inline-flex items-center justify-center">ACUTE</span>
+        <div>
+          <p class="text-sm font-medium">Rashid reported — senior dog, sudden lethargy + diarrhea</p>
+          <p class="text-xs text-muted-foreground mt-0.5 tabular">Booking PC-2842 · Gulshan · Vet contacted: Gulshan Pet Clinic</p>
+        </div>
+        <p class="text-sm text-muted-foreground">Rashid M.</p>
+        <p class="text-sm text-muted-foreground tabular">Gulshan</p>
+        <p class="text-xs text-warning font-medium tabular">14m</p>
+        <button class="text-xs font-medium text-primary justify-self-end">Open →</button>
+      </div>
+
+      <!-- Row 2 — P1 Acute -->
+      <div class="grid grid-cols-[3rem_3rem_1fr_8rem_8rem_6rem_4rem] gap-4 items-center px-6 py-3 border-b border-border hover:bg-muted/50 border-l-4 border-l-accent cursor-pointer">
+        <span class="tabular text-sm font-semibold text-accent">P1</span>
+        <span class="bg-accent text-accent-foreground text-xs px-2 py-0.5 rounded-full font-semibold inline-flex items-center justify-center">ACUTE</span>
+        <div>
+          <p class="text-sm font-medium">Farzana reported — anxious dog, possible cut on paw</p>
+          <p class="text-xs text-muted-foreground mt-0.5 tabular">Booking PC-2821 · Banani · Vet contacted: Banani Animal Care</p>
+        </div>
+        <p class="text-sm text-muted-foreground">Farzana A.</p>
+        <p class="text-sm text-muted-foreground tabular">Banani</p>
+        <p class="text-xs text-warning font-medium tabular">32m</p>
+        <button class="text-xs font-medium text-primary justify-self-end">Open →</button>
+      </div>
+
+      <!-- Row 3 — P2 Dispute -->
+      <div class="grid grid-cols-[3rem_3rem_1fr_8rem_8rem_6rem_4rem] gap-4 items-center px-6 py-3 border-b border-border hover:bg-muted/50 border-l-4 border-l-destructive cursor-pointer">
+        <span class="tabular text-sm font-semibold text-destructive">P2</span>
+        <span class="bg-destructive-soft text-destructive border border-destructive/30 text-xs px-2 py-0.5 rounded-full font-semibold inline-flex items-center justify-center">DISPUTE</span>
+        <div>
+          <p class="text-sm font-medium">Owner report — Photos don't match Profile. Investigation open.</p>
+          <p class="text-xs text-muted-foreground mt-0.5 tabular">Booking PC-2795 · Dhanmondi · Owner: Asif R.</p>
+        </div>
+        <p class="text-sm text-muted-foreground">Nadia T.</p>
+        <p class="text-sm text-muted-foreground tabular">Dhanmondi</p>
+        <p class="text-xs text-muted-foreground tabular">2h</p>
+        <button class="text-xs font-medium text-primary justify-self-end">Open →</button>
+      </div>
+
+      <!-- Row 4 — P2 Dispute -->
+      <div class="grid grid-cols-[3rem_3rem_1fr_8rem_8rem_6rem_4rem] gap-4 items-center px-6 py-3 border-b border-border hover:bg-muted/50 border-l-4 border-l-destructive cursor-pointer">
+        <span class="tabular text-sm font-semibold text-destructive">P2</span>
+        <span class="bg-destructive-soft text-destructive border border-destructive/30 text-xs px-2 py-0.5 rounded-full font-semibold inline-flex items-center justify-center">DISPUTE</span>
+        <div>
+          <p class="text-sm font-medium">Owner report — Reported meal schedule not followed.</p>
+          <p class="text-xs text-muted-foreground mt-0.5 tabular">Booking PC-2780 · Uttara · Owner: Rahima K.</p>
+        </div>
+        <p class="text-sm text-muted-foreground">Imran S.</p>
+        <p class="text-sm text-muted-foreground tabular">Uttara</p>
+        <p class="text-xs text-muted-foreground tabular">4h</p>
+        <button class="text-xs font-medium text-primary justify-self-end">Open →</button>
+      </div>
+
+      <!-- Row 5 — P3 Vetting -->
+      <div class="grid grid-cols-[3rem_3rem_1fr_8rem_8rem_6rem_4rem] gap-4 items-center px-6 py-3 border-b border-border hover:bg-muted/50 border-l-4 border-l-warning cursor-pointer">
+        <span class="tabular text-sm font-semibold text-warning">P3</span>
+        <span class="bg-warning-soft text-foreground/80 border border-warning/30 text-xs px-2 py-0.5 rounded-full font-semibold inline-flex items-center justify-center">VETTING</span>
+        <div>
+          <p class="text-sm font-medium">Application — Tanvir H., Mohammadpur · 5yr exp, small breeds</p>
+          <p class="text-xs text-muted-foreground mt-0.5 tabular">Profile complete · 6 photos · Refs from 2 prior hosts</p>
+        </div>
+        <p class="text-sm text-muted-foreground">Tanvir H.</p>
+        <p class="text-sm text-muted-foreground tabular">Mohammadpur</p>
+        <p class="text-xs text-muted-foreground tabular">6h</p>
+        <button class="text-xs font-medium text-primary justify-self-end">Open →</button>
+      </div>
+
+      <!-- Row 6 — P3 Vetting -->
+      <div class="grid grid-cols-[3rem_3rem_1fr_8rem_8rem_6rem_4rem] gap-4 items-center px-6 py-3 border-b border-border hover:bg-muted/50 border-l-4 border-l-warning cursor-pointer">
+        <span class="tabular text-sm font-semibold text-warning">P3</span>
+        <span class="bg-warning-soft text-foreground/80 border border-warning/30 text-xs px-2 py-0.5 rounded-full font-semibold inline-flex items-center justify-center">VETTING</span>
+        <div>
+          <p class="text-sm font-medium">Application — Laila R., Bashundhara · 2yr exp, dogs + cats</p>
+          <p class="text-xs text-muted-foreground mt-0.5 tabular">Profile 60% complete · awaiting Tier-A documentation</p>
+        </div>
+        <p class="text-sm text-muted-foreground">Laila R.</p>
+        <p class="text-sm text-muted-foreground tabular">Bashundhara</p>
+        <p class="text-xs text-muted-foreground tabular">1d</p>
+        <button class="text-xs font-medium text-primary justify-self-end">Open →</button>
+      </div>
+
+      <!-- Row 7 — P4 In-stay -->
+      <div class="grid grid-cols-[3rem_3rem_1fr_8rem_8rem_6rem_4rem] gap-4 items-center px-6 py-3 border-b border-border hover:bg-muted/50 border-l-4 border-l-primary cursor-pointer">
+        <span class="tabular text-sm font-semibold text-primary">P4</span>
+        <span class="bg-primary-soft text-primary-soft-foreground border border-primary/20 text-xs px-2 py-0.5 rounded-full font-semibold inline-flex items-center justify-center">IN-STAY</span>
+        <div>
+          <p class="text-sm font-medium">Booking #PC-2842 · Bibi & Tito (diabetic Shih Tzu) at Rashid's</p>
+          <p class="text-xs text-muted-foreground mt-0.5 tabular">Day 2 of 8 · Daily update posted at 9:14 AM</p>
+        </div>
+        <p class="text-sm text-muted-foreground">Rashid M.</p>
+        <p class="text-sm text-muted-foreground tabular">Gulshan</p>
+        <p class="text-xs text-muted-foreground tabular">2d</p>
+        <button class="text-xs font-medium text-primary justify-self-end">Open →</button>
+      </div>
+
+      <!-- Row 8 — P4 In-stay -->
+      <div class="grid grid-cols-[3rem_3rem_1fr_8rem_8rem_6rem_4rem] gap-4 items-center px-6 py-3 border-b border-border hover:bg-muted/50 border-l-4 border-l-primary cursor-pointer">
+        <span class="tabular text-sm font-semibold text-primary">P4</span>
+        <span class="bg-primary-soft text-primary-soft-foreground border border-primary/20 text-xs px-2 py-0.5 rounded-full font-semibold inline-flex items-center justify-center">IN-STAY</span>
+        <div>
+          <p class="text-sm font-medium">Booking #PC-2838 · Shahin & Luna (diabetic Lab) at Farzana's</p>
+          <p class="text-xs text-muted-foreground mt-0.5 tabular">Day 5 of 12 · Daily update overdue (12m)</p>
+        </div>
+        <p class="text-sm text-muted-foreground">Farzana A.</p>
+        <p class="text-sm text-muted-foreground tabular">Banani</p>
+        <p class="text-xs text-warning font-medium tabular">12m</p>
+        <button class="text-xs font-medium text-primary justify-self-end">Open →</button>
+      </div>
+
+    </div>
+
+    <!-- Footer summary -->
+    <div class="px-6 py-4 border-t border-border bg-background flex items-center justify-between">
+      <p class="text-xs text-muted-foreground tabular">Showing 8 of 75 · P1 (2) · P2 (4) · P3 (11) · P4 (58)</p>
+      <div class="flex items-center gap-2">
+        <button class="h-8 px-3 rounded-md border border-border text-xs font-medium">Previous</button>
+        <button class="h-8 px-3 rounded-md bg-primary text-primary-foreground text-xs font-medium">Next 8 →</button>
+      </div>
+    </div>
+
+  </div>
+</body>
+</html>

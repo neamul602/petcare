@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>PetCare — 5.7 Acute-Event Trigger (Provider · R-10 provider-side start)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Source+Serif+4:wght@400;600&display=swap" rel="stylesheet" />
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+  tailwind.config = {
+    theme: {
+      extend: {
+        fontFamily: { sans: ['Inter', 'system-ui', 'sans-serif'], editorial: ['"Source Serif 4"', 'Georgia', 'serif'] },
+        colors: {
+          background: 'hsl(38 35% 97%)',
+          foreground: 'hsl(30 12% 14%)',
+          muted: 'hsl(36 18% 92%)',
+          'muted-foreground': 'hsl(30 8% 38%)',
+          card: 'hsl(0 0% 100%)',
+          'card-foreground': 'hsl(30 12% 14%)',
+          border: 'hsl(34 14% 86%)',
+          input: 'hsl(34 14% 90%)',
+          ring: 'hsl(150 32% 32%)',
+          primary: 'hsl(150 32% 32%)',
+          'primary-foreground': 'hsl(38 35% 97%)',
+          'primary-soft': 'hsl(150 22% 92%)',
+          'primary-soft-foreground': 'hsl(150 38% 22%)',
+          accent: 'hsl(14 64% 56%)',
+          'accent-foreground': 'hsl(38 35% 97%)',
+          'accent-soft': 'hsl(14 70% 94%)',
+          'accent-soft-foreground': 'hsl(14 64% 32%)',
+          destructive: 'hsl(0 62% 48%)',
+          'destructive-foreground': 'hsl(38 35% 97%)',
+          'destructive-soft': 'hsl(0 62% 94%)',
+          'destructive-soft-foreground': 'hsl(0 62% 28%)',
+          warning: 'hsl(36 78% 46%)',
+          'warning-soft': 'hsl(36 78% 94%)',
+          'warning-soft-foreground': 'hsl(36 78% 26%)',
+          info: 'hsl(212 56% 48%)',
+          'info-soft': 'hsl(212 56% 94%)',
+          'info-soft-foreground': 'hsl(212 56% 28%)',
+        },
+      },
+    },
+  };
+</script>
+<style>
+  body { font-family: 'Inter', system-ui, sans-serif; background: hsl(38 35% 97%); color: hsl(30 12% 14%); }
+  .tabular { font-variant-numeric: tabular-nums; }
+  .phone-frame { width: 390px; min-height: 844px; background: hsl(38 35% 97%); }
+</style>
+</head>
+<body class="min-h-screen">
+<div class="bg-amber-50 border-b border-amber-200 px-6 py-2 text-xs text-amber-900 text-center">
+  <strong>R-10 LAUNCH-BLOCKING</strong> · Provider-side start · Per Scenario 05 / 5.7 spec
+</div>
+
+<div class="phone-frame mx-auto my-6 border-[14px] border-foreground/90 rounded-[40px] shadow-xl overflow-hidden">
+
+  <!-- Status bar -->
+  <div class="h-11 flex items-center justify-between px-6 text-xs text-foreground/70 bg-card">
+    <span class="tabular">9:41</span>
+    <span class="font-medium">Acute Event Trigger</span>
+    <span class="tabular">●●● 4G</span>
+  </div>
+
+  <!-- Header / back nav -->
+  <header class="flex items-center justify-between px-5 py-3 bg-card border-b border-border">
+    <a href="#" class="flex items-center gap-1 text-sm text-muted-foreground">
+      <span aria-hidden="true">←</span> Tito's stay
+    </a>
+    <span class="text-xs text-muted-foreground">Day 4 of 9 · 23:00</span>
+  </header>
+
+  <!-- Runbook notice banner -->
+  <div class="bg-info-soft border-b border-info/20 px-5 py-3">
+    <p class="text-xs text-info-soft-foreground leading-relaxed">
+      <strong>This starts the runbook.</strong> Ayaat (Admin) and Bibi (Owner) will be notified within 2 minutes. Vet directory opens next. The booking transitions to <span class="font-medium">Disputed</span> and the payout pauses for review.
+    </p>
+  </div>
+
+  <!-- Form body -->
+  <div class="bg-background px-5 py-5 space-y-5 overflow-y-auto" style="max-height: 580px;">
+
+    <section>
+      <h1 class="font-editorial text-2xl font-semibold leading-tight">Something is wrong</h1>
+      <p class="text-sm text-muted-foreground mt-2 leading-relaxed">Tell us what happened. The Admin sees exactly what you submit — the more specific, the better the response.</p>
+    </section>
+
+    <!-- Pet context (read-only) -->
+    <section class="bg-muted rounded-lg p-4 border border-border">
+      <div class="flex items-center gap-3">
+        <div class="w-12 h-12 rounded-md bg-card grid place-items-center text-2xl">🐕</div>
+        <div class="flex-1">
+          <p class="text-sm font-semibold">Tito · Shih Tzu · 7 yrs</p>
+          <div class="flex items-center gap-2 mt-1">
+            <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-warning-soft text-warning-soft-foreground text-[10px] font-semibold border border-warning/30">DIABETIC</span>
+            <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-warning-soft text-warning-soft-foreground text-[10px] font-semibold border border-warning/30">ANXIETY</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Category -->
+    <section>
+      <h2 class="text-sm font-semibold mb-2">What kind of event?</h2>
+      <p class="text-xs text-muted-foreground mb-3">Pick the closest match. You can describe it more below.</p>
+      <fieldset class="space-y-2">
+        <label class="flex items-center gap-3 p-3 rounded-lg border-2 border-primary bg-primary-soft cursor-pointer">
+          <input type="radio" name="category" checked class="accent-primary" />
+          <div class="flex-1">
+            <p class="text-sm font-medium">Glucose / medical</p>
+            <p class="text-xs text-muted-foreground">Blood sugar, vomiting, lethargy, seizure</p>
+          </div>
+        </label>
+        <label class="flex items-center gap-3 p-3 rounded-lg border border-border bg-card cursor-pointer hover:border-muted-foreground">
+          <input type="radio" name="category" class="accent-primary" />
+          <div class="flex-1">
+            <p class="text-sm font-medium">Injury</p>
+            <p class="text-xs text-muted-foreground">Cut, fall, bite, swallowing something</p>
+          </div>
+        </label>
+        <label class="flex items-center gap-3 p-3 rounded-lg border border-border bg-card cursor-pointer hover:border-muted-foreground">
+          <input type="radio" name="category" class="accent-primary" />
+          <div class="flex-1">
+            <p class="text-sm font-medium">Behavioural</p>
+            <p class="text-xs text-muted-foreground">Severe anxiety, refusing food, escape attempt</p>
+          </div>
+        </label>
+        <label class="flex items-center gap-3 p-3 rounded-lg border border-border bg-card cursor-pointer hover:border-muted-foreground">
+          <input type="radio" name="category" class="accent-primary" />
+          <div class="flex-1">
+            <p class="text-sm font-medium">Other</p>
+            <p class="text-xs text-muted-foreground">Describe it in your own words</p>
+          </div>
+        </label>
+      </fieldset>
+    </section>
+
+    <!-- Description (required, min 20 chars) -->
+    <section>
+      <label for="trigger-description" class="block text-sm font-semibold mb-2">
+        What happened? <span class="text-destructive">*</span>
+      </label>
+      <p class="text-xs text-muted-foreground mb-2">Min 20 characters · specific details help Admin respond well.</p>
+      <textarea id="trigger-description" rows="5" class="w-full bg-card border border-border rounded-lg p-3 text-sm leading-relaxed focus:outline-none focus:ring-2 focus:ring-ring">Glucose dropped to 3.2 at 10:55pm. Tito refused his 7pm kibble, was lethargic. I administered glucose gel per the care plan at 11:00pm. Currently responsive but still low energy. Checking again at 11:15pm.</textarea>
+      <p class="text-xs text-success mt-1 tabular">237 / 20 characters · looks good</p>
+    </section>
+
+    <!-- Severity self-assessment -->
+    <section>
+      <h2 class="text-sm font-semibold mb-2">Quick severity assessment</h2>
+      <p class="text-xs text-muted-foreground mb-3">You know the situation. Help Ayaat prioritize.</p>
+      <fieldset class="grid grid-cols-2 gap-2">
+        <label class="flex items-center gap-3 p-3 rounded-lg border border-border bg-card cursor-pointer">
+          <input type="radio" name="severity" class="accent-primary" />
+          <div class="flex-1">
+            <p class="text-sm font-medium">Stabilized</p>
+            <p class="text-xs text-muted-foreground">Tito is OK, monitoring continues</p>
+          </div>
+        </label>
+        <label class="flex items-center gap-3 p-3 rounded-lg border-2 border-destructive bg-destructive-soft/40 cursor-pointer">
+          <input type="radio" name="severity" checked class="accent-destructive" />
+          <div class="flex-1">
+            <p class="text-sm font-medium">Urgent</p>
+            <p class="text-xs text-muted-foreground">Vet contact needed now</p>
+          </div>
+        </label>
+      </fieldset>
+    </section>
+
+    <!-- Existing helper -->
+    <section class="bg-warning-soft border-l-4 border-warning rounded-r-md p-3">
+      <p class="text-xs text-warning-soft-foreground leading-relaxed">
+        <strong>Tip:</strong> If you only need to log a concern (not an emergency), use the daily-update composer instead — your concern goes to Care History without triggering the runbook.
+      </p>
+    </section>
+
+  </div>
+
+  <!-- Sticky action bar -->
+  <footer class="sticky bottom-0 z-10 bg-card border-t border-border px-5 py-3 backdrop-blur">
+    <div class="flex items-center gap-3">
+      <a href="#" class="text-sm font-medium text-muted-foreground underline underline-offset-4">Cancel</a>
+      <button class="flex-1 h-12 px-6 rounded-md bg-destructive text-destructive-foreground text-base font-medium hover:bg-destructive/90">
+        Confirm & start runbook
+      </button>
+    </div>
+    <p class="text-xs text-muted-foreground text-center mt-1">Description valid · severity selected · Confirm to notify Ayaat + Bibi</p>
+  </footer>
+
+</div>
+
+</body>
+</html>
