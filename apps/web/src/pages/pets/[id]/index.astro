@@ -1,10 +1,88 @@
 ---
 import { t } from '@petcare/shared/i18n';
-import Placeholder from '@/components/Placeholder.astro';
+import Badge from '@/components/kit/Badge.astro';
+import Button from '@/components/kit/Button.astro';
+import Card from '@/components/kit/Card.astro';
+import EmptyState from '@/components/states/EmptyState.astro';
 import OwnerShell from '@/layouts/OwnerShell.astro';
+import { apiFetch } from '@/lib/api';
+import { formatDate } from '@petcare/shared/locale';
 import { getLocale } from '@/lib/locale';
+import { ageLabel } from '@/lib/pets';
 const locale = getLocale(Astro.cookies);
+const cookie = Astro.request.headers.get('cookie');
+const id = Astro.params.id;
+const response = await apiFetch(`/owner/pets/${id}`, { cookie }).catch(() => null);
+if (!response || response.status === 404) return Astro.rewrite('/404');
+if (!response.ok) return Astro.redirect('/pets');
+const { pet } = (await response.json()) as { pet: any };
+const history = (await (await apiFetch(`/owner/pets/${id}/care-history`, { cookie })).json()) as { empty: boolean; entries: any[] };
+const tab = Astro.url.searchParams.get('tab') === 'history' ? 'history' : 'profile';
+const plan = pet.carePlan;
+const tabClass = (active: boolean) => `inline-flex min-h-11 flex-1 items-center justify-center rounded-md px-4 font-medium focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${active ? 'bg-primary text-primary-foreground' : 'bg-muted'}`;
+const has = (list: unknown[] | undefined) => !!list && list.length > 0;
 ---
 <OwnerShell titleKey="screen.pets">
-  <Placeholder screenId="O8" title={t(locale, 'screen.pets')} body={t(locale, 'placeholder.body')} />
+  <div class="space-y-5 py-4">
+    <div class="flex items-center gap-4">
+      {pet.photos[0]
+        ? <img src={pet.photos[0].url} alt="" class="h-20 w-20 rounded-full object-cover" />
+        : <span aria-hidden="true" class="flex h-20 w-20 items-center justify-center rounded-full bg-primary-soft text-3xl text-primary-soft-foreground">{pet.name.slice(0, 1)}</span>}
+      <div class="mr-auto">
+        <h1 class="text-2xl font-semibold" data-testid="pet-title">{pet.name}</h1>
+        <p class="text-muted-foreground">{pet.breed} · {ageLabel(locale, pet.ageYears)} · {t(locale, 'pets.weight', { n: pet.weightKg })}</p>
+      </div>
+      {!pet.archived && <Button href={`/pets/${id}/edit`} variant="secondary" data-testid="edit-pet">{t(locale, 'pets.edit')}</Button>}
+    </div>
+    {pet.archived && <p class="rounded-md bg-muted px-4 py-3">{t(locale, 'pets.archived')}</p>}
+
+    <nav aria-label={pet.name} class="flex gap-2">
+      <a href={`/pets/${id}`} class={tabClass(tab === 'profile')} aria-current={tab === 'profile' ? 'page' : undefined}>{t(locale, 'pets.tab.profile')}</a>
+      <a href={`/pets/${id}?tab=history`} class={tabClass(tab === 'history')} data-testid="tab-history" aria-current={tab === 'history' ? 'page' : undefined}>{t(locale, 'pets.tab.history')}</a>
+    </nav>
+
+    {tab === 'profile' && (
+      <div class="space-y-4" data-testid="pet-profile">
+        <Card class="space-y-2">
+          <h2 class="text-xl font-semibold">{t(locale, 'pets.section.about')}</h2>
+          <p>{t(locale, `pets.sex.${pet.sex}` as never)}{pet.neutered ? ` · ${t(locale, 'pets.field.neutered')}` : ''}</p>
+          <p>{t(locale, 'pets.field.vaccination')}: {t(locale, `pets.vaccination.${pet.vaccination}` as never)}</p>
+          {pet.behaviour.energy && <p>{t(locale, 'pets.field.energy')}: {t(locale, `pets.energy.${pet.behaviour.energy}` as never)}</p>}
+          {pet.dogDetails && <p>{t(locale, 'pets.dog.walks')}: {pet.dogDetails.walksPerDay} · {t(locale, `pets.outdoor.${pet.dogDetails.outdoorAccess}` as never)}</p>}
+          {pet.catDetails && <p>{t(locale, `pets.litter.${pet.catDetails.litterBox}` as never)} · {t(locale, `pets.place.${pet.catDetails.indoorOutdoor}` as never)} · {t(locale, `pets.company.${pet.catDetails.company}` as never)}</p>}
+        </Card>
+        <Card class="space-y-3">
+          <h2 class="text-xl font-semibold">{t(locale, 'pets.section.care')}</h2>
+          {plan.senior && <Badge>{t(locale, 'pets.care.senior')}</Badge>}
+          {plan.extraAttention && <Badge>{t(locale, 'pets.care.extraAttention')}</Badge>}
+          {has(plan.conditions) && <div><h3 class="font-medium">{t(locale, 'pets.care.conditions')}</h3><ul class="list-disc ps-5">{plan.conditions.map((c: any) => <li>{c.name}{c.notes ? ` — ${c.notes}` : ''}</li>)}</ul></div>}
+          {has(plan.medications) && <div data-testid="pet-medications"><h3 class="font-medium">{t(locale, 'pets.care.medications')}</h3><ul class="list-disc ps-5">{plan.medications.map((m: any) => <li>{m.name}, {m.dose}, {m.schedule.join(', ')}</li>)}</ul></div>}
+          {has(plan.allergies) && <p>{t(locale, 'pets.care.allergies').replace(/ \(.*\)$/, '')}: {plan.allergies.join(', ')}</p>}
+          {plan.anxiety && <p>{t(locale, 'pets.care.anxiety')}: {plan.anxiety.triggers} / {plan.anxiety.comfort}</p>}
+          {plan.diet && <p>{t(locale, 'pets.care.diet')}: {t(locale, `pets.diet.${plan.diet.type}` as never)}{plan.diet.brand ? `, ${plan.diet.brand}` : ''}</p>}
+          {plan.vet && <p>{t(locale, 'pets.care.vet')}: {plan.vet.name}{plan.vet.clinic ? `, ${plan.vet.clinic}` : ''}{plan.vet.phone ? `, ${plan.vet.phone}` : ''}</p>}
+          {plan.instructions && <p>{plan.instructions}</p>}
+        </Card>
+        {pet.photos.length > 1 && <ul class="grid grid-cols-3 gap-3">{pet.photos.map((p: any) => <li><img src={p.url} alt="" class="aspect-square w-full rounded-md object-cover" /></li>)}</ul>}
+        {!pet.archived && (
+          <form method="post" action={`/pets/${id}/archive`} onsubmit={`return confirm(${JSON.stringify(t(locale, 'pets.archive.confirm', { name: pet.name }))})`}>
+            <Button type="submit" variant="ghost" data-testid="archive-pet">{t(locale, 'pets.archive')}</Button>
+          </form>
+        )}
+      </div>
+    )}
+
+    {tab === 'history' && (
+      <div data-testid="pet-history" class="space-y-3">
+        {history.empty && <EmptyState title={t(locale, 'pets.tab.history')} body={t(locale, 'pets.history.empty', { name: pet.name })} />}
+        {history.entries.map((e) => (
+          <Card class="space-y-1" data-testid="history-entry">
+            <p class="font-semibold">{t(locale, 'pets.history.dates', { from: formatDate(new Date(e.startDate), locale), to: formatDate(new Date(e.endDate), locale) })}</p>
+            <p>{t(locale, `pets.history.outcome.${e.outcome}` as never)}</p>
+            {e.declineReason && <p>{t(locale, 'pets.history.reason', { reason: e.declineReason })}</p>}
+          </Card>
+        ))}
+      </div>
+    )}
+  </div>
 </OwnerShell>

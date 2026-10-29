@@ -97,6 +97,7 @@ export default async function globalSetup() {
     await userCookies('+8801799000100', { name: 'E2E Owner', neighbourhood: 'banani' }),
   );
   save('provider', await userCookies('+8801712000002'));
+  save('bibi', await userCookies('+8801712000001')); // the training owner with Tito (pet specs)
   const admin = await fetch(
     `${API}/admin/auth/sign-in`,
     json({

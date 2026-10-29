@@ -3,7 +3,7 @@ id: 005-pet-care-profile
 unit: 004-pet-care-profile
 intent: 001-petcare-v1
 type: simple-construction-bolt
-status: planned
+status: complete
 phase: Thin slice
 stories:
   - 001-create-and-edit-a-pet-profile
@@ -12,17 +12,27 @@ stories:
   - 004-pet-page-and-care-history
   - 005-care-plan-pre-fill
   - 006-provider-care-summary
-created: 2026-10-29T17:00:00Z
-started: null
-completed: null
+created: '2026-10-29T17:00:00Z'
+started: '2026-10-30T14:00:00Z'
+completed: '2026-10-29T07:31:58Z'
 current_stage: null
-stages_completed: []
-
-requires_bolts: [002-dummy-integration-services, 004-accounts-notifications]
-enables_bolts: [007-search-capacity, 009-booking-stay, 010-booking-stay, 017-booking-stay, 018-pet-care-profile]
-requires_units: [accounts-notifications, dummy-integration-services]
-blocks: true
-
+stages_completed:
+  - name: plan
+    completed: '2026-10-30T14:00:00Z'
+    artifact: implementation-plan.md
+requires_bolts:
+  - 002-dummy-integration-services
+  - 004-accounts-notifications
+enables_bolts:
+  - 007-search-capacity
+  - 009-booking-stay
+  - 010-booking-stay
+  - 017-booking-stay
+  - 018-pet-care-profile
+requires_units:
+  - accounts-notifications
+  - dummy-integration-services
+blocks: false
 complexity:
   avg_complexity: 2
   avg_uncertainty: 2
@@ -60,8 +70,8 @@ Tito's full profile exists through the API (no hard-coded pets); clinical reques
 
 ## Stages
 
-- [ ] **1. Plan**: Pending → implementation-plan.md
-- [ ] **2. Implement**: Pending → source code
+- ✅ **1. Plan**: Complete → implementation-plan.md
+- ⏳ **2. Implement**: In progress → source code
 - [ ] **3. Test**: Pending → test-walkthrough.md
 
 ## Dependencies

@@ -17,7 +17,7 @@ const handle: APIRoute = async ({ request, params }) => {
     const upstream = await fetch(target, {
       method: request.method,
       headers,
-      body: hasBody ? await request.text() : undefined,
+      body: hasBody ? await request.arrayBuffer() : undefined,
       redirect: 'manual',
       signal: AbortSignal.timeout(8000),
     });

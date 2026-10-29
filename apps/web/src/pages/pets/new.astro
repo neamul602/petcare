@@ -1,0 +1,14 @@
+---
+import PetForm from '@/components/pets/PetForm';
+import OwnerShell from '@/layouts/OwnerShell.astro';
+import { getLocale } from '@/lib/locale';
+import { petText } from '@/lib/pets';
+import { t } from '@petcare/shared/i18n';
+const locale = getLocale(Astro.cookies);
+---
+<OwnerShell titleKey="screen.petNew">
+  <div class="space-y-4 py-4">
+    <h1 class="text-2xl font-semibold">{t(locale, 'screen.petNew')}</h1>
+    <PetForm client:load mode="create" text={petText(locale)} />
+  </div>
+</OwnerShell>

@@ -40,9 +40,18 @@ describe('npm run seed (FND-07)', () => {
       vetClinics: 6,
       dummyServices: 'skipped',
     });
-    expect(summary.accounts).toEqual({ owners: 1, providerAccounts: 4, admins: 1 });
+    expect(summary.accounts).toEqual({ owners: 1, providerAccounts: 4, admins: 1, pets: 1 });
+    expect(
+      await count(
+        "SELECT count(*)::int AS n FROM pets WHERE name = 'Tito' AND species = 'dog' AND owner_id = 'bibi' AND is_training_data",
+      ),
+    ).toBe(1);
+    expect(
+      await count(
+        "SELECT jsonb_array_length(care_plan->'medications')::int AS n FROM pets WHERE id = 'tito'",
+      ),
+    ).toBe(1);
     expect(summary.validatedForLaterBolts).toEqual({
-      pets: 1,
       approvedProviders: 4,
       pendingApplications: 1,
     });

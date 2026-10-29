@@ -11,6 +11,7 @@ import pg from 'pg';
 import { loadSeed, type Seed } from '@petcare/shared/seed';
 import * as schema from '../db/schema/index.ts';
 import { DEFAULT_TRAINING_ADMIN_PASSWORD, loadPeople } from './load-people.ts';
+import { loadPets } from './load-pets.ts';
 
 const SEED_DIR = fileURLToPath(new URL('../../../../packages/shared/seed', import.meta.url));
 const MIGRATIONS_DIR = fileURLToPath(new URL('../../drizzle', import.meta.url));
@@ -21,9 +22,8 @@ export interface SeedSummary {
   database: string;
   neighbourhoods: number;
   vetClinics: number;
-  accounts: { owners: number; providerAccounts: number; admins: number };
+  accounts: { owners: number; providerAccounts: number; admins: number; pets: number };
   validatedForLaterBolts: {
-    pets: number;
     approvedProviders: number;
     pendingApplications: number;
   };
@@ -67,7 +67,7 @@ export async function runSeed(options: SeedOptions = {}): Promise<SeedSummary> {
     await admin.end();
   }
 
-  let accounts: SeedSummary['accounts'] = { owners: 0, providerAccounts: 0, admins: 0 };
+  let accounts: SeedSummary['accounts'] = { owners: 0, providerAccounts: 0, admins: 0, pets: 0 };
   const pool = new pg.Pool({ connectionString: databaseUrl.toString() });
   try {
     const db = drizzle(pool, { schema });
@@ -94,13 +94,14 @@ export async function runSeed(options: SeedOptions = {}): Promise<SeedSummary> {
           species: clinic.species,
         })),
       );
-      accounts = await loadPeople(
+      const people = await loadPeople(
         tx,
         seed,
         options.adminPassword ??
           process.env.ADMIN_TRAINING_PASSWORD ??
           DEFAULT_TRAINING_ADMIN_PASSWORD,
       );
+      accounts = { ...people, ...(await loadPets(tx, seed)) };
     });
   } finally {
     await pool.end();
@@ -125,7 +126,6 @@ export async function runSeed(options: SeedOptions = {}): Promise<SeedSummary> {
     vetClinics: seed.vetClinics.clinics.length,
     accounts,
     validatedForLaterBolts: {
-      pets: seed.pets.pets.length,
       approvedProviders: seed.providers.providers.length,
       pendingApplications: seed.providers.applications.length,
     },

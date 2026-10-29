@@ -3,12 +3,12 @@ id: 003-reject-clinical-requests-at-intake
 code: PET-03
 unit: 004-pet-care-profile
 intent: 001-petcare-v1
-status: ready
+status: complete
 priority: must
 journeys: UJ-1
-created: 2026-10-29T16:00:00Z
+created: '2026-10-29T16:00:00Z'
 assigned_bolt: 005-pet-care-profile
-implemented: false
+implemented: true
 ---
 
 # Story PET-03: Reject clinical requests at intake

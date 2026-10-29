@@ -1,10 +1,51 @@
 ---
 import { t } from '@petcare/shared/i18n';
-import Placeholder from '@/components/Placeholder.astro';
+import Button from '@/components/kit/Button.astro';
+import Card from '@/components/kit/Card.astro';
+import EmptyState from '@/components/states/EmptyState.astro';
+import ErrorState from '@/components/states/ErrorState.astro';
 import OwnerShell from '@/layouts/OwnerShell.astro';
+import { apiFetch } from '@/lib/api';
 import { getLocale } from '@/lib/locale';
+import { ageLabel } from '@/lib/pets';
 const locale = getLocale(Astro.cookies);
+interface Row { id: string; name: string; species: string; breed: string; ageYears: number; photo: string | null }
+let pets: Row[] = [];
+let failed = false;
+try {
+  const response = await apiFetch('/owner/pets', { cookie: Astro.request.headers.get('cookie') });
+  if (response.ok) pets = ((await response.json()) as { pets: Row[] }).pets;
+  else failed = true;
+} catch {
+  failed = true;
+}
 ---
 <OwnerShell titleKey="screen.pets">
-  <Placeholder screenId="O8" title={t(locale, 'screen.pets')} body={t(locale, 'placeholder.body')} />
+  <div class="space-y-5 py-4">
+    <div class="flex items-center justify-between gap-3">
+      <h1 class="text-2xl font-semibold">{t(locale, 'screen.pets')}</h1>
+      {pets.length > 0 && <Button href="/pets/new" data-testid="add-pet">{t(locale, 'pets.add')}</Button>}
+    </div>
+    {failed && <ErrorState variant="server" locale={locale} />}
+    {!failed && pets.length === 0 && (
+      <EmptyState title={t(locale, 'pets.empty.title')} body={t(locale, 'pets.empty.body')} actionLabel={t(locale, 'pets.add')} actionHref="/pets/new" />
+    )}
+    <ul class="space-y-3">
+      {pets.map((pet) => (
+        <li>
+          <a href={`/pets/${pet.id}`} data-testid="pet-card" class="block rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2">
+            <Card class="flex items-center gap-4">
+              {pet.photo
+                ? <img src={pet.photo} alt="" class="h-16 w-16 rounded-full object-cover" />
+                : <span aria-hidden="true" class="flex h-16 w-16 items-center justify-center rounded-full bg-primary-soft text-2xl text-primary-soft-foreground">{pet.name.slice(0, 1)}</span>}
+              <span>
+                <span class="block text-lg font-semibold">{pet.name}</span>
+                <span class="block text-muted-foreground">{t(locale, pet.species === 'dog' ? 'pets.species.dog' : 'pets.species.cat')} · {pet.breed} · {ageLabel(locale, pet.ageYears)}</span>
+              </span>
+            </Card>
+          </a>
+        </li>
+      ))}
+    </ul>
+  </div>
 </OwnerShell>

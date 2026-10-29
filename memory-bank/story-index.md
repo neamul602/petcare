@@ -75,22 +75,22 @@ Intent `001-petcare-v1`: **76 stories** in 11 units (generated 2026-10-29T16:00:
 
 ## 004-pet-care-profile
 
-### 001-create-and-edit-a-pet-profile.md ✅ GENERATED
+### 001-create-and-edit-a-pet-profile.md ✅ COMPLETED
 **PET-01** Create and edit a pet profile · must · UJ-1
 
-### 002-structured-care-plan.md ✅ GENERATED
+### 002-structured-care-plan.md ✅ COMPLETED
 **PET-02** Structured care plan · must · UJ-1
 
-### 003-reject-clinical-requests-at-intake.md ✅ GENERATED
+### 003-reject-clinical-requests-at-intake.md ✅ COMPLETED
 **PET-03** Reject clinical requests at intake · must · UJ-1
 
-### 004-pet-page-and-care-history.md ✅ GENERATED
+### 004-pet-page-and-care-history.md ✅ COMPLETED
 **PET-04** Pet page and care history · must · UJ-4
 
-### 005-care-plan-pre-fill.md ✅ GENERATED
+### 005-care-plan-pre-fill.md ✅ COMPLETED
 **PET-05** Care plan pre-fill · must · UJ-4
 
-### 006-provider-care-summary.md ✅ GENERATED
+### 006-provider-care-summary.md ✅ COMPLETED
 **PET-06** Provider care summary · must · UJ-1, UJ-4
 
 ### 007-archive-and-retention.md ✅ GENERATED

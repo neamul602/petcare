@@ -78,6 +78,9 @@ export const petsFile = z.strictObject({
         breed: z.string(),
         ageYears: z.number().int().min(0),
         weightKg: z.number().positive(),
+        sex: z.enum(['male', 'female', 'unknown']),
+        neutered: z.boolean(),
+        vaccination: z.enum(['up_to_date', 'not_up_to_date', 'not_known', 'not_applicable']),
         careConditions: z.array(z.string()),
         medication: z.array(
           z.strictObject({

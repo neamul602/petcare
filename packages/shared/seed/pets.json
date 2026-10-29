@@ -1,18 +1,30 @@
 {
   "label": "TRAINING DATA",
-  "note": "Tito, the special-care dog of UJ-1 (workbook Step 17). Loaded by the pets bolt.",
+  "note": "Tito, the special-care dog of UJ-1 (workbook Step 17). Sex, neutered and vaccination are training values (not given in the PRD). Loaded by the pets bolt.",
   "pets": [
     {
       "id": "tito",
       "owner": "bibi",
-      "name": { "en": "Tito", "bn": "টিটো" },
+      "name": {
+        "en": "Tito",
+        "bn": "টিটো"
+      },
       "species": "dog",
       "breed": "Shih Tzu",
       "ageYears": 4,
       "weightKg": 6,
       "careConditions": ["diabetic"],
-      "medication": [{ "name": "insulin", "dose": "2 units", "schedule": ["08:00", "20:00"] }],
-      "diet": "low-carb kibble only"
+      "medication": [
+        {
+          "name": "insulin",
+          "dose": "2 units",
+          "schedule": ["08:00", "20:00"]
+        }
+      ],
+      "diet": "low-carb kibble only",
+      "sex": "male",
+      "neutered": true,
+      "vaccination": "not_known"
     }
   ]
 }
