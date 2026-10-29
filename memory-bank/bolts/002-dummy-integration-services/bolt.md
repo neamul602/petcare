@@ -3,7 +3,7 @@ id: 002-dummy-integration-services
 unit: 002-dummy-integration-services
 intent: 001-petcare-v1
 type: simple-construction-bolt
-status: planned
+status: in-progress
 phase: Thin slice
 stories:
   - 001-dummy-service-host-and-training-controls
@@ -12,15 +12,15 @@ stories:
   - 004-dummy-mfs-payout-api
   - 005-dummy-notification-and-photo-apis
 created: 2026-10-29T17:00:00Z
-started: null
+started: 2026-10-29T22:00:00Z
 completed: null
-current_stage: null
+current_stage: plan
 stages_completed: []
 
 requires_bolts: [001-platform-foundation]
 enables_bolts: [004-accounts-notifications, 005-pet-care-profile, 008-payments-payouts, 011-booking-stay, 012-payments-payouts, 014-reviews-disputes]
 requires_units: [platform-foundation]
-blocks: true
+blocks: false
 
 complexity:
   avg_complexity: 2
