@@ -1,10 +1,49 @@
 ---
-import { t } from '@petcare/shared/i18n';
-import Placeholder from '@/components/Placeholder.astro';
+import { t, type MessageKey } from '@petcare/shared/i18n';
+import { formatMoney } from '@petcare/shared/locale';
+import Badge from '@/components/kit/Badge.astro';
+import Button from '@/components/kit/Button.astro';
+import Card from '@/components/kit/Card.astro';
 import OwnerShell from '@/layouts/OwnerShell.astro';
+import { apiFetch } from '@/lib/api';
 import { getLocale } from '@/lib/locale';
 const locale = getLocale(Astro.cookies);
+const response = await apiFetch(`/providers/${Astro.params.slug}`, { cookie: Astro.request.headers.get('cookie') }).catch(() => null);
+if (!response || response.status === 404) return Astro.rewrite('/404');
+if (!response.ok) return Astro.redirect('/search');
+const { provider } = (await response.json()) as { provider: any };
+const name: string = provider.name[locale];
+const L = (key: string, params?: Record<string, string | number>) => t(locale, key as MessageKey, params);
 ---
 <OwnerShell titleKey="screen.provider">
-  <Placeholder screenId="O4" title={t(locale, 'screen.provider')} body={t(locale, 'placeholder.body')} />
+  <div class="space-y-5 py-4 pb-28">
+    <div class="flex flex-wrap items-center gap-3">
+      <h1 class="mr-auto text-2xl font-semibold" data-testid="provider-title">{name}</h1>
+      {provider.tier === 'A' && <Badge variant="tier-a" label={L('provider.badge.tierA.label')}>{L('provider.badge.tierA')}</Badge>}
+    </div>
+    <p class="text-lg">
+      <span data-testid="provider-price">{provider.pricePerNightPoisha === null ? L('provider.priceMissing') : L('provider.price', { price: formatMoney(provider.pricePerNightPoisha) })}</span>
+      · {provider.area[locale]}
+    </p>
+    <Card class="space-y-3">
+      <h2 class="text-xl font-semibold">{L('provider.experience')}</h2>
+      <p>{provider.experience[locale]}</p>
+      <p>{L('provider.species')}: {provider.species.map((s: string) => L(`provider.species.${s}`)).join(', ')}</p>
+      <p>{L('provider.capacity', { n: provider.capacity.smallPets })}</p>
+    </Card>
+    {provider.capabilities.length > 0 && (
+      <Card class="space-y-2">
+        <h2 class="text-xl font-semibold">{L('provider.capabilities')}</h2>
+        <ul class="list-disc ps-5">{provider.capabilities.map((c: string) => <li>{L(`capability.${c}`)}</li>)}</ul>
+      </Card>
+    )}
+    <Card class="space-y-2">
+      <h2 class="text-xl font-semibold">{L('provider.photos')}</h2>
+      {provider.photos.length === 0 && <p class="text-muted-foreground">{L('provider.photos.none')}</p>}
+    </Card>
+    <p data-testid="provider-new" class="rounded-md bg-muted px-4 py-3">{L('provider.new')}</p>
+  </div>
+  <div class="fixed inset-x-0 bottom-16 z-10 border-t border-border bg-background/95 px-4 py-3 backdrop-blur md:bottom-0">
+    <div class="mx-auto max-w-5xl"><Button href={`/book/${provider.slug}`} class="w-full" data-testid="book-button">{L('provider.book', { name })}</Button></div>
+  </div>
 </OwnerShell>

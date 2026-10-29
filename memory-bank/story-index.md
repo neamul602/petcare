@@ -98,7 +98,7 @@ Intent `001-petcare-v1`: **76 stories** in 11 units (generated 2026-10-29T16:00:
 
 ## 005-provider-supply-vetting
 
-### 001-provider-records-tiers-and-status.md ✅ GENERATED
+### 001-provider-records-tiers-and-status.md ✅ COMPLETED
 **SUP-01** Provider records, tiers and status · must · UJ-2, UJ-3
 
 ### 002-application-review-and-vetting.md ✅ GENERATED
@@ -107,7 +107,7 @@ Intent `001-petcare-v1`: **76 stories** in 11 units (generated 2026-10-29T16:00:
 ### 003-appeal-and-bias-audit-data.md ✅ GENERATED
 **SUP-03** Appeal and bias-audit data · should · UJ-3
 
-### 004-public-provider-page.md ✅ GENERATED
+### 004-public-provider-page.md ✅ COMPLETED
 **SUP-04** Public provider page · must · UJ-1
 
 ### 005-provider-profile-editor.md ✅ GENERATED

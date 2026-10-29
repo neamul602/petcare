@@ -51,7 +51,7 @@ describe('npm run seed (FND-07)', () => {
         "SELECT jsonb_array_length(care_plan->'medications')::int AS n FROM pets WHERE id = 'tito'",
       ),
     ).toBe(1);
-    expect(summary.validatedForLaterBolts).toEqual({
+    expect(summary.providers).toEqual({
       approvedProviders: 4,
       pendingApplications: 1,
     });

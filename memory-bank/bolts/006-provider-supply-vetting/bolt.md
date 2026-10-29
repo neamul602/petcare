@@ -3,22 +3,32 @@ id: 006-provider-supply-vetting
 unit: 005-provider-supply-vetting
 intent: 001-petcare-v1
 type: simple-construction-bolt
-status: planned
+status: complete
 phase: Thin slice
 stories:
   - 001-provider-records-tiers-and-status
   - 004-public-provider-page
-created: 2026-10-29T17:00:00Z
-started: null
-completed: null
+created: '2026-10-29T17:00:00Z'
+started: '2026-10-30T16:00:00Z'
+completed: '2026-10-29T11:47:37Z'
 current_stage: null
-stages_completed: []
-
-requires_bolts: [004-accounts-notifications]
-enables_bolts: [007-search-capacity, 014-reviews-disputes, 021-provider-supply-vetting, 025-admin-operations]
-requires_units: [accounts-notifications]
+stages_completed:
+  - name: plan
+    completed: '2026-10-30T16:00:00Z'
+    artifact: implementation-plan.md
+  - name: implement
+    completed: '2026-10-30T16:20:00Z'
+    artifact: implementation-walkthrough.md
+requires_bolts:
+  - 004-accounts-notifications
+enables_bolts:
+  - 007-search-capacity
+  - 014-reviews-disputes
+  - 021-provider-supply-vetting
+  - 025-admin-operations
+requires_units:
+  - accounts-notifications
 blocks: true
-
 complexity:
   avg_complexity: 1
   avg_uncertainty: 1

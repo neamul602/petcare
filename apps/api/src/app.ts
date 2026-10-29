@@ -16,6 +16,7 @@ import type { Database } from './db/client.ts';
 import { denyAllPetAccess, type PetAccessPolicy } from './pets/care-summary.ts';
 import type { PhotoPort } from './pets/photo-port.ts';
 import { registerPetRoutes } from './pets/routes.ts';
+import { registerProviderRoutes } from './providers/routes.ts';
 
 export interface AppDeps {
   /** Without a database only /health is served (used by the simplest tests). */
@@ -78,6 +79,7 @@ export async function buildApp(deps: AppDeps = {}) {
     const authDeps = { db: deps.db, otp: deps.otp, clock, store, limiter, authn };
     registerAuthRoutes(app, authDeps);
     await registerAdminRoutes(app, authDeps);
+    registerProviderRoutes(app, { db: deps.db, authn });
     if (deps.photos)
       registerPetRoutes(app, {
         db: deps.db,

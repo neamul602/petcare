@@ -12,6 +12,7 @@ import { loadSeed, type Seed } from '@petcare/shared/seed';
 import * as schema from '../db/schema/index.ts';
 import { DEFAULT_TRAINING_ADMIN_PASSWORD, loadPeople } from './load-people.ts';
 import { loadPets } from './load-pets.ts';
+import { loadProviders } from './load-providers.ts';
 
 const SEED_DIR = fileURLToPath(new URL('../../../../packages/shared/seed', import.meta.url));
 const MIGRATIONS_DIR = fileURLToPath(new URL('../../drizzle', import.meta.url));
@@ -23,7 +24,7 @@ export interface SeedSummary {
   neighbourhoods: number;
   vetClinics: number;
   accounts: { owners: number; providerAccounts: number; admins: number; pets: number };
-  validatedForLaterBolts: {
+  providers: {
     approvedProviders: number;
     pendingApplications: number;
   };
@@ -68,6 +69,7 @@ export async function runSeed(options: SeedOptions = {}): Promise<SeedSummary> {
   }
 
   let accounts: SeedSummary['accounts'] = { owners: 0, providerAccounts: 0, admins: 0, pets: 0 };
+  let providerSummary: SeedSummary['providers'] = { approvedProviders: 0, pendingApplications: 0 };
   const pool = new pg.Pool({ connectionString: databaseUrl.toString() });
   try {
     const db = drizzle(pool, { schema });
@@ -102,6 +104,7 @@ export async function runSeed(options: SeedOptions = {}): Promise<SeedSummary> {
           DEFAULT_TRAINING_ADMIN_PASSWORD,
       );
       accounts = { ...people, ...(await loadPets(tx, seed)) };
+      providerSummary = await loadProviders(tx, seed);
     });
   } finally {
     await pool.end();
@@ -125,10 +128,7 @@ export async function runSeed(options: SeedOptions = {}): Promise<SeedSummary> {
     neighbourhoods: seed.neighbourhoods.neighbourhoods.length,
     vetClinics: seed.vetClinics.clinics.length,
     accounts,
-    validatedForLaterBolts: {
-      approvedProviders: seed.providers.providers.length,
-      pendingApplications: seed.providers.applications.length,
-    },
+    providers: providerSummary,
     dummyServices,
   };
 }
@@ -139,7 +139,4 @@ if (process.argv[1] && fileURLToPath(import.meta.url) === process.argv[1]) {
   });
   console.log('Training seed loaded (all records are labelled TRAINING DATA):');
   console.log(JSON.stringify(summary, null, 2));
-  console.log(
-    'Owners, pets, providers and the admin are validated now and are loaded by the bolts that create their tables.',
-  );
 }

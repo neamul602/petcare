@@ -1,8 +1,69 @@
 ---
-import { ta } from '@petcare/shared/i18n';
-import Placeholder from '@/components/Placeholder.astro';
+import { platformRules } from '@petcare/shared/config';
+import { t, ta } from '@petcare/shared/i18n';
+import Badge from '@/components/kit/Badge.astro';
+import Button from '@/components/kit/Button.astro';
+import Card from '@/components/kit/Card.astro';
+import EmptyState from '@/components/states/EmptyState.astro';
+import ErrorState from '@/components/states/ErrorState.astro';
 import AdminShell from '@/layouts/AdminShell.astro';
+import { apiFetch } from '@/lib/api';
+interface Row { id: string; name: { en: string }; tier: 'A' | 'B'; status: string; neighbourhood: string }
+const cookie = Astro.request.headers.get('cookie');
+const filter = Astro.url.searchParams.get('status') ?? '';
+const error = Astro.url.searchParams.get('error');
+let rows: Row[] = [];
+const areas = platformRules.launchNeighbourhoods.map((id) => ({ id, nameEn: t('en', `neighbourhood.${id}` as never) }));
+let failed = false;
+try {
+  const response = await apiFetch(`/admin/providers${filter ? `?status=${encodeURIComponent(filter)}` : ''}`, { cookie });
+  if (response.ok) rows = ((await response.json()) as { providers: Row[] }).providers;
+  else failed = true;
+} catch {
+  failed = true;
+}
+const statuses = ['applied', 'vetting', 'approved', 'suspended', 'removed'] as const;
+const field = 'h-12 w-full rounded-md border border-border bg-input px-4 text-base';
 ---
 <AdminShell titleKey="screen.providers">
-  <Placeholder screenId="A4" title={ta('screen.providers')} body={ta('placeholder.body')} />
+  <div class="space-y-5 py-4">
+    <h1 class="text-2xl font-semibold">{ta('screen.providers')}</h1>
+    {error && <p role="alert" class="rounded-md bg-destructive-soft px-4 py-3 text-sm text-destructive">{ta('providers.error.generic')}</p>}
+    <nav aria-label={ta('providers.col.status')} class="flex flex-wrap gap-2">
+      <a href="/admin/providers" class={`inline-flex min-h-11 items-center rounded-md px-4 ${filter === '' ? 'bg-primary text-primary-foreground' : 'bg-muted'}`}>{ta('providers.filter.all')}</a>
+      {statuses.map((status) => (
+        <a href={`/admin/providers?status=${status}`} data-testid={`filter-${status}`} class={`inline-flex min-h-11 items-center rounded-md px-4 ${filter === status ? 'bg-primary text-primary-foreground' : 'bg-muted'}`}>{ta(`providers.status.${status}` as never)}</a>
+      ))}
+    </nav>
+    {failed && <ErrorState variant="server" locale="en" admin />}
+    {!failed && rows.length === 0 && <EmptyState title={ta('providers.empty')} />}
+    <ul class="space-y-3">
+      {rows.map((row) => (
+        <li>
+          <a href={`/admin/providers/${row.id}`} data-testid="provider-row" class="block rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2">
+            <Card class="flex flex-wrap items-center gap-3">
+              <span class="mr-auto text-lg font-semibold">{row.name.en}</span>
+              <Badge variant={row.tier === 'A' ? 'tier-a' : 'neutral'}>{ta('providers.col.tier')} {row.tier}</Badge>
+              <Badge variant={row.status === 'approved' ? 'verified' : row.status === 'suspended' || row.status === 'removed' ? 'warning' : 'info'}>{ta(`providers.status.${row.status}` as never)}</Badge>
+            </Card>
+          </a>
+        </li>
+      ))}
+    </ul>
+    <details class="rounded-lg border border-border bg-card p-5">
+      <summary class="min-h-11 cursor-pointer text-lg font-semibold">{ta('providers.new')}</summary>
+      <form method="post" action="/admin/providers/act" class="mt-4 space-y-4" data-testid="create-provider">
+        <input type="hidden" name="intent" value="create" />
+        <div class="space-y-2"><label for="nameEn" class="block text-sm font-medium">{ta('providers.form.nameEn')}</label><input id="nameEn" name="nameEn" required class={field} /></div>
+        <div class="space-y-2"><label for="nameBn" class="block text-sm font-medium">{ta('providers.form.nameBn')}</label><input id="nameBn" name="nameBn" required class={field} /></div>
+        <div class="space-y-2"><label for="tier" class="block text-sm font-medium">{ta('providers.form.tier')}</label><select id="tier" name="tier" class={field}><option value="A">A</option><option value="B">B</option></select></div>
+        <div class="space-y-2"><label for="area" class="block text-sm font-medium">{ta('providers.form.area')}</label><select id="area" name="area" class={field}>{areas.map((a) => <option value={a.id}>{a.nameEn}</option>)}</select></div>
+        <fieldset class="space-y-1"><legend class="text-sm font-medium">{ta('providers.form.species')}</legend>
+          <label class="flex min-h-11 items-center gap-3"><input type="checkbox" name="species" value="dog" checked class="h-5 w-5 accent-primary" /><span>Dogs</span></label>
+          <label class="flex min-h-11 items-center gap-3"><input type="checkbox" name="species" value="cat" class="h-5 w-5 accent-primary" /><span>Cats</span></label>
+        </fieldset>
+        <Button type="submit" data-testid="create-submit">{ta('providers.form.create')}</Button>
+      </form>
+    </details>
+  </div>
 </AdminShell>

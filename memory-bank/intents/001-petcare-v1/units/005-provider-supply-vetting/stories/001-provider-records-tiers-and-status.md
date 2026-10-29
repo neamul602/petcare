@@ -3,12 +3,12 @@ id: 001-provider-records-tiers-and-status
 code: SUP-01
 unit: 005-provider-supply-vetting
 intent: 001-petcare-v1
-status: ready
+status: complete
 priority: must
 journeys: UJ-2, UJ-3
-created: 2026-10-29T16:00:00Z
+created: '2026-10-29T16:00:00Z'
 assigned_bolt: 006-provider-supply-vetting
-implemented: false
+implemented: true
 ---
 
 # Story SUP-01: Provider records, tiers and status

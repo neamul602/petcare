@@ -1,8 +1,59 @@
 ---
 import { ta } from '@petcare/shared/i18n';
-import Placeholder from '@/components/Placeholder.astro';
+import Badge from '@/components/kit/Badge.astro';
+import Button from '@/components/kit/Button.astro';
+import Card from '@/components/kit/Card.astro';
 import AdminShell from '@/layouts/AdminShell.astro';
+import { apiFetch } from '@/lib/api';
+const cookie = Astro.request.headers.get('cookie');
+const response = await apiFetch(`/admin/providers/${Astro.params.id}`, { cookie }).catch(() => null);
+if (!response || response.status === 404) return Astro.rewrite('/404');
+if (!response.ok) return Astro.redirect('/admin/providers');
+const { provider, history } = (await response.json()) as { provider: any; history: any[] };
+const error = Astro.url.searchParams.get('error');
+const errorText = error === 'profile_incomplete' ? ta('providers.error.profile_incomplete') : error === 'invalid_transition' ? ta('providers.error.invalid_transition') : error ? ta('providers.error.generic') : '';
+const otherTier = provider.tier === 'A' ? 'B' : 'A';
+const field = 'min-h-12 w-full rounded-md border border-border bg-input px-4 text-base';
 ---
 <AdminShell titleKey="screen.providerDetail">
-  <Placeholder screenId="A4" title={ta('screen.providerDetail')} body={ta('placeholder.body')} />
+  <div class="space-y-5 py-4">
+    <div class="flex flex-wrap items-center gap-3">
+      <h1 class="mr-auto text-2xl font-semibold" data-testid="provider-name">{provider.name.en}</h1>
+      <Badge variant={provider.tier === 'A' ? 'tier-a' : 'neutral'}>{ta('providers.col.tier')} {provider.tier}</Badge>
+      <Badge variant={provider.status === 'approved' ? 'verified' : 'info'}><span data-testid="provider-status">{ta(`providers.status.${provider.status}` as never)}</span></Badge>
+    </div>
+    {errorText && <p role="alert" data-testid="action-error" class="rounded-md bg-destructive-soft px-4 py-3 text-sm text-destructive">{errorText}</p>}
+    {provider.status === 'approved' && <a class="inline-flex min-h-11 items-center text-primary underline" href={`/providers/${provider.slug}`}>{ta('providers.public')}</a>}
+    {!provider.hasAccount && <p class="text-muted-foreground">{ta('providers.detail.noAccount')}</p>}
+
+    {provider.nextStatuses.length > 0 && (
+      <Card class="space-y-4">
+        <h2 class="text-xl font-semibold">{ta('providers.detail.status')}</h2>
+        <form method="post" action="/admin/providers/act" class="space-y-3" data-testid="status-form">
+          <input type="hidden" name="intent" value="status" /><input type="hidden" name="id" value={provider.id} />
+          <label for="to" class="sr-only">{ta('providers.detail.status')}</label>
+          <select id="to" name="to" class={field}>{provider.nextStatuses.map((s: string) => <option value={s}>{ta('providers.detail.moveTo', { status: ta(`providers.status.${s}` as never) })}</option>)}</select>
+          <label for="status-reason" class="block text-sm font-medium">{ta('providers.detail.reason')}</label>
+          <input id="status-reason" name="reason" required minlength="3" class={field} />
+          <Button type="submit" data-testid="status-submit">{ta('providers.detail.apply')}</Button>
+        </form>
+      </Card>
+    )}
+
+    <Card class="space-y-4">
+      <h2 class="text-xl font-semibold">{ta('providers.detail.tier')}</h2>
+      <form method="post" action="/admin/providers/act" class="space-y-3" data-testid="tier-form">
+        <input type="hidden" name="intent" value="tier" /><input type="hidden" name="id" value={provider.id} /><input type="hidden" name="tier" value={otherTier} />
+        <label for="tier-reason" class="block text-sm font-medium">{ta('providers.detail.reason')}</label>
+        <input id="tier-reason" name="reason" required minlength="3" class={field} />
+        <Button type="submit" variant="secondary" data-testid="tier-submit">{ta('providers.detail.setTier', { tier: otherTier })}</Button>
+      </form>
+    </Card>
+
+    <Card class="space-y-3">
+      <h2 class="text-xl font-semibold">{ta('providers.detail.history')}</h2>
+      {history.length === 0 && <p class="text-muted-foreground">{ta('providers.detail.noHistory')}</p>}
+      <ul class="space-y-2" data-testid="provider-history">{history.map((h) => <li>{h.kind}: {h.from} → {h.to} — {h.reason}</li>)}</ul>
+    </Card>
+  </div>
 </AdminShell>

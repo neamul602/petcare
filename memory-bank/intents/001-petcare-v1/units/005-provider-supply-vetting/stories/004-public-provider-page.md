@@ -3,12 +3,12 @@ id: 004-public-provider-page
 code: SUP-04
 unit: 005-provider-supply-vetting
 intent: 001-petcare-v1
-status: ready
+status: complete
 priority: must
 journeys: UJ-1
-created: 2026-10-29T16:00:00Z
+created: '2026-10-29T16:00:00Z'
 assigned_bolt: 006-provider-supply-vetting
-implemented: false
+implemented: true
 ---
 
 # Story SUP-04: Public provider page

@@ -10,7 +10,8 @@
     "./locale": "./src/locale/format.ts",
     "./seed": "./src/seed/schema.ts",
     "./phone": "./src/phone.ts",
-    "./pets": "./src/pets.ts"
+    "./pets": "./src/pets.ts",
+    "./providers": "./src/providers.ts"
   },
   "scripts": {
     "typecheck": "tsc --noEmit -p tsconfig.json"
