@@ -3,12 +3,12 @@ id: 001-workspace-and-app-shell
 code: FND-01
 unit: 001-platform-foundation
 intent: 001-petcare-v1
-status: ready
+status: complete
 priority: must
 journeys: all
-created: 2026-10-29T16:00:00Z
+created: '2026-10-29T16:00:00Z'
 assigned_bolt: 001-platform-foundation
-implemented: false
+implemented: true
 ---
 
 # Story FND-01: Workspace and app shell

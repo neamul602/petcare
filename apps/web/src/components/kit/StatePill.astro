@@ -1,0 +1,28 @@
+---
+/**
+ * Booking and payout state pill (DESIGN.md booking-state, payout-state). The same pill is used
+ * by owner, provider and admin views. Colour is never the only signal: the label is always shown.
+ */
+interface Props {
+  state:
+    | 'requested' | 'authorized' | 'captured' | 'in-stay' | 'completed' | 'declined' | 'disputed' | 'refunded'
+    | 'payout-released' | 'payout-pending' | 'payout-frozen' | 'payout-hold';
+  label: string;
+}
+const { state, label } = Astro.props;
+const styles: Record<Props['state'], string> = {
+  requested: 'bg-info-soft text-info border border-info/30',
+  authorized: 'bg-info-soft text-info border border-info/30',
+  captured: 'bg-primary-soft text-primary-soft-foreground border border-primary/20',
+  'in-stay': 'bg-primary text-primary-foreground',
+  completed: 'bg-success-soft text-success border border-success/30',
+  declined: 'bg-warning-soft text-warning border border-warning/30',
+  disputed: 'bg-destructive-soft text-destructive border border-destructive/30',
+  refunded: 'bg-muted text-muted-foreground border border-border',
+  'payout-released': 'bg-success-soft text-success border border-success/30',
+  'payout-pending': 'bg-info-soft text-info border border-info/30',
+  'payout-frozen': 'bg-destructive-soft text-destructive border border-destructive/30',
+  'payout-hold': 'bg-warning-soft text-warning border border-warning/30',
+};
+---
+<span class={`inline-flex items-center rounded-full px-3 py-1 text-xs font-medium tracking-wide tabular-nums ${styles[state]}`} data-state={state}>{label}</span>

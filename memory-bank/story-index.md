@@ -18,19 +18,19 @@ Intent `001-petcare-v1`: **76 stories** in 11 units (generated 2026-10-29T16:00:
 
 ## 001-platform-foundation
 
-### 001-workspace-and-app-shell.md ✅ GENERATED
+### 001-workspace-and-app-shell.md ✅ COMPLETED
 **FND-01** Workspace and app shell · must · all
 
-### 002-design-tokens-and-ui-kit.md ✅ GENERATED
+### 002-design-tokens-and-ui-kit.md ✅ COMPLETED
 **FND-02** Design tokens and UI kit · must · all
 
-### 003-bangla-and-english-with-parity.md ✅ GENERATED
+### 003-bangla-and-english-with-parity.md ✅ COMPLETED
 **FND-03** Bangla and English with parity · must · UJ-1, UJ-2, UJ-4
 
 ### 004-pwa-offline-and-shared-states.md ✅ GENERATED
 **FND-04** PWA, offline and shared states · must · all
 
-### 005-configuration-clock-and-log-primitives.md ✅ GENERATED
+### 005-configuration-clock-and-log-primitives.md ✅ COMPLETED
 **FND-05** Configuration, clock and log primitives · must · all
 
 ### 006-performance-and-accessibility-checks.md ✅ GENERATED

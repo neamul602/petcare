@@ -1,0 +1,35 @@
+---
+import type { HTMLAttributes } from 'astro/types';
+/**
+ * Labelled form field from DESIGN.md. Always has a visible label; required fields show an
+ * asterisk in the label; errors are announced inline with role="alert" (EXPERIENCE forms).
+ */
+interface Props {
+  id: string;
+  label: string;
+  name?: string;
+  type?: HTMLAttributes<'input'>['type'];
+  value?: string;
+  hint?: string;
+  error?: string;
+  required?: boolean;
+  multiline?: boolean;
+  autocomplete?: HTMLAttributes<'input'>['autocomplete'];
+}
+const { id, label, name = id, type = 'text', value, hint, error, required = false, multiline = false, autocomplete } = Astro.props;
+const describedBy = [hint ? `${id}-hint` : null, error ? `${id}-error` : null].filter(Boolean).join(' ') || undefined;
+const base = 'w-full rounded-md border bg-input text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2';
+const border = error ? 'border-destructive' : 'border-border';
+---
+<div class="space-y-2">
+  <label for={id} class="block text-sm font-medium">
+    {label}{required && <span aria-hidden="true" class="text-destructive"> *</span>}
+  </label>
+  {multiline ? (
+    <textarea id={id} name={name} required={required} aria-invalid={error ? 'true' : undefined} aria-describedby={describedBy} class={`${base} ${border} min-h-24 p-4 text-base leading-relaxed`}>{value}</textarea>
+  ) : (
+    <input id={id} name={name} type={type} value={value} required={required} autocomplete={autocomplete} aria-invalid={error ? 'true' : undefined} aria-describedby={describedBy} class={`${base} ${border} h-12 px-4 text-base`} />
+  )}
+  {hint && <p id={`${id}-hint`} class="text-sm text-muted-foreground">{hint}</p>}
+  {error && <p id={`${id}-error`} role="alert" class="text-sm text-destructive">{error}</p>}
+</div>

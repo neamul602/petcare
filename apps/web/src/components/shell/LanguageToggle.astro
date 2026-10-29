@@ -1,0 +1,15 @@
+---
+/** One-tap language switch in the header (owner and provider only). Works without JavaScript. */
+import { t, type Locale } from '@petcare/shared/i18n';
+interface Props {
+  locale: Locale;
+  current: string;
+}
+const { locale, current } = Astro.props;
+const target = locale === 'bn' ? 'en' : 'bn';
+const href = `/locale?to=${target}&back=${encodeURIComponent(current)}`;
+---
+<a href={href} lang={target} hreflang={target} data-testid="language-toggle" aria-label={`${t(locale, 'language.label')}: ${t(locale, 'language.switchTo')}`}
+  class="inline-flex min-h-11 items-center rounded-full border border-border px-3 text-sm font-medium sm:px-4 hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring">
+  {t(locale, 'language.switchTo')}
+</a>

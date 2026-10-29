@@ -1,0 +1,54 @@
+---
+/** Admin console shell: English only, no language toggle, left sidebar that becomes a menu below 768 px. */
+import { ta, type AdminMessageKey } from '@petcare/shared/i18n';
+import AdminMenu from '../components/shell/AdminMenu.tsx';
+import BaseLayout from './BaseLayout.astro';
+
+interface Props {
+  titleKey: AdminMessageKey;
+  bare?: boolean;
+}
+const { titleKey, bare = false } = Astro.props;
+const current = Astro.url.pathname;
+const items = [
+  { href: '/admin', label: ta('nav.queue') },
+  { href: '/admin/providers', label: ta('nav.providers') },
+  { href: '/admin/reviews', label: ta('nav.reviews') },
+  { href: '/admin/payouts', label: ta('nav.payouts') },
+  { href: '/admin/insights', label: ta('nav.insights') },
+  { href: '/admin/audit', label: ta('nav.audit') },
+].map((item) => ({
+  ...item,
+  active: item.href === '/admin' ? current === '/admin' || current.startsWith('/admin/acute') || current.startsWith('/admin/reports') : current === item.href || current.startsWith(`${item.href}/`),
+}));
+---
+<BaseLayout title={`${ta(titleKey)} · ${ta('app.name')}`} lang="en" skipLabel={ta('a11y.skipToContent')}>
+  <div data-shell="admin" class="min-h-dvh md:flex">
+    {!bare && (
+      <aside class="hidden w-60 shrink-0 border-r border-border bg-card md:block">
+        <div class="px-5 py-4 font-serif text-xl font-semibold text-primary">{ta('app.name')}</div>
+        <nav aria-label={ta('a11y.adminNav')} data-testid="admin-sidebar">
+          <ul class="space-y-1 px-3">
+            {items.map((item) => (
+              <li>
+                <a href={item.href} aria-current={item.active ? 'page' : undefined}
+                  class={`flex min-h-11 items-center rounded-md px-3 font-medium hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${item.active ? 'bg-primary-soft text-primary-soft-foreground' : ''}`}>
+                  {item.label}
+                </a>
+              </li>
+            ))}
+          </ul>
+        </nav>
+      </aside>
+    )}
+    <div class="min-w-0 flex-1">
+      <header class="relative flex items-center gap-3 border-b border-border bg-background px-4 py-2 md:hidden">
+        <span class="mr-auto font-serif text-lg font-semibold text-primary">{ta('app.name')}</span>
+        {!bare && <AdminMenu client:load items={items} menuLabel={ta('nav.menu')} navLabel={ta('a11y.adminNav')} />}
+      </header>
+      <main id="main" class="mx-auto max-w-6xl px-4 py-6 sm:px-6">
+        <slot />
+      </main>
+    </div>
+  </div>
+</BaseLayout>

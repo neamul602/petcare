@@ -1,0 +1,15 @@
+{
+  "name": "@petcare/dummy-services",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Training-only stand-ins for the payment gateway, MFS payout, SMS/OTP, notifications and photo storage",
+  "scripts": {
+    "dev": "tsx watch src/server.ts",
+    "start": "tsx src/server.ts",
+    "typecheck": "tsc --noEmit -p tsconfig.json"
+  },
+  "dependencies": {
+    "fastify": "^5.12.7"
+  }
+}

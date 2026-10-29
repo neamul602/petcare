@@ -1,0 +1,23 @@
+{
+  "app.name": "PetCare Admin",
+  "a11y.skipToContent": "Skip to content",
+  "a11y.adminNav": "Admin navigation",
+  "nav.queue": "Queue",
+  "nav.providers": "Providers",
+  "nav.reviews": "Reviews",
+  "nav.payouts": "Payouts",
+  "nav.insights": "Insights",
+  "nav.audit": "Audit log",
+  "nav.menu": "Menu",
+  "screen.queue": "Queue",
+  "screen.acute": "Acute event",
+  "screen.report": "Report",
+  "screen.providers": "Providers",
+  "screen.providerDetail": "Provider",
+  "screen.reviews": "Reviews",
+  "screen.payouts": "Payouts",
+  "screen.insights": "Insights",
+  "screen.audit": "Audit log",
+  "screen.signIn": "Admin sign in",
+  "placeholder.body": "This part of the console is being built."
+}

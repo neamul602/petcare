@@ -3,12 +3,12 @@ id: 005-configuration-clock-and-log-primitives
 code: FND-05
 unit: 001-platform-foundation
 intent: 001-petcare-v1
-status: ready
+status: complete
 priority: must
 journeys: all
-created: 2026-10-29T16:00:00Z
+created: '2026-10-29T16:00:00Z'
 assigned_bolt: 001-platform-foundation
-implemented: false
+implemented: true
 ---
 
 # Story FND-05: Configuration, clock and log primitives

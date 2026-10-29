@@ -1,0 +1,8 @@
+---
+import { ta } from '@petcare/shared/i18n';
+import Placeholder from '@/components/Placeholder.astro';
+import AdminShell from '@/layouts/AdminShell.astro';
+---
+<AdminShell titleKey="screen.report">
+  <Placeholder screenId="A3" title={ta('screen.report')} body={ta('placeholder.body')} />
+</AdminShell>

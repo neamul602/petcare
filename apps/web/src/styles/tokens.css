@@ -1,0 +1,89 @@
+/*
+ * PetCare design tokens from docs/ux/DESIGN.md, exposed to Tailwind by name (bg-primary,
+ * text-muted-foreground, rounded-lg, shadow-md, ...). Single light theme in v1.
+ *
+ * Contrast adjustments (UC-22, measured by scripts/check-contrast.mjs):
+ *   accent  hsl(14 64% 56%) -> hsl(14 64% 46%)   cream text on coral 3.32 -> 4.55
+ *   warning hsl(36 78% 46%) -> hsl(36 78% 32%)   amber text on amber-soft 2.63 -> 4.95
+ *   info    hsl(212 56% 48%) -> hsl(212 56% 44%) sky text on sky-soft 4.04 -> 4.65
+ * destructive-foreground is not named in DESIGN.md; it uses cream-50 like the other foregrounds.
+ */
+@import 'tailwindcss';
+
+@theme {
+  --color-background: hsl(38 35% 97%);
+  --color-foreground: hsl(30 12% 14%);
+  --color-muted: hsl(36 18% 92%);
+  --color-muted-foreground: hsl(30 8% 38%);
+  --color-card: hsl(0 0% 100%);
+  --color-card-foreground: hsl(30 12% 14%);
+  --color-border: hsl(34 14% 86%);
+  --color-input: hsl(34 14% 90%);
+  --color-ring: hsl(150 32% 32%);
+
+  --color-primary: hsl(150 32% 32%);
+  --color-primary-foreground: hsl(38 35% 97%);
+  --color-primary-soft: hsl(150 22% 92%);
+  --color-primary-soft-foreground: hsl(150 38% 22%);
+
+  --color-accent: hsl(14 64% 46%);
+  --color-accent-foreground: hsl(38 35% 97%);
+  --color-accent-soft: hsl(14 70% 94%);
+  --color-accent-soft-foreground: hsl(14 64% 32%);
+
+  --color-success: hsl(150 32% 32%);
+  --color-success-soft: hsl(150 22% 92%);
+  --color-warning: hsl(36 78% 32%);
+  --color-warning-soft: hsl(36 78% 94%);
+  --color-destructive: hsl(0 62% 48%);
+  --color-destructive-foreground: hsl(38 35% 97%);
+  --color-destructive-soft: hsl(0 62% 94%);
+  --color-info: hsl(212 56% 44%);
+  --color-info-soft: hsl(212 56% 94%);
+
+  --font-sans: 'Inter Variable', Inter, 'Noto Sans Bengali', system-ui, sans-serif;
+  --font-serif: 'Source Serif 4', 'Noto Serif Bengali', Georgia, serif;
+
+  --radius-sm: 0.25rem;
+  --radius-md: 0.5rem;
+  --radius-lg: 0.75rem;
+  --radius-xl: 1rem;
+  --radius-2xl: 1.5rem;
+
+  --shadow-sm: 0 1px 2px 0 rgba(30, 22, 12, 0.04);
+  --shadow-md: 0 2px 4px -1px rgba(30, 22, 12, 0.06), 0 1px 2px 0 rgba(30, 22, 12, 0.04);
+  --shadow-lg: 0 8px 16px -4px rgba(30, 22, 12, 0.08), 0 4px 8px -2px rgba(30, 22, 12, 0.04);
+  --shadow-xl: 0 16px 32px -8px rgba(30, 22, 12, 0.12), 0 8px 16px -4px rgba(30, 22, 12, 0.06);
+  --shadow-ring: 0 0 0 3px hsl(150 32% 32% / 0.18);
+
+  --tracking-wide: 0.04em;
+  --leading-snug: 1.35;
+  --leading-relaxed: 1.65;
+}
+
+@layer base {
+  html {
+    background-color: var(--color-background);
+    color: var(--color-foreground);
+    font-family: var(--font-sans);
+    -webkit-text-size-adjust: 100%;
+  }
+  body {
+    min-height: 100dvh;
+    font-size: 1rem;
+    line-height: 1.5;
+    overflow-x: hidden;
+  }
+  :focus-visible {
+    outline: 2px solid var(--color-ring);
+    outline-offset: 2px;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+}

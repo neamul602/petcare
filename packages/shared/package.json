@@ -1,0 +1,15 @@
+{
+  "name": "@petcare/shared",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    "./config": "./src/config/training-decisions.ts",
+    "./clock": "./src/clock.ts",
+    "./i18n": "./src/i18n/index.ts",
+    "./locale": "./src/locale/format.ts"
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit -p tsconfig.json"
+  }
+}

@@ -1,0 +1,21 @@
+---
+/**
+ * Trust and status badges from DESIGN.md. "acute" is the only coral badge and is used only
+ * for acute events (UC-21). "tier-a" is the Admin-introduced badge with its accessible name.
+ */
+interface Props {
+  variant?: 'tier-a' | 'verified' | 'acute' | 'warning' | 'info' | 'neutral' | 'decline';
+  label?: string;
+}
+const { variant = 'neutral', label } = Astro.props;
+const variants = {
+  'tier-a': 'border-2 border-primary bg-primary-soft text-primary-soft-foreground font-semibold',
+  verified: 'bg-primary text-primary-foreground',
+  acute: 'bg-accent text-accent-foreground',
+  warning: 'bg-warning-soft text-warning border border-warning/30',
+  info: 'bg-info-soft text-info border border-info/30',
+  neutral: 'bg-muted text-muted-foreground border border-border',
+  decline: 'bg-warning-soft text-warning border border-warning/30',
+};
+---
+<span class={`inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-medium tracking-wide ${variants[variant]}`} aria-label={label}><slot /></span>

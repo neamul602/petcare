@@ -3,24 +3,37 @@ id: 001-platform-foundation
 unit: 001-platform-foundation
 intent: 001-petcare-v1
 type: simple-construction-bolt
-status: planned
+status: complete
 phase: Thin slice
 stories:
   - 001-workspace-and-app-shell
   - 002-design-tokens-and-ui-kit
   - 003-bangla-and-english-with-parity
   - 005-configuration-clock-and-log-primitives
-created: 2026-10-29T17:00:00Z
-started: null
-completed: null
+created: '2026-10-29T17:00:00Z'
+started: '2026-10-29T18:00:00Z'
+completed: '2026-10-29T03:59:50Z'
 current_stage: null
-stages_completed: []
-
+stages_completed:
+  - name: plan
+    completed: '2026-10-29T18:30:00Z'
+    artifact: implementation-plan.md
+  - name: implement
+    completed: '2026-10-29T19:45:00Z'
+    artifact: implementation-walkthrough.md
+  - name: test
+    completed: '2026-10-29T21:30:00Z'
+    artifact: test-walkthrough.md
 requires_bolts: []
-enables_bolts: [002-dummy-integration-services, 003-platform-foundation, 004-accounts-notifications, 008-payments-payouts, 009-booking-stay, 024-admin-operations]
+enables_bolts:
+  - 002-dummy-integration-services
+  - 003-platform-foundation
+  - 004-accounts-notifications
+  - 008-payments-payouts
+  - 009-booking-stay
+  - 024-admin-operations
 requires_units: []
 blocks: false
-
 complexity:
   avg_complexity: 1
   avg_uncertainty: 1
@@ -56,9 +69,9 @@ All three apps start; owner, provider and admin shells render at 390 px and 1280
 
 ## Stages
 
-- [ ] **1. Plan**: Pending → implementation-plan.md
-- [ ] **2. Implement**: Pending → source code
-- [ ] **3. Test**: Pending → test-walkthrough.md
+- ✅ **1. Plan**: Complete → implementation-plan.md
+- ✅ **2. Implement**: Complete → source code
+- ✅ **3. Test**: Complete → test-walkthrough.md → test-walkthrough.md
 
 ## Dependencies
 

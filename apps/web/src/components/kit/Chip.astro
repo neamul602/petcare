@@ -1,0 +1,16 @@
+---
+/** Filter chip from DESIGN.md. Selected chips show a leading check and aria-pressed. */
+interface Props {
+  selected?: boolean;
+  name?: string;
+  value?: string;
+}
+const { selected = false, name, value } = Astro.props;
+const state = selected
+  ? 'bg-primary-soft text-primary-soft-foreground border-primary/20'
+  : 'bg-muted text-foreground border-border';
+---
+<button type="button" name={name} value={value} aria-pressed={selected ? 'true' : 'false'}
+  class={`relative inline-flex h-8 items-center gap-1.5 rounded-full border px-3 text-xs font-medium after:absolute after:inset-x-0 after:-inset-y-1.5 after:content-[''] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${state}`}>
+  {selected && <span aria-hidden="true">✓</span>}<slot />
+</button>

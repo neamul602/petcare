@@ -1,0 +1,43 @@
+---
+/**
+ * Button from DESIGN.md. Renders a link when href is given. Every size keeps a touch
+ * target of at least 44x44 px (EXPERIENCE accessibility floor); sm gets an invisible hit area.
+ */
+interface Props {
+  variant?: 'primary' | 'secondary' | 'outline' | 'ghost' | 'destructive' | 'link';
+  size?: 'sm' | 'md' | 'lg';
+  href?: string;
+  type?: 'button' | 'submit' | 'reset';
+  disabled?: boolean;
+  class?: string;
+  [key: string]: unknown;
+}
+const { variant = 'primary', size = 'md', href, type = 'button', disabled = false, class: extra = '', ...rest } = Astro.props;
+
+const variants = {
+  primary: 'bg-primary text-primary-foreground hover:bg-primary/90',
+  secondary: 'bg-muted text-foreground hover:bg-muted/80 border border-border',
+  outline: 'border border-border bg-transparent text-foreground hover:bg-muted',
+  ghost: 'bg-transparent text-foreground hover:bg-muted',
+  destructive: 'bg-destructive text-destructive-foreground hover:bg-destructive/90',
+  link: 'text-primary underline-offset-4 hover:underline',
+};
+const sizes = {
+  sm: "h-8 px-3 text-sm relative after:absolute after:inset-x-0 after:-inset-y-1.5 after:content-['']",
+  md: 'min-h-11 px-4 text-base',
+  lg: 'h-12 px-6 text-lg',
+};
+const classes = [
+  'inline-flex items-center justify-center gap-2 rounded-md font-medium transition-colors',
+  'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
+  'active:brightness-95 disabled:opacity-50 disabled:pointer-events-none',
+  variants[variant],
+  sizes[size],
+  extra,
+].join(' ');
+---
+{href ? (
+  <a href={href} class={classes} aria-disabled={disabled ? 'true' : undefined} {...rest}><slot /></a>
+) : (
+  <button type={type} class={classes} disabled={disabled} {...rest}><slot /></button>
+)}

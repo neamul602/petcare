@@ -1,0 +1,10 @@
+---
+import { t } from '@petcare/shared/i18n';
+import Placeholder from '@/components/Placeholder.astro';
+import OwnerShell from '@/layouts/OwnerShell.astro';
+import { getLocale } from '@/lib/locale';
+const locale = getLocale(Astro.cookies);
+---
+<OwnerShell titleKey="screen.bookings">
+  <Placeholder screenId="O7" title={t(locale, 'screen.bookings')} body={t(locale, 'placeholder.body')} />
+</OwnerShell>
