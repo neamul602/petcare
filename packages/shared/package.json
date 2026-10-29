@@ -12,7 +12,8 @@
     "./phone": "./src/phone.ts",
     "./pets": "./src/pets.ts",
     "./providers": "./src/providers.ts",
-    "./payments": "./src/payments.ts"
+    "./payments": "./src/payments.ts",
+    "./bookings": "./src/bookings.ts"
   },
   "scripts": {
     "typecheck": "tsc --noEmit -p tsconfig.json"

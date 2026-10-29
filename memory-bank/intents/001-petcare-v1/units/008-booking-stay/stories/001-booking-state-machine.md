@@ -3,12 +3,12 @@ id: 001-booking-state-machine
 code: BKG-01
 unit: 008-booking-stay
 intent: 001-petcare-v1
-status: ready
+status: complete
 priority: must
 journeys: all
-created: 2026-10-29T16:00:00Z
+created: '2026-10-29T16:00:00Z'
 assigned_bolt: 009-booking-stay
-implemented: false
+implemented: true
 ---
 
 # Story BKG-01: Booking state machine

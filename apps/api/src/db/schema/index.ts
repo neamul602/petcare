@@ -5,3 +5,4 @@ export { neighbourhoods, vetClinics } from './reference-data.ts';
 export { providers, providerStatusEvents } from './providers.ts';
 export { nightCapacity, nightReservations } from './capacity.ts';
 export { payments } from './payments.ts';
+export { bookings } from './bookings.ts';

@@ -14,8 +14,6 @@ export const SCREEN_ROUTES: ScreenRoute[] = [
   { id: 'O1', role: 'owner', path: '/' },
   { id: 'O2', role: 'owner', path: '/sign-in' },
   { id: 'O3', role: 'owner', path: '/search' },
-  { id: 'O5', role: 'owner', path: '/book/sample-provider' },
-  { id: 'O6', role: 'owner', path: '/bookings/sample-booking' },
   { id: 'O7', role: 'owner', path: '/bookings' },
   { id: 'O8', role: 'owner', path: '/pets' },
   { id: 'O8', role: 'owner', path: '/pets/new' },

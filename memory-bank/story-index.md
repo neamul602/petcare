@@ -161,16 +161,16 @@ Intent `001-petcare-v1`: **76 stories** in 11 units (generated 2026-10-29T16:00:
 
 ## 008-booking-stay
 
-### 001-booking-state-machine.md ✅ GENERATED
+### 001-booking-state-machine.md ✅ COMPLETED
 **BKG-01** Booking state machine · must · all
 
-### 002-book-pet-dates-and-care-plan.md ✅ GENERATED
+### 002-book-pet-dates-and-care-plan.md ✅ COMPLETED
 **BKG-02** Book: pet, dates and care plan · must · UJ-1
 
-### 003-review-and-submit-with-payment.md ✅ GENERATED
+### 003-review-and-submit-with-payment.md ✅ COMPLETED
 **BKG-03** Review and submit with payment · must · UJ-1, UJ-4
 
-### 004-owner-booking-page-waiting.md ✅ GENERATED
+### 004-owner-booking-page-waiting.md ✅ COMPLETED
 **BKG-04** Owner booking page: waiting · must · UJ-1
 
 ### 005-provider-today-and-bookings.md ✅ GENERATED

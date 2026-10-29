@@ -3,24 +3,42 @@ id: 009-booking-stay
 unit: 008-booking-stay
 intent: 001-petcare-v1
 type: ddd-construction-bolt
-status: planned
+status: complete
 phase: Thin slice
 stories:
   - 001-booking-state-machine
   - 002-book-pet-dates-and-care-plan
   - 003-review-and-submit-with-payment
   - 004-owner-booking-page-waiting
-created: 2026-10-29T17:00:00Z
-started: null
-completed: null
+created: '2026-10-29T17:00:00Z'
+started: '2026-10-30T20:00:00Z'
+completed: '2026-10-29T12:30:37Z'
 current_stage: null
-stages_completed: []
-
-requires_bolts: [001-platform-foundation, 005-pet-care-profile, 007-search-capacity, 008-payments-payouts]
-enables_bolts: [010-booking-stay, 017-booking-stay, 024-admin-operations]
-requires_units: [payments-payouts, pet-care-profile, platform-foundation, search-capacity]
+stages_completed:
+  - name: model
+    completed: '2026-10-30T20:00:00Z'
+    artifact: implementation-plan.md
+  - name: design
+    completed: '2026-10-30T20:00:00Z'
+    artifact: implementation-plan.md
+  - name: implement
+    completed: '2026-10-30T21:00:00Z'
+    artifact: implementation-walkthrough.md
+requires_bolts:
+  - 001-platform-foundation
+  - 005-pet-care-profile
+  - 007-search-capacity
+  - 008-payments-payouts
+enables_bolts:
+  - 010-booking-stay
+  - 017-booking-stay
+  - 024-admin-operations
+requires_units:
+  - payments-payouts
+  - pet-care-profile
+  - platform-foundation
+  - search-capacity
 blocks: true
-
 complexity:
   avg_complexity: 3
   avg_uncertainty: 2

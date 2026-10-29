@@ -3,12 +3,12 @@ id: 003-review-and-submit-with-payment
 code: BKG-03
 unit: 008-booking-stay
 intent: 001-petcare-v1
-status: ready
+status: complete
 priority: must
 journeys: UJ-1, UJ-4
-created: 2026-10-29T16:00:00Z
+created: '2026-10-29T16:00:00Z'
 assigned_bolt: 009-booking-stay
-implemented: false
+implemented: true
 ---
 
 # Story BKG-03: Review and submit with payment

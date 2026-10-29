@@ -3,12 +3,12 @@ id: 002-book-pet-dates-and-care-plan
 code: BKG-02
 unit: 008-booking-stay
 intent: 001-petcare-v1
-status: ready
+status: complete
 priority: must
 journeys: UJ-1
-created: 2026-10-29T16:00:00Z
+created: '2026-10-29T16:00:00Z'
 assigned_bolt: 009-booking-stay
-implemented: false
+implemented: true
 ---
 
 # Story BKG-02: Book: pet, dates and care plan

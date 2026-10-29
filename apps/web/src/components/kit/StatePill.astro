@@ -5,7 +5,7 @@
  */
 interface Props {
   state:
-    | 'requested' | 'authorized' | 'captured' | 'in-stay' | 'completed' | 'declined' | 'disputed' | 'refunded'
+    | 'requested' | 'authorized' | 'captured' | 'in-stay' | 'completed' | 'declined' | 'canceled' | 'no-show' | 'resolved' | 'disputed' | 'refunded'
     | 'payout-released' | 'payout-pending' | 'payout-frozen' | 'payout-hold';
   label: string;
 }
@@ -17,6 +17,9 @@ const styles: Record<Props['state'], string> = {
   'in-stay': 'bg-primary text-primary-foreground',
   completed: 'bg-success-soft text-success border border-success/30',
   declined: 'bg-warning-soft text-warning border border-warning/30',
+  canceled: 'bg-muted text-muted-foreground border border-border',
+  'no-show': 'bg-warning-soft text-warning border border-warning/30',
+  resolved: 'bg-success-soft text-success border border-success/30',
   disputed: 'bg-destructive-soft text-destructive border border-destructive/30',
   refunded: 'bg-muted text-muted-foreground border border-border',
   'payout-released': 'bg-success-soft text-success border border-success/30',

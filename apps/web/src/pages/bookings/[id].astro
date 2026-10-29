@@ -1,10 +1,64 @@
 ---
-import { t } from '@petcare/shared/i18n';
-import Placeholder from '@/components/Placeholder.astro';
+import { t, type MessageKey } from '@petcare/shared/i18n';
+import { formatDate, formatMoney, formatTime } from '@petcare/shared/locale';
+import Button from '@/components/kit/Button.astro';
+import Card from '@/components/kit/Card.astro';
+import StatePill from '@/components/kit/StatePill.astro';
 import OwnerShell from '@/layouts/OwnerShell.astro';
+import { apiFetch } from '@/lib/api';
 import { getLocale } from '@/lib/locale';
 const locale = getLocale(Astro.cookies);
+const L = (key: string, params?: Record<string, string | number>) => t(locale, key as MessageKey, params);
+const response = await apiFetch(`/owner/bookings/${Astro.params.id}`, { cookie: Astro.request.headers.get('cookie') }).catch(() => null);
+if (!response || response.status === 404) return Astro.rewrite('/404');
+if (!response.ok) return Astro.redirect('/bookings');
+const { booking: b, history } = (await response.json()) as { booking: any; history: Array<{ to: string; at: string }> };
+const name: string = b.provider.name[locale];
+const day = (d: string) => formatDate(new Date(`${d}T00:00:00+06:00`), locale);
+const when = (iso: string) => `${formatDate(new Date(iso), locale)} ${formatTime(new Date(iso), locale)}`;
+const amount = formatMoney(b.totalPoisha);
+const pending = Astro.url.searchParams.get('pending') === '1';
 ---
 <OwnerShell titleKey="screen.booking">
-  <Placeholder screenId="O6" title={t(locale, 'screen.booking')} body={t(locale, 'placeholder.body')} />
+  <div class="space-y-5 py-4">
+    <div class="flex flex-wrap items-center gap-3">
+      <h1 class="mr-auto text-2xl font-semibold" data-testid="booking-title">{b.state === 'authorized' ? L('booking.waiting', { name }) : name}</h1>
+      <StatePill state={b.pill} label={L(`booking.state.${b.state}`)} />
+    </div>
+    <Card class="space-y-2">
+      <p data-testid="booking-dates">{L('booking.dates', { from: day(b.startDate), to: day(b.endDate), n: b.nights })}</p>
+      <p>{b.pet.name}</p>
+      <p class="text-lg font-semibold" data-testid="booking-total">{amount}</p>
+    </Card>
+
+    {b.state === 'authorized' && (
+      <Card class="space-y-3" data-testid="waiting">
+        <p data-testid="deadline">{L('booking.deadline', { name, time: when(b.confirmationDeadline) })}</p>
+        <p data-testid="hold">{L('booking.hold', { amount, name })}</p>
+        <form method="post" action={`/bookings/${b.id}/cancel`} onsubmit={`return confirm(${JSON.stringify(L('booking.cancel.confirm'))})`}>
+          <Button type="submit" variant="outline" data-testid="cancel-request">{L('booking.cancel')}</Button>
+        </form>
+      </Card>
+    )}
+    {b.state === 'captured' && <Card><p>{L('booking.captured.body', { name, amount })}</p></Card>}
+    {b.state === 'declined' && (
+      <Card class="space-y-3" data-testid="declined">
+        <p>{L('booking.declined.body', { name })}</p>
+        {b.declineReason && <p>{L('booking.declined.reason', { reason: b.declineReason })}</p>}
+        <Button href="/search" variant="secondary">{L('booking.backToResults')}</Button>
+      </Card>
+    )}
+    {b.state === 'canceled' && (
+      <Card class="space-y-2" data-testid="canceled">
+        <p>{L('booking.canceled.body')}</p>
+        {pending && <p>{L('booking.paymentPending')}</p>}
+        <Button href="/search" variant="secondary">{L('booking.backToResults')}</Button>
+      </Card>
+    )}
+
+    <section class="space-y-2">
+      <h2 class="text-xl font-semibold">{L('booking.history')}</h2>
+      <ul class="space-y-1 text-muted-foreground" data-testid="history">{history.map((h) => <li>{L('booking.history.entry', { time: when(h.at), state: L(`booking.state.${h.to}`) })}</li>)}</ul>
+    </section>
+  </div>
 </OwnerShell>

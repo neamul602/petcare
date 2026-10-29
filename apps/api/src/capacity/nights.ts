@@ -94,17 +94,30 @@ export async function reserveNights(
     if (!provider || provider.status !== 'approved')
       return { ok: false, reason: 'provider_unavailable' };
 
-    const held = await tx
-      .select()
-      .from(nightReservations)
-      .where(
-        and(eq(nightReservations.bookingId, input.bookingId), isNull(nightReservations.releasedAt)),
-      );
-    if (held.length > 0)
-      return { ok: true, nights: held.map((h) => h.date).sort(), alreadyReserved: true };
+    const heldNow = () =>
+      tx
+        .select()
+        .from(nightReservations)
+        .where(
+          and(
+            eq(nightReservations.bookingId, input.bookingId),
+            isNull(nightReservations.releasedAt),
+          ),
+        );
+    const already = (held: Array<{ date: string }>): ReserveResult => ({
+      ok: true,
+      nights: held.map((h) => h.date).sort(),
+      alreadyReserved: true,
+    });
+
+    const before = await heldNow();
+    if (before.length > 0) return already(before);
 
     await ensureRows(tx, input.providerId, dates);
     const rows = await lockRows(tx, input.providerId, dates);
+    // A twin request for the same booking may have finished while this one waited for the locks.
+    const after = await heldNow();
+    if (after.length > 0) return already(after);
     const full = rows.filter((r) => Number(r.booked) >= Number(r.capacity)).map((r) => r.date);
     if (full.length > 0) return { ok: false, reason: 'nights_full', fullNights: full };
 
