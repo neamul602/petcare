@@ -21,10 +21,10 @@ const tabs = [
   { href: '/inbox', label: t(locale, 'nav.inbox') },
 ];
 ---
-<BaseLayout title={`${t(locale, titleKey)} · ${t(locale, 'app.name')}`} lang={locale} skipLabel={t(locale, 'a11y.skipToContent')}>
+<BaseLayout title={`${t(locale, titleKey)} · ${t(locale, 'app.name')}`} lang={locale} skipLabel={t(locale, 'a11y.skipToContent')} offlineMessage={t(locale, 'banner.offline')}>
   <div data-shell="owner">
     <header class="sticky top-0 z-20 border-b border-border bg-background/95 backdrop-blur">
-      <div class="mx-auto flex max-w-5xl items-center gap-3 px-4 py-2 sm:px-6">
+      <div class="mx-auto flex max-w-5xl items-center gap-2 px-3 py-2 sm:gap-3 sm:px-6">
         <a href="/" class="mr-auto inline-flex min-h-11 items-center font-serif text-xl font-semibold text-primary">{t(locale, 'app.name')}</a>
         {showTabs && <TopNav tabs={tabs} current={current} label={t(locale, 'a11y.mainNav')} />}
         <LanguageToggle locale={locale} current={current} />

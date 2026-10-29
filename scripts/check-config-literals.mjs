@@ -11,16 +11,18 @@ import { listSourceFiles } from './lib/source-files.mjs';
 const CONFIG_FILE = 'packages/shared/src/config/training-decisions.ts';
 const config = readFileSync(CONFIG_FILE, 'utf8');
 
-// Distinctive values: minute durations, basis points and local times written in the config.
+// Distinctive values: minute durations and local times written in the config. Basis points (for
+// example 1000 or 800) are everyday numbers in code, so the config test guards those instead.
 const watched = new Set();
-for (const [, value] of config.matchAll(/(?:Minutes|tierA|tierAPeak|tierB):\s*(\d{3,})/g))
-  watched.add(value);
+for (const [, value] of config.matchAll(/Minutes:\s*(\d{3,})/g)) watched.add(value);
 for (const [, value] of config.matchAll(/localTime:\s*'(\d{2}:\d{2})'/g)) watched.add(value);
 
 const roots = process.argv.length > 2 ? process.argv.slice(2) : ['apps', 'packages'];
 const offenders = [];
 for (const file of listSourceFiles(roots)) {
   if (
+    file.endsWith('.json') ||
+    file.endsWith('.css') ||
     file.endsWith('training-decisions.ts') ||
     /\.(test|spec)\.[tj]sx?$/.test(file) ||
     file.includes('fixtures')

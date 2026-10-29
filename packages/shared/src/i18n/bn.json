@@ -34,5 +34,19 @@
   "placeholder.body": "PetCare-এর এই অংশটি তৈরি হচ্ছে।",
   "notFound.title": "পেজটি পাওয়া যায়নি",
   "notFound.body": "লিংকটি পুরনো বা ভুল হতে পারে।",
-  "notFound.action": "হোমে যান"
+  "notFound.action": "হোমে যান",
+  "banner.offline": "অফলাইন। আপনি অনলাইনে ফিরলে বুকিং পাঠানো হবে।",
+  "state.loading": "লোড হচ্ছে…",
+  "state.retry": "আবার চেষ্টা করুন",
+  "state.empty.title": "এখনও কিছু নেই",
+  "state.empty.action": "হোমে যান",
+  "error.network.title": "PetCare-এ পৌঁছানো যাচ্ছে না",
+  "error.network.body": "আপনার সংযোগ দেখে আবার চেষ্টা করুন।",
+  "error.server.title": "আমাদের দিকে কিছু সমস্যা হয়েছে",
+  "error.server.body": "আপনার তথ্য নিরাপদ আছে। কিছুক্ষণ পরে আবার চেষ্টা করুন।",
+  "error.permission.title": "আপনি এই পেজটি খুলতে পারবেন না",
+  "error.permission.body": "চালিয়ে যেতে সঠিক অ্যাকাউন্টে সাইন ইন করুন।",
+  "error.permission.action": "সাইন ইন",
+  "error.offline.title": "আপনি অফলাইনে আছেন",
+  "error.offline.body": "আগে খোলা পেজগুলো এখনও কাজ করবে। এটির জন্য সংযোগ দরকার।"
 }

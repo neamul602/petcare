@@ -1,0 +1,72 @@
+{
+  "label": "TRAINING DATA",
+  "note": "Invented clinics for the training build. Names, addresses and phone numbers are fictional; the directory is a lookup, not a partnership (FR-45).",
+  "clinics": [
+    {
+      "id": "gulshan-training-vet-1",
+      "neighbourhood": "gulshan",
+      "name": { "en": "Training Vet Clinic Gulshan One", "bn": "ট্রেনিং ভেট ক্লিনিক গুলশান ওয়ান" },
+      "address": { "en": "Training road 1, Gulshan", "bn": "ট্রেনিং রোড ১, গুলশান" },
+      "phone": "+8801700000101",
+      "hours": { "en": "Daily 9:00 to 22:00", "bn": "প্রতিদিন সকাল ৯টা থেকে রাত ১০টা" },
+      "species": ["dog", "cat"]
+    },
+    {
+      "id": "gulshan-training-vet-2",
+      "neighbourhood": "gulshan",
+      "name": {
+        "en": "Training Animal Care Gulshan Two",
+        "bn": "ট্রেনিং অ্যানিমাল কেয়ার গুলশান টু"
+      },
+      "address": { "en": "Training road 2, Gulshan", "bn": "ট্রেনিং রোড ২, গুলশান" },
+      "phone": "+8801700000102",
+      "hours": { "en": "Open 24 hours", "bn": "২৪ ঘণ্টা খোলা" },
+      "species": ["dog", "cat"]
+    },
+    {
+      "id": "banani-training-vet-1",
+      "neighbourhood": "banani",
+      "name": {
+        "en": "Training Pet Hospital Banani One",
+        "bn": "ট্রেনিং পেট হাসপাতাল বনানী ওয়ান"
+      },
+      "address": { "en": "Training road 3, Banani", "bn": "ট্রেনিং রোড ৩, বনানী" },
+      "phone": "+8801700000201",
+      "hours": { "en": "Daily 10:00 to 21:00", "bn": "প্রতিদিন সকাল ১০টা থেকে রাত ৯টা" },
+      "species": ["dog", "cat"]
+    },
+    {
+      "id": "banani-training-vet-2",
+      "neighbourhood": "banani",
+      "name": { "en": "Training Vet Point Banani Two", "bn": "ট্রেনিং ভেট পয়েন্ট বনানী টু" },
+      "address": { "en": "Training road 4, Banani", "bn": "ট্রেনিং রোড ৪, বনানী" },
+      "phone": "+8801700000202",
+      "hours": { "en": "Daily 9:00 to 20:00", "bn": "প্রতিদিন সকাল ৯টা থেকে রাত ৮টা" },
+      "species": ["dog", "cat"]
+    },
+    {
+      "id": "baridhara-training-vet-1",
+      "neighbourhood": "baridhara",
+      "name": {
+        "en": "Training Vet Clinic Baridhara One",
+        "bn": "ট্রেনিং ভেট ক্লিনিক বারিধারা ওয়ান"
+      },
+      "address": { "en": "Training road 5, Baridhara", "bn": "ট্রেনিং রোড ৫, বারিধারা" },
+      "phone": "+8801700000301",
+      "hours": { "en": "Daily 9:00 to 21:00", "bn": "প্রতিদিন সকাল ৯টা থেকে রাত ৯টা" },
+      "species": ["dog", "cat"]
+    },
+    {
+      "id": "baridhara-training-vet-2",
+      "neighbourhood": "baridhara",
+      "name": {
+        "en": "Training Animal Care Baridhara Two",
+        "bn": "ট্রেনিং অ্যানিমাল কেয়ার বারিধারা টু"
+      },
+      "address": { "en": "Training road 6, Baridhara", "bn": "ট্রেনিং রোড ৬, বারিধারা" },
+      "phone": "+8801700000302",
+      "hours": { "en": "Open 24 hours", "bn": "২৪ ঘণ্টা খোলা" },
+      "species": ["dog", "cat"]
+    }
+  ]
+}

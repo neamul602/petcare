@@ -1,0 +1,10 @@
+---
+/** Shown by the service worker when a page that was never opened before is requested while offline. */
+import ErrorState from '@/components/states/ErrorState.astro';
+import OwnerShell from '@/layouts/OwnerShell.astro';
+import { getLocale } from '@/lib/locale';
+const locale = getLocale(Astro.cookies);
+---
+<OwnerShell titleKey="error.offline.title" showTabs={false}>
+  <section data-screen="offline" class="mx-auto max-w-md pt-8"><ErrorState variant="offline" locale={locale} actionHref="/" /></section>
+</OwnerShell>

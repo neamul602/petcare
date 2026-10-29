@@ -3,12 +3,12 @@ id: 007-training-scenario-seed
 code: FND-07
 unit: 001-platform-foundation
 intent: 001-petcare-v1
-status: ready
+status: complete
 priority: must
 journeys: all
-created: 2026-10-29T16:00:00Z
+created: '2026-10-29T16:00:00Z'
 assigned_bolt: 003-platform-foundation
-implemented: false
+implemented: true
 ---
 
 # Story FND-07: Training scenario seed

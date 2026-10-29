@@ -10,7 +10,7 @@ const { tabs, current, label } = Astro.props;
 const isActive = (href: string) => (href === '/' || href === '/provider' ? current === href : current === href || current.startsWith(`${href}/`));
 ---
 <nav aria-label={label} class="hidden md:block" data-testid="top-nav">
-  <ul class="flex gap-1">
+  <ul class="flex gap-2">
     {tabs.map((tab) => (
       <li>
         <a href={tab.href} aria-current={isActive(tab.href) ? 'page' : undefined}

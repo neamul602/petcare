@@ -1,0 +1,18 @@
+{
+  "label": "TRAINING DATA",
+  "note": "Tito, the special-care dog of UJ-1 (workbook Step 17). Loaded by the pets bolt.",
+  "pets": [
+    {
+      "id": "tito",
+      "owner": "bibi",
+      "name": { "en": "Tito", "bn": "টিটো" },
+      "species": "dog",
+      "breed": "Shih Tzu",
+      "ageYears": 4,
+      "weightKg": 6,
+      "careConditions": ["diabetic"],
+      "medication": [{ "name": "insulin", "dose": "2 units", "schedule": ["08:00", "20:00"] }],
+      "diet": "low-carb kibble only"
+    }
+  ]
+}

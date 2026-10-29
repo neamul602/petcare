@@ -3,12 +3,12 @@ id: 006-performance-and-accessibility-checks
 code: FND-06
 unit: 001-platform-foundation
 intent: 001-petcare-v1
-status: ready
+status: complete
 priority: should
 journeys: all
-created: 2026-10-29T16:00:00Z
+created: '2026-10-29T16:00:00Z'
 assigned_bolt: 003-platform-foundation
-implemented: false
+implemented: true
 ---
 
 # Story FND-06: Performance and accessibility checks

@@ -7,9 +7,13 @@
     "./config": "./src/config/training-decisions.ts",
     "./clock": "./src/clock.ts",
     "./i18n": "./src/i18n/index.ts",
-    "./locale": "./src/locale/format.ts"
+    "./locale": "./src/locale/format.ts",
+    "./seed": "./src/seed/schema.ts"
   },
   "scripts": {
     "typecheck": "tsc --noEmit -p tsconfig.json"
+  },
+  "dependencies": {
+    "zod": "^4.6.7"
   }
 }

@@ -19,5 +19,19 @@
   "screen.insights": "Insights",
   "screen.audit": "Audit log",
   "screen.signIn": "Admin sign in",
-  "placeholder.body": "This part of the console is being built."
+  "placeholder.body": "This part of the console is being built.",
+  "banner.offline": "Offline. Changes will be sent when you're back online.",
+  "state.loading": "Loading…",
+  "state.retry": "Try again",
+  "state.empty.title": "Nothing here yet",
+  "state.empty.action": "Go to Queue",
+  "error.network.title": "Can't reach PetCare",
+  "error.network.body": "Check the connection and try again.",
+  "error.server.title": "Something went wrong on our side",
+  "error.server.body": "No data was lost. Try again in a moment.",
+  "error.permission.title": "You can't open this page",
+  "error.permission.body": "Sign in with the admin account to continue.",
+  "error.permission.action": "Sign in",
+  "error.offline.title": "You're offline",
+  "error.offline.body": "Pages opened before still work. This one needs a connection."
 }

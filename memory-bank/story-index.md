@@ -27,16 +27,16 @@ Intent `001-petcare-v1`: **76 stories** in 11 units (generated 2026-10-29T16:00:
 ### 003-bangla-and-english-with-parity.md ✅ COMPLETED
 **FND-03** Bangla and English with parity · must · UJ-1, UJ-2, UJ-4
 
-### 004-pwa-offline-and-shared-states.md ✅ GENERATED
+### 004-pwa-offline-and-shared-states.md ✅ COMPLETED
 **FND-04** PWA, offline and shared states · must · all
 
 ### 005-configuration-clock-and-log-primitives.md ✅ COMPLETED
 **FND-05** Configuration, clock and log primitives · must · all
 
-### 006-performance-and-accessibility-checks.md ✅ GENERATED
+### 006-performance-and-accessibility-checks.md ✅ COMPLETED
 **FND-06** Performance and accessibility checks · should · all
 
-### 007-training-scenario-seed.md ✅ GENERATED
+### 007-training-scenario-seed.md ✅ COMPLETED
 **FND-07** Training scenario seed · must · all
 
 ## 002-dummy-integration-services

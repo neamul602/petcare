@@ -34,5 +34,19 @@
   "placeholder.body": "This part of PetCare is being built.",
   "notFound.title": "Page not found",
   "notFound.body": "The link may be old or mistyped.",
-  "notFound.action": "Go to Home"
+  "notFound.action": "Go to Home",
+  "banner.offline": "Offline. Bookings will be sent when you're back online.",
+  "state.loading": "Loading…",
+  "state.retry": "Try again",
+  "state.empty.title": "Nothing here yet",
+  "state.empty.action": "Go to Home",
+  "error.network.title": "Can't reach PetCare",
+  "error.network.body": "Check your connection and try again.",
+  "error.server.title": "Something went wrong on our side",
+  "error.server.body": "Your information is safe. Try again in a moment.",
+  "error.permission.title": "You can't open this page",
+  "error.permission.body": "Sign in with the right account to continue.",
+  "error.permission.action": "Sign in",
+  "error.offline.title": "You're offline",
+  "error.offline.body": "Pages you opened before still work. This one needs a connection."
 }

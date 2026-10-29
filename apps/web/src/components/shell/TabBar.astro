@@ -13,11 +13,11 @@ const { tabs, current, label } = Astro.props;
 const isActive = (href: string) => (href === '/' || href === '/provider' ? current === href : current === href || current.startsWith(`${href}/`));
 ---
 <nav aria-label={label} class="fixed inset-x-0 bottom-0 z-20 border-t border-border bg-card md:hidden" data-testid="tab-bar">
-  <ul class="mx-auto flex max-w-xl">
+  <ul class="mx-auto flex max-w-xl gap-2 px-2">
     {tabs.map((tab) => (
       <li class="flex-1">
         <a href={tab.href} aria-current={isActive(tab.href) ? 'page' : undefined}
-          class={`flex min-h-14 items-center justify-center px-1 text-center text-sm font-medium focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${isActive(tab.href) ? 'text-primary' : 'text-muted-foreground'}`}>
+          class={`flex min-h-14 w-full items-center justify-center rounded-md px-0.5 text-center text-xs font-medium leading-tight sm:text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${isActive(tab.href) ? 'text-primary' : 'text-muted-foreground'}`}>
           {tab.label}
         </a>
       </li>

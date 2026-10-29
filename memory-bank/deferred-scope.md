@@ -17,3 +17,4 @@ Rules while deferred: do not build the feature; if a story needs a small honest 
 | Date | Item | Decision |
 |---|---|---|
 | 2026-10-29 | Recorded the list above | Owner instruction |
+| 2026-10-30 | Seed loaders for owner, pet, provider, admin and pending application | Not deferred by choice: their tables do not exist yet. The seed files are validated now; the bolts that create the tables (004 accounts, 005 pets, 006 providers) must add the loader and call it from `apps/api/src/seed/run.ts`. |

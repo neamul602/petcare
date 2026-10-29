@@ -7,6 +7,9 @@ import Badge from '@/components/kit/Badge.astro';
 import Button from '@/components/kit/Button.astro';
 import Card from '@/components/kit/Card.astro';
 import Chip from '@/components/kit/Chip.astro';
+import EmptyState from '@/components/states/EmptyState.astro';
+import ErrorState from '@/components/states/ErrorState.astro';
+import LoadingState from '@/components/states/LoadingState.astro';
 import Input from '@/components/kit/Input.astro';
 import Sheet from '@/components/kit/Sheet.tsx';
 import StatePill from '@/components/kit/StatePill.astro';
@@ -19,7 +22,7 @@ if (!import.meta.env.DEV) {
 }
 const states = ['requested', 'authorized', 'captured', 'in-stay', 'completed', 'declined', 'disputed', 'refunded', 'payout-released', 'payout-pending', 'payout-frozen', 'payout-hold'] as const;
 ---
-<BaseLayout title="UI kit · PetCare" lang="en" skipLabel="Skip to content">
+<BaseLayout title="UI kit · PetCare" lang="en" skipLabel="Skip to content" offlineMessage="Offline. Bookings will be sent when you're back online.">
   <main id="main" class="mx-auto max-w-4xl space-y-8 px-4 py-8">
     <h1 class="font-serif text-4xl font-semibold">PetCare UI kit</h1>
     <Card class="space-y-4">
@@ -45,6 +48,13 @@ const states = ['requested', 'authorized', 'captured', 'in-stay', 'completed', '
       <Toggle client:load label="Use saved care plan" defaultChecked />
     </Card>
     <Card class="space-y-4">
+      <h2 class="text-xl font-semibold">Form persistence</h2>
+      <form data-persist="kit-demo" class="space-y-4">
+        <Input id="persist-note" name="note" label="Typed text is kept on this device" />
+        <Input id="persist-secret" name="secret" type="password" label="Passwords are never kept" />
+      </form>
+    </Card>
+    <Card class="space-y-4">
       <h2 class="text-xl font-semibold">Inputs</h2>
       <Input id="kit-name" label="Pet name" required hint="As you call them at home" />
       <Input id="kit-weight" label="Weight (kg)" type="number" error="Enter a weight above 0" />
@@ -53,6 +63,15 @@ const states = ['requested', 'authorized', 'captured', 'in-stay', 'completed', '
     <Card class="space-y-4">
       <h2 class="text-xl font-semibold">Sheet</h2>
       <Sheet client:load triggerLabel="Open sheet" title="Example sheet" closeLabel="Close"><p>Sheet content.</p></Sheet>
+    </Card>
+    <Card class="space-y-4">
+      <h2 class="text-xl font-semibold">Shared states</h2>
+      <LoadingState label="Loading…" rows={2} />
+      <EmptyState title="Nothing here yet" body="Your stays will appear here." actionLabel="Find care" actionHref="/" />
+      <ErrorState variant="network" locale="en" />
+      <ErrorState variant="server" locale="en" />
+      <ErrorState variant="permission" locale="en" />
+      <ErrorState variant="offline" locale="en" />
     </Card>
     <StickyActionBar>
       <span slot="summary">৳20,000 · 8 nights</span>

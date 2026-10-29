@@ -3,12 +3,12 @@ id: 004-pwa-offline-and-shared-states
 code: FND-04
 unit: 001-platform-foundation
 intent: 001-petcare-v1
-status: ready
+status: complete
 priority: must
 journeys: all
-created: 2026-10-29T16:00:00Z
+created: '2026-10-29T16:00:00Z'
 assigned_bolt: 003-platform-foundation
-implemented: false
+implemented: true
 ---
 
 # Story FND-04: PWA, offline and shared states

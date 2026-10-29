@@ -12,4 +12,5 @@ export default defineConfig({
   integrations: [preact()],
   vite: { plugins: [tailwindcss()] },
   server: { port: 4321, host: true },
+  devToolbar: { enabled: false },
 });

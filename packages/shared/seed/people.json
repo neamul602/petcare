@@ -1,0 +1,14 @@
+{
+  "label": "TRAINING DATA",
+  "note": "The people of the training scenario (workbook Step 17). Fictional. Loaded by the accounts bolt.",
+  "owners": [
+    {
+      "id": "bibi",
+      "name": { "en": "Bibi", "bn": "বিবি" },
+      "phone": "+8801712000001",
+      "neighbourhood": "banani",
+      "language": "bn"
+    }
+  ],
+  "admins": [{ "id": "ayaat", "name": "Ayaat", "role": "admin" }]
+}

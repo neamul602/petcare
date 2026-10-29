@@ -1,0 +1,14 @@
+---
+/** Explicit loading placeholder (page spec 5.13): grey rows that match the content shape, plus a spoken label. */
+interface Props {
+  label: string;
+  rows?: number;
+}
+const { label, rows = 3 } = Astro.props;
+---
+<div role="status" aria-busy="true" data-state="loading" class="space-y-3">
+  <span class="sr-only">{label}</span>
+  {Array.from({ length: rows }).map(() => (
+    <div aria-hidden="true" class="h-16 animate-pulse rounded-lg bg-muted"></div>
+  ))}
+</div>

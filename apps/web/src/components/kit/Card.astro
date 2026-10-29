@@ -4,12 +4,13 @@ interface Props {
   variant?: 'flat' | 'elevated' | 'muted';
   as?: 'div' | 'section' | 'article';
   class?: string;
+  [key: string]: unknown;
 }
-const { variant = 'flat', as: Tag = 'div', class: extra = '' } = Astro.props;
+const { variant = 'flat', as: Tag = 'div', class: extra = '', ...rest } = Astro.props;
 const variants = {
   flat: 'bg-card text-card-foreground border border-border shadow-md',
   elevated: 'bg-card text-card-foreground border border-border shadow-lg',
   muted: 'bg-muted text-foreground border border-transparent',
 };
 ---
-<Tag class={`rounded-lg p-6 md:p-8 ${variants[variant]} ${extra}`}><slot /></Tag>
+<Tag class={`rounded-lg p-6 md:p-8 ${variants[variant]} ${extra}`} {...rest}><slot /></Tag>

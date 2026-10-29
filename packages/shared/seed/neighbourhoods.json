@@ -1,0 +1,9 @@
+{
+  "label": "TRAINING DATA",
+  "note": "Launch neighbourhoods from the PRD (FR-13). Reference data, not a trust signal.",
+  "neighbourhoods": [
+    { "id": "gulshan", "name": { "en": "Gulshan", "bn": "গুলশান" } },
+    { "id": "banani", "name": { "en": "Banani", "bn": "বনানী" } },
+    { "id": "baridhara", "name": { "en": "Baridhara", "bn": "বারিধারা" } }
+  ]
+}
