@@ -1,10 +1,29 @@
 ---
 import { t } from '@petcare/shared/i18n';
-import Placeholder from '@/components/Placeholder.astro';
+import SearchForm from '@/components/SearchForm.astro';
+import Button from '@/components/kit/Button.astro';
+import Card from '@/components/kit/Card.astro';
 import OwnerShell from '@/layouts/OwnerShell.astro';
 import { getLocale } from '@/lib/locale';
 const locale = getLocale(Astro.cookies);
+const isOwner = Astro.locals.user?.role === 'owner';
 ---
 <OwnerShell titleKey="screen.home">
-  <Placeholder screenId="O1" title={t(locale, 'screen.home')} body={t(locale, 'placeholder.body')} />
+  <div class="space-y-6 py-4">
+    <section class="space-y-3">
+      <h1 class="font-serif text-3xl font-semibold leading-tight">{t(locale, 'home.promise.title')}</h1>
+      <p class="text-lg text-muted-foreground">{t(locale, 'home.promise.body')}</p>
+    </section>
+    {isOwner
+      ? <Card><SearchForm locale={locale} /></Card>
+      : <Button href="/search" size="lg" class="w-full" data-testid="find-care">{t(locale, 'home.cta')}</Button>}
+    <section class="space-y-3">
+      <h2 class="text-xl font-semibold">{t(locale, 'home.how.title')}</h2>
+      <ol class="space-y-3">
+        {(['home.how.1', 'home.how.2', 'home.how.3'] as const).map((key, i) => (
+          <li class="flex items-start gap-3"><span aria-hidden="true" class="flex h-8 w-8 flex-none items-center justify-center rounded-full bg-primary-soft font-semibold text-primary-soft-foreground">{i + 1}</span><span class="pt-1">{t(locale, key)}</span></li>
+        ))}
+      </ol>
+    </section>
+  </div>
 </OwnerShell>

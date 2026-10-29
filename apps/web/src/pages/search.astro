@@ -1,10 +1,72 @@
 ---
-import { t } from '@petcare/shared/i18n';
-import Placeholder from '@/components/Placeholder.astro';
+import { formatMoney } from '@petcare/shared/locale';
+import { t, type MessageKey } from '@petcare/shared/i18n';
+import SearchForm from '@/components/SearchForm.astro';
+import Badge from '@/components/kit/Badge.astro';
+import Button from '@/components/kit/Button.astro';
+import Card from '@/components/kit/Card.astro';
+import EmptyState from '@/components/states/EmptyState.astro';
 import OwnerShell from '@/layouts/OwnerShell.astro';
+import { apiFetch } from '@/lib/api';
 import { getLocale } from '@/lib/locale';
 const locale = getLocale(Astro.cookies);
+const L = (key: string, params?: Record<string, string | number>) => t(locale, key as MessageKey, params);
+const q = Astro.url.searchParams;
+const from = q.get('from') ?? '';
+const to = q.get('to') ?? '';
+const species = q.get('species') ?? 'dog';
+const area = q.get('area') ?? '';
+const all = q.get('all') === '1';
+const searched = from !== '' && to !== '';
+interface Hit { slug: string; name: { en: string; bn: string }; tier: 'A' | 'B'; area: string; pricePerNightPoisha: number | null; availableAllNights: boolean }
+let hits: Hit[] = [];
+let suggest = false;
+let error = '';
+if (searched) {
+  const params = new URLSearchParams({ from, to, species });
+  if (area) params.set('area', area);
+  if (all) params.set('all', '1');
+  try {
+    const response = await apiFetch(`/search?${params}`);
+    const body = await response.json();
+    if (response.ok) { hits = body.providers; suggest = body.suggestOtherDates; }
+    else error = `search.error.${body.error?.code ?? 'generic'}`;
+  } catch { error = 'search.error.generic'; }
+}
+const withDates = `from=${from}&to=${to}`;
+const allLink = `/search?${new URLSearchParams({ from, to, species, ...(area ? { area } : {}), all: '1' })}`;
+const shortLink = `/search?${new URLSearchParams({ from, to, species, ...(area ? { area } : {}) })}`;
 ---
 <OwnerShell titleKey="screen.results">
-  <Placeholder screenId="O3" title={t(locale, 'screen.results')} body={t(locale, 'placeholder.body')} />
+  <div class="space-y-5 py-4">
+    <h1 class="text-2xl font-semibold">{L('search.title')}</h1>
+    <Card><SearchForm locale={locale} from={from} to={to} species={species} area={area} /></Card>
+    {error && <p role="alert" data-testid="search-error" class="rounded-md bg-destructive-soft px-4 py-3 text-sm text-destructive">{L(error.startsWith('search.error.') && error !== 'search.error.undefined' ? error : 'search.error.generic')}</p>}
+    {searched && !error && (
+      <section class="space-y-4" data-testid="results">
+        <h2 class="text-xl font-semibold">{L('search.results.title')}</h2>
+        {suggest && hits.length > 0 && !all && <p class="rounded-md bg-muted px-4 py-3" data-testid="suggest">{L('search.suggest')}</p>}
+        {hits.length === 0 && <EmptyState title={L('search.empty.title')} body={L('search.empty.body')} />}
+        <ul class="space-y-3">
+          {hits.map((hit) => (
+            <li>
+              <a href={`/providers/${hit.slug}?${withDates}&species=${species}`} data-testid="result" class="block rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2">
+                <Card class="space-y-2">
+                  <div class="flex flex-wrap items-center gap-3">
+                    <span class="mr-auto text-lg font-semibold">{hit.name[locale]}</span>
+                    {hit.tier === 'A' && <Badge variant="tier-a" label={L('provider.badge.tierA.label')}>{L('provider.badge.tierA')}</Badge>}
+                  </div>
+                  <p data-testid="reason">{hit.availableAllNights ? L('search.reason', { tier: L(`search.tier.${hit.tier}`), area: L(`neighbourhood.${hit.area}`) }) : L('search.notFree')}</p>
+                  {hit.pricePerNightPoisha !== null && <p class="text-muted-foreground">{L('provider.price', { price: formatMoney(hit.pricePerNightPoisha) })}</p>}
+                </Card>
+              </a>
+            </li>
+          ))}
+        </ul>
+        {all
+          ? <Button href={shortLink} variant="secondary">{L('search.backToShortlist')}</Button>
+          : <Button href={allLink} variant="secondary" data-testid="view-all">{L('search.viewAll')}</Button>}
+      </section>
+    )}
+  </div>
 </OwnerShell>

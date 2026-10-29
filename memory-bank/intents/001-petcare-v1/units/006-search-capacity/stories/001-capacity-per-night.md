@@ -3,12 +3,12 @@ id: 001-capacity-per-night
 code: SRC-01
 unit: 006-search-capacity
 intent: 001-petcare-v1
-status: ready
+status: complete
 priority: must
 journeys: UJ-2
-created: 2026-10-29T16:00:00Z
+created: '2026-10-29T16:00:00Z'
 assigned_bolt: 007-search-capacity
-implemented: false
+implemented: true
 ---
 
 # Story SRC-01: Capacity per night

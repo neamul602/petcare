@@ -3,12 +3,12 @@ id: 005-home-and-search-entry
 code: SRC-05
 unit: 006-search-capacity
 intent: 001-petcare-v1
-status: ready
+status: complete
 priority: must
 journeys: UJ-1, UJ-4
-created: 2026-10-29T16:00:00Z
+created: '2026-10-29T16:00:00Z'
 assigned_bolt: 007-search-capacity
-implemented: false
+implemented: true
 ---
 
 # Story SRC-05: Home and search entry

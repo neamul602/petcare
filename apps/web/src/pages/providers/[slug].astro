@@ -6,6 +6,7 @@ import Button from '@/components/kit/Button.astro';
 import Card from '@/components/kit/Card.astro';
 import OwnerShell from '@/layouts/OwnerShell.astro';
 import { apiFetch } from '@/lib/api';
+import { formatDate } from '@petcare/shared/locale';
 import { getLocale } from '@/lib/locale';
 const locale = getLocale(Astro.cookies);
 const response = await apiFetch(`/providers/${Astro.params.slug}`, { cookie: Astro.request.headers.get('cookie') }).catch(() => null);
@@ -13,6 +14,14 @@ if (!response || response.status === 404) return Astro.rewrite('/404');
 if (!response.ok) return Astro.redirect('/search');
 const { provider } = (await response.json()) as { provider: any };
 const name: string = provider.name[locale];
+const from = Astro.url.searchParams.get('from') ?? '';
+const to = Astro.url.searchParams.get('to') ?? '';
+let busy: string[] | null = null;
+if (from && to) {
+  const avail = await apiFetch(`/providers/${provider.slug}/availability?from=${from}&to=${to}`).then((r) => (r.ok ? r.json() : null)).catch(() => null);
+  if (avail) busy = (avail.nights as Array<{ date: string; available: boolean }>).filter((n) => !n.available).map((n) => formatDate(new Date(`${n.date}T00:00:00+06:00`), locale));
+}
+const bookHref = `/book/${provider.slug}${from && to ? `?from=${from}&to=${to}` : ''}`;
 const L = (key: string, params?: Record<string, string | number>) => t(locale, key as MessageKey, params);
 ---
 <OwnerShell titleKey="screen.provider">
@@ -25,6 +34,12 @@ const L = (key: string, params?: Record<string, string | number>) => t(locale, k
       <span data-testid="provider-price">{provider.pricePerNightPoisha === null ? L('provider.priceMissing') : L('provider.price', { price: formatMoney(provider.pricePerNightPoisha) })}</span>
       · {provider.area[locale]}
     </p>
+    {busy && (
+      <Card class="space-y-1" data-testid="availability">
+        <h2 class="text-xl font-semibold">{L('provider.availability')}</h2>
+        <p>{busy.length === 0 ? L('provider.availability.all') : L('provider.availability.some', { dates: busy.join(', ') })}</p>
+      </Card>
+    )}
     <Card class="space-y-3">
       <h2 class="text-xl font-semibold">{L('provider.experience')}</h2>
       <p>{provider.experience[locale]}</p>
@@ -44,6 +59,6 @@ const L = (key: string, params?: Record<string, string | number>) => t(locale, k
     <p data-testid="provider-new" class="rounded-md bg-muted px-4 py-3">{L('provider.new')}</p>
   </div>
   <div class="fixed inset-x-0 bottom-16 z-10 border-t border-border bg-background/95 px-4 py-3 backdrop-blur md:bottom-0">
-    <div class="mx-auto max-w-5xl"><Button href={`/book/${provider.slug}`} class="w-full" data-testid="book-button">{L('provider.book', { name })}</Button></div>
+    <div class="mx-auto max-w-5xl"><Button href={bookHref} class="w-full" data-testid="book-button">{L('provider.book', { name })}</Button></div>
   </div>
 </OwnerShell>

@@ -1,10 +1,63 @@
 ---
-import { t } from '@petcare/shared/i18n';
-import Placeholder from '@/components/Placeholder.astro';
+import { t, type MessageKey } from '@petcare/shared/i18n';
+import { formatDate } from '@petcare/shared/locale';
+import Badge from '@/components/kit/Badge.astro';
+import Button from '@/components/kit/Button.astro';
+import Card from '@/components/kit/Card.astro';
+import EmptyState from '@/components/states/EmptyState.astro';
 import ProviderShell from '@/layouts/ProviderShell.astro';
+import { apiFetch } from '@/lib/api';
+import { addDays, todayInDhaka } from '@/lib/dates';
 import { getLocale } from '@/lib/locale';
 const locale = getLocale(Astro.cookies);
+const L = (key: string, params?: Record<string, string | number>) => t(locale, key as MessageKey, params);
+const q = Astro.url.searchParams;
+const today = todayInDhaka();
+const from = /^\d{4}-\d{2}-\d{2}$/.test(q.get('from') ?? '') ? q.get('from')! : today;
+const response = await apiFetch(`/provider/calendar?from=${from}&days=14`, { cookie: Astro.request.headers.get('cookie') }).catch(() => null);
+const data = response?.ok ? ((await response.json()) as { baseline: number; nights: Array<{ date: string; capacity: number; booked: number; status: 'available' | 'full' | 'closed'; note: string }> }) : null;
+const error = q.get('error');
+const errorText = error === 'below' ? L('calendar.error.below', { dates: q.get('dates') ?? '' }) : error ? L('calendar.error.generic') : '';
+const field = 'h-12 w-full rounded-md border border-border bg-input px-4 text-base focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2';
 ---
 <ProviderShell titleKey="screen.calendar">
-  <Placeholder screenId="P2" title={t(locale, 'screen.calendar')} body={t(locale, 'placeholder.body')} />
+  <div class="space-y-5 py-4">
+    <h1 class="text-2xl font-semibold">{L('screen.calendar')}</h1>
+    {!data && <EmptyState title={L('calendar.noRecord')} />}
+    {data && (
+      <>
+        <p class="text-muted-foreground">{L('calendar.baseline', { n: data.baseline })}</p>
+        {q.get('saved') && <p role="status" data-testid="saved" class="rounded-md bg-primary-soft px-4 py-3 text-primary-soft-foreground">{L('calendar.saved')}</p>}
+        {errorText && <p role="alert" data-testid="calendar-error" class="rounded-md bg-destructive-soft px-4 py-3 text-sm text-destructive">{errorText}</p>}
+        <form method="post" action="/provider/calendar/save" class="space-y-4" data-testid="calendar-form">
+          <input type="hidden" name="from" value={from} />
+          <p>{L('calendar.set.pick')}</p>
+          <ul class="space-y-2">
+            {data.nights.map((night) => (
+              <li>
+                <label class="flex min-h-14 items-start gap-3 rounded-lg border border-border bg-card px-4 py-3">
+                  <input type="checkbox" name="dates" value={night.date} data-testid={`night-${night.date}`} class="mt-1 h-5 w-5 accent-primary" />
+                  <span class="flex-1">
+                    <span class="block font-medium">{formatDate(new Date(`${night.date}T00:00:00+06:00`), locale)}</span>
+                    <span class="block text-sm text-muted-foreground" data-testid={`info-${night.date}`}>{L('calendar.night.capacity', { n: night.capacity })} · {L('calendar.night.booked', { n: night.booked })}{night.note ? ` · ${L('calendar.note')}: ${night.note}` : ''}</span>
+                  </span>
+                  <Badge variant={night.status === 'available' ? 'verified' : night.status === 'full' ? 'warning' : 'neutral'}>{L(`calendar.status.${night.status}`)}</Badge>
+                </label>
+              </li>
+            ))}
+          </ul>
+          <Card class="space-y-3">
+            <h2 class="text-xl font-semibold">{L('calendar.set.title')}</h2>
+            <div class="space-y-2"><label for="capacity" class="block text-sm font-medium">{L('calendar.set.capacity')}</label><input id="capacity" name="capacity" type="number" min="0" max="20" required inputmode="numeric" class={field} /></div>
+            <div class="space-y-2"><label for="note" class="block text-sm font-medium">{L('calendar.set.note')}</label><input id="note" name="note" maxlength="200" class={field} /></div>
+            <Button type="submit" data-testid="save-capacity">{L('calendar.set.apply')}</Button>
+          </Card>
+        </form>
+        <nav class="flex gap-3">
+          {from !== today && <Button href="/provider/calendar" variant="secondary">{L('calendar.today')}</Button>}
+          <Button href={`/provider/calendar?from=${addDays(from, 14)}`} variant="secondary" data-testid="next-weeks">{L('calendar.next')}</Button>
+        </nav>
+      </>
+    )}
+  </div>
 </ProviderShell>

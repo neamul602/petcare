@@ -115,19 +115,19 @@ Intent `001-petcare-v1`: **76 stories** in 11 units (generated 2026-10-29T16:00:
 
 ## 006-search-capacity
 
-### 001-capacity-per-night.md ✅ GENERATED
+### 001-capacity-per-night.md ✅ COMPLETED
 **SRC-01** Capacity per night · must · UJ-2
 
 ### 002-peak-window-capacity.md ✅ GENERATED
 **SRC-02** Peak-window capacity · must · UJ-2
 
-### 003-reserve-and-release-nights-safely.md ✅ GENERATED
+### 003-reserve-and-release-nights-safely.md ✅ COMPLETED
 **SRC-03** Reserve and release nights safely · must · UJ-1
 
-### 004-curated-shortlist.md ✅ GENERATED
+### 004-curated-shortlist.md ✅ COMPLETED
 **SRC-04** Curated shortlist · must · UJ-1
 
-### 005-home-and-search-entry.md ✅ GENERATED
+### 005-home-and-search-entry.md ✅ COMPLETED
 **SRC-05** Home and search entry · must · UJ-1, UJ-4
 
 ### 006-bookings-per-neighbourhood.md ✅ GENERATED

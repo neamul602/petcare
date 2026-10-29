@@ -43,6 +43,13 @@
       "when": 1793274133769,
       "tag": "0005_providers",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1793274617407,
+      "tag": "0006_capacity",
+      "breakpoints": true
     }
   ]
 }

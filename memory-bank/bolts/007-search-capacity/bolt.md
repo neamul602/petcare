@@ -3,24 +3,34 @@ id: 007-search-capacity
 unit: 006-search-capacity
 intent: 001-petcare-v1
 type: ddd-construction-bolt
-status: planned
+status: complete
 phase: Thin slice
 stories:
   - 001-capacity-per-night
   - 003-reserve-and-release-nights-safely
   - 004-curated-shortlist
   - 005-home-and-search-entry
-created: 2026-10-29T17:00:00Z
-started: null
-completed: null
+created: '2026-10-29T17:00:00Z'
+started: '2026-10-30T17:00:00Z'
+completed: '2026-10-29T11:58:36Z'
 current_stage: null
-stages_completed: []
-
-requires_bolts: [005-pet-care-profile, 006-provider-supply-vetting]
-enables_bolts: [009-booking-stay, 019-search-capacity]
-requires_units: [pet-care-profile, provider-supply-vetting]
+stages_completed:
+  - name: model
+    completed: '2026-10-30T17:00:00Z'
+    artifact: implementation-plan.md
+  - name: design
+    completed: '2026-10-30T17:00:00Z'
+    artifact: implementation-plan.md
+requires_bolts:
+  - 005-pet-care-profile
+  - 006-provider-supply-vetting
+enables_bolts:
+  - 009-booking-stay
+  - 019-search-capacity
+requires_units:
+  - pet-care-profile
+  - provider-supply-vetting
 blocks: true
-
 complexity:
   avg_complexity: 3
   avg_uncertainty: 2

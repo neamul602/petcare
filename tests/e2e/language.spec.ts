@@ -6,7 +6,7 @@ test.describe('Bangla default and English parity (FND-03)', () => {
     await page.goto('/');
     await expect(page.locator('html')).toHaveAttribute('lang', 'bn');
     await expect(page.getByRole('heading', { level: 1 })).toHaveText(
-      'আপনার পোষা প্রাণীর জন্য যত্ন খুঁজুন',
+      'আপনি ভ্রমণে থাকলে আপনার পোষা প্রাণীর জন্য বিশ্বস্ত ঘরোয়া যত্ন',
     );
   });
 
@@ -23,7 +23,7 @@ test.describe('Bangla default and English parity (FND-03)', () => {
     await expect(page.locator('html')).toHaveAttribute('lang', 'en');
     await expect(page.getByRole('heading', { level: 1 })).toHaveText('Your pets');
     await page.goto('/search');
-    await expect(page.getByRole('heading', { level: 1 })).toHaveText('Providers for your dates');
+    await expect(page.getByRole('heading', { level: 1 })).toHaveText('Find care');
     await page.reload();
     await expect(page.locator('html')).toHaveAttribute('lang', 'en');
     await context.close();

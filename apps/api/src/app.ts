@@ -16,6 +16,7 @@ import type { Database } from './db/client.ts';
 import { denyAllPetAccess, type PetAccessPolicy } from './pets/care-summary.ts';
 import type { PhotoPort } from './pets/photo-port.ts';
 import { registerPetRoutes } from './pets/routes.ts';
+import { registerCapacityRoutes } from './capacity/routes.ts';
 import { registerProviderRoutes } from './providers/routes.ts';
 
 export interface AppDeps {
@@ -80,6 +81,7 @@ export async function buildApp(deps: AppDeps = {}) {
     registerAuthRoutes(app, authDeps);
     await registerAdminRoutes(app, authDeps);
     registerProviderRoutes(app, { db: deps.db, authn });
+    registerCapacityRoutes(app, { db: deps.db, authn, clock });
     if (deps.photos)
       registerPetRoutes(app, {
         db: deps.db,

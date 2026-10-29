@@ -52,10 +52,10 @@ test.describe('offline behaviour', () => {
   }) => {
     await waitForControl(page);
     await page.goto('/search');
-    await expect(page.getByRole('heading', { level: 1 })).toHaveText('আপনার তারিখের প্রোভাইডার');
+    await expect(page.getByRole('heading', { level: 1 })).toHaveText('যত্নকারী খুঁজুন');
     await context.setOffline(true);
     await page.goto('/search');
-    await expect(page.getByRole('heading', { level: 1 })).toHaveText('আপনার তারিখের প্রোভাইডার');
+    await expect(page.getByRole('heading', { level: 1 })).toHaveText('যত্নকারী খুঁজুন');
     await expect(page.getByTestId('offline-banner')).toContainText('অফলাইন');
     await context.setOffline(false);
     await expect(page.getByTestId('offline-banner')).not.toContainText('অফলাইন');

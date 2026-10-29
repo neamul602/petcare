@@ -3,12 +3,12 @@ id: 003-reserve-and-release-nights-safely
 code: SRC-03
 unit: 006-search-capacity
 intent: 001-petcare-v1
-status: ready
+status: complete
 priority: must
 journeys: UJ-1
-created: 2026-10-29T16:00:00Z
+created: '2026-10-29T16:00:00Z'
 assigned_bolt: 007-search-capacity
-implemented: false
+implemented: true
 ---
 
 # Story SRC-03: Reserve and release nights safely
