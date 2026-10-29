@@ -47,7 +47,6 @@ Playwright (STEP-26)
 
 ### Requires
 - BKG-12 Daily updates (`008-booking-stay/stories/012-daily-updates.md`)
-- BKG-13 Booking chat (`008-booking-stay/stories/013-booking-chat.md`)
 - BKG-14 Vet-clinic directory (`008-booking-stay/stories/014-vet-clinic-directory.md`)
 
 ### Enables

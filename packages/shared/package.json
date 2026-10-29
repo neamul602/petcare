@@ -8,7 +8,8 @@
     "./clock": "./src/clock.ts",
     "./i18n": "./src/i18n/index.ts",
     "./locale": "./src/locale/format.ts",
-    "./seed": "./src/seed/schema.ts"
+    "./seed": "./src/seed/schema.ts",
+    "./phone": "./src/phone.ts"
   },
   "scripts": {
     "typecheck": "tsc --noEmit -p tsconfig.json"

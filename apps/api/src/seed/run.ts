@@ -10,6 +10,7 @@ import { migrate } from 'drizzle-orm/node-postgres/migrator';
 import pg from 'pg';
 import { loadSeed, type Seed } from '@petcare/shared/seed';
 import * as schema from '../db/schema/index.ts';
+import { DEFAULT_TRAINING_ADMIN_PASSWORD, loadPeople } from './load-people.ts';
 
 const SEED_DIR = fileURLToPath(new URL('../../../../packages/shared/seed', import.meta.url));
 const MIGRATIONS_DIR = fileURLToPath(new URL('../../drizzle', import.meta.url));
@@ -20,9 +21,8 @@ export interface SeedSummary {
   database: string;
   neighbourhoods: number;
   vetClinics: number;
+  accounts: { owners: number; providerAccounts: number; admins: number };
   validatedForLaterBolts: {
-    owners: number;
-    admins: number;
     pets: number;
     approvedProviders: number;
     pendingApplications: number;
@@ -34,6 +34,8 @@ export interface SeedOptions {
   databaseUrl?: string;
   dummyUrl?: string | null;
   seedDir?: string;
+  /** Training-only admin password (defaults to ADMIN_TRAINING_PASSWORD, then a documented training value). */
+  adminPassword?: string;
 }
 
 function databaseName(url: URL): string {
@@ -65,6 +67,7 @@ export async function runSeed(options: SeedOptions = {}): Promise<SeedSummary> {
     await admin.end();
   }
 
+  let accounts: SeedSummary['accounts'] = { owners: 0, providerAccounts: 0, admins: 0 };
   const pool = new pg.Pool({ connectionString: databaseUrl.toString() });
   try {
     const db = drizzle(pool, { schema });
@@ -91,6 +94,13 @@ export async function runSeed(options: SeedOptions = {}): Promise<SeedSummary> {
           species: clinic.species,
         })),
       );
+      accounts = await loadPeople(
+        tx,
+        seed,
+        options.adminPassword ??
+          process.env.ADMIN_TRAINING_PASSWORD ??
+          DEFAULT_TRAINING_ADMIN_PASSWORD,
+      );
     });
   } finally {
     await pool.end();
@@ -113,9 +123,8 @@ export async function runSeed(options: SeedOptions = {}): Promise<SeedSummary> {
     database: name,
     neighbourhoods: seed.neighbourhoods.neighbourhoods.length,
     vetClinics: seed.vetClinics.clinics.length,
+    accounts,
     validatedForLaterBolts: {
-      owners: seed.people.owners.length,
-      admins: seed.people.admins.length,
       pets: seed.pets.pets.length,
       approvedProviders: seed.providers.providers.length,
       pendingApplications: seed.providers.applications.length,

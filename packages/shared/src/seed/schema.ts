@@ -54,7 +54,14 @@ export const peopleFile = z.strictObject({
     )
     .min(1),
   admins: z
-    .array(z.strictObject({ id: z.string(), name: z.string(), role: z.literal('admin') }))
+    .array(
+      z.strictObject({
+        id: z.string(),
+        name: z.string(),
+        role: z.literal('admin'),
+        email: z.string().email(),
+      }),
+    )
     .length(1),
 });
 
@@ -100,6 +107,7 @@ export const providersFile = z.strictObject({
       z.strictObject({
         ...providerCommon,
         status: z.literal('approved'),
+        phone: z.string().regex(/^\+8801[3-9]\d{8}$/),
         capacityPerNight: z.strictObject({ smallPets: z.number().int().positive() }),
         pricePerNightPoisha: z.number().int().positive(),
         capabilities: z.array(z.string()),

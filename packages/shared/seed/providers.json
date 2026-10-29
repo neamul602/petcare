@@ -4,69 +4,96 @@
   "providers": [
     {
       "id": "rashid",
-      "name": { "en": "Rashid", "bn": "রশিদ" },
+      "name": {
+        "en": "Rashid",
+        "bn": "রশিদ"
+      },
       "tier": "A",
       "status": "approved",
       "neighbourhood": "gulshan",
       "species": ["dog", "cat"],
-      "capacityPerNight": { "smallPets": 2 },
+      "capacityPerNight": {
+        "smallPets": 2
+      },
       "pricePerNightPoisha": 250000,
       "capabilities": ["senior-pets", "medication-administration"],
       "experience": {
         "en": "Home sitter for cats and small dogs in a Gulshan apartment with a dedicated pet room. Training data.",
         "bn": "গুলশানের অ্যাপার্টমেন্টে আলাদা পোষা প্রাণীর ঘরসহ বিড়াল ও ছোট কুকুরের হোম সিটার। ট্রেনিং ডেটা।"
-      }
+      },
+      "phone": "+8801712000002"
     },
     {
       "id": "farzana",
-      "name": { "en": "Farzana", "bn": "ফারজানা" },
+      "name": {
+        "en": "Farzana",
+        "bn": "ফারজানা"
+      },
       "tier": "A",
       "status": "approved",
       "neighbourhood": "banani",
       "species": ["dog", "cat"],
-      "capacityPerNight": { "smallPets": 3 },
+      "capacityPerNight": {
+        "smallPets": 3
+      },
       "pricePerNightPoisha": 220000,
       "capabilities": ["anxious-pets", "medication-administration"],
       "experience": {
         "en": "Calm home with a quiet room for anxious pets. Training data.",
         "bn": "উদ্বিগ্ন পোষা প্রাণীর জন্য শান্ত ঘরসহ বাসা। ট্রেনিং ডেটা।"
-      }
+      },
+      "phone": "+8801712000003"
     },
     {
       "id": "kamrul",
-      "name": { "en": "Kamrul", "bn": "কামরুল" },
+      "name": {
+        "en": "Kamrul",
+        "bn": "কামরুল"
+      },
       "tier": "B",
       "status": "approved",
       "neighbourhood": "baridhara",
       "species": ["dog"],
-      "capacityPerNight": { "smallPets": 4 },
+      "capacityPerNight": {
+        "smallPets": 4
+      },
       "pricePerNightPoisha": 180000,
       "capabilities": ["large-yard"],
       "experience": {
         "en": "Small boarding home with a fenced yard for dogs. Training data.",
         "bn": "কুকুরের জন্য বেড়াযুক্ত উঠানসহ ছোট বোর্ডিং বাসা। ট্রেনিং ডেটা।"
-      }
+      },
+      "phone": "+8801712000004"
     },
     {
       "id": "nusrat",
-      "name": { "en": "Nusrat", "bn": "নুসরাত" },
+      "name": {
+        "en": "Nusrat",
+        "bn": "নুসরাত"
+      },
       "tier": "B",
       "status": "approved",
       "neighbourhood": "gulshan",
       "species": ["cat"],
-      "capacityPerNight": { "smallPets": 3 },
+      "capacityPerNight": {
+        "smallPets": 3
+      },
       "pricePerNightPoisha": 150000,
       "capabilities": ["cats-only"],
       "experience": {
         "en": "Cat-only home with separate resting spaces. Training data.",
         "bn": "আলাদা বিশ্রামের জায়গাসহ শুধু বিড়ালের বাসা। ট্রেনিং ডেটা।"
-      }
+      },
+      "phone": "+8801712000005"
     }
   ],
   "applications": [
     {
       "id": "sadia",
-      "name": { "en": "Sadia", "bn": "সাদিয়া" },
+      "name": {
+        "en": "Sadia",
+        "bn": "সাদিয়া"
+      },
       "tier": "B",
       "status": "applied",
       "neighbourhood": "baridhara",

@@ -47,7 +47,6 @@ Integration and Playwright (STEP-25)
 ### Requires
 - BKG-06 Provider request view (`008-booking-stay/stories/006-provider-request-view.md`)
 - PAY-02 Capture on confirmation (`007-payments-payouts/stories/002-capture-on-confirmation.md`)
-- ACC-03 Notification port and delivery (`003-accounts-notifications/stories/003-notification-port-and-delivery.md`)
 
 ### Enables
 - BKG-10 Start the stay (`008-booking-stay/stories/010-start-the-stay.md`)

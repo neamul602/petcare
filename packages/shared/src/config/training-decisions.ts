@@ -87,6 +87,14 @@ export const platformRules = Object.freeze({
   },
   /** FR-10: minimum retention after the last booking. */
   retentionMonths: 24,
+  /** Sign-in rules (bolt 004): sessions, resend limit. Not training decisions, but kept in one place. */
+  auth: {
+    userSessionDays: 14,
+    adminSessionHours: 12,
+    signupTokenMinutes: 10,
+    otpSendLimit: { max: 5, windowMinutes: 10 },
+    resendAfterSeconds: 60,
+  },
   /** FR-11: curated shortlist size. */
   shortlist: { min: 3, max: 5 },
 } as const);

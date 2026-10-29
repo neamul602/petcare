@@ -51,11 +51,11 @@ test.describe('offline behaviour', () => {
     context,
   }) => {
     await waitForControl(page);
-    await page.goto('/pets');
-    await expect(page.getByRole('heading', { level: 1 })).toHaveText('আপনার পোষা প্রাণী');
+    await page.goto('/search');
+    await expect(page.getByRole('heading', { level: 1 })).toHaveText('আপনার তারিখের প্রোভাইডার');
     await context.setOffline(true);
-    await page.goto('/pets');
-    await expect(page.getByRole('heading', { level: 1 })).toHaveText('আপনার পোষা প্রাণী');
+    await page.goto('/search');
+    await expect(page.getByRole('heading', { level: 1 })).toHaveText('আপনার তারিখের প্রোভাইডার');
     await expect(page.getByTestId('offline-banner')).toContainText('অফলাইন');
     await context.setOffline(false);
     await expect(page.getByTestId('offline-banner')).not.toContainText('অফলাইন');

@@ -3,15 +3,17 @@ id: 003-notification-port-and-delivery
 code: ACC-03
 unit: 003-accounts-notifications
 intent: 001-petcare-v1
-status: ready
+status: deferred
 priority: must
 journeys: all
 created: 2026-10-29T16:00:00Z
-assigned_bolt: 004-accounts-notifications
+assigned_bolt: null
 implemented: false
 ---
 
 # Story ACC-03: Notification port and delivery
+
+> **DEFERRED (owner decision, 2026-10-29):** Notification port, delivery retry and failure tracking is skipped for now and tracked in `memory-bank/deferred-scope.md`. The acceptance criteria below are kept for when it is picked up again.
 
 ## User Story
 

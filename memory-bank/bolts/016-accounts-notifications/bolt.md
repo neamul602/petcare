@@ -6,7 +6,6 @@ type: simple-construction-bolt
 status: planned
 phase: UJ-1 complete
 stories:
-  - 004-inbox
   - 005-settings
 created: 2026-10-29T17:00:00Z
 started: null
@@ -34,11 +33,10 @@ Plan phase **UJ-1 complete**, bolt 16 of 25. Journeys served: UJ-1.
 
 ## Objective
 
-Inbox for each role and settings.
+Settings (name and language) for each role. (The inbox, ACC-04, is deferred.)
 
 ## Stories Included
 
-- **004-inbox** (ACC-04): Inbox (Should) · [story](../../intents/001-petcare-v1/units/003-accounts-notifications/stories/004-inbox.md)
 - **005-settings** (ACC-05): Settings (Should) · [story](../../intents/001-petcare-v1/units/003-accounts-notifications/stories/005-settings.md)
 
 ## Expected Outcome

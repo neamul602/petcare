@@ -58,10 +58,10 @@ Intent `001-petcare-v1`: **76 stories** in 11 units (generated 2026-10-29T16:00:
 
 ## 003-accounts-notifications
 
-### 001-sign-in-with-phone-otp.md ✅ GENERATED
+### 001-sign-in-with-phone-otp.md ✅ COMPLETED
 **ACC-01** Sign in with phone OTP · must · UJ-1
 
-### 002-admin-sign-in-and-role-guards.md ✅ GENERATED
+### 002-admin-sign-in-and-role-guards.md ✅ COMPLETED
 **ACC-02** Admin sign-in and role guards · must · UJ-3
 
 ### 003-notification-port-and-delivery.md ✅ GENERATED

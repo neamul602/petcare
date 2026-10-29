@@ -1,14 +1,24 @@
 {
   "label": "TRAINING DATA",
-  "note": "The people of the training scenario (workbook Step 17). Fictional. Loaded by the accounts bolt.",
+  "note": "The people of the training scenario (workbook Step 17). Fictional. The admin's training password is set by ADMIN_TRAINING_PASSWORD in .env, never stored here.",
   "owners": [
     {
       "id": "bibi",
-      "name": { "en": "Bibi", "bn": "বিবি" },
+      "name": {
+        "en": "Bibi",
+        "bn": "বিবি"
+      },
       "phone": "+8801712000001",
       "neighbourhood": "banani",
       "language": "bn"
     }
   ],
-  "admins": [{ "id": "ayaat", "name": "Ayaat", "role": "admin" }]
+  "admins": [
+    {
+      "id": "ayaat",
+      "name": "Ayaat",
+      "role": "admin",
+      "email": "ayaat@petcare.training"
+    }
+  ]
 }

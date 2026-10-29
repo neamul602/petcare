@@ -4,6 +4,7 @@ import tseslint from 'typescript-eslint';
 export default tseslint.config(
   {
     ignores: [
+      '**/env.d.ts',
       '.specsmd/**',
       '.claude/**',
       'docs/**',

@@ -47,7 +47,6 @@ Integration test; STEP-31 timeline JSON
 ### Requires
 - ACU-01 Report a concern (`010-acute-event-response/stories/001-report-a-concern.md`)
 - PAY-06 Freeze, release and refund (`007-payments-payouts/stories/006-freeze-release-and-refund.md`)
-- ACC-03 Notification port and delivery (`003-accounts-notifications/stories/003-notification-port-and-delivery.md`)
 
 ### Enables
 - ACU-03 Runbook coordination (`010-acute-event-response/stories/003-runbook-coordination.md`)

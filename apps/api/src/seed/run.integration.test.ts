@@ -40,13 +40,20 @@ describe('npm run seed (FND-07)', () => {
       vetClinics: 6,
       dummyServices: 'skipped',
     });
+    expect(summary.accounts).toEqual({ owners: 1, providerAccounts: 4, admins: 1 });
     expect(summary.validatedForLaterBolts).toEqual({
-      owners: 1,
-      admins: 1,
       pets: 1,
       approvedProviders: 4,
       pendingApplications: 1,
     });
+    expect(await count('SELECT count(*)::int AS n FROM users')).toBe(5);
+    expect(await count("SELECT count(*)::int AS n FROM users WHERE role = 'provider'")).toBe(4);
+    expect(await count('SELECT count(*)::int AS n FROM admin_users')).toBe(1);
+    expect(
+      await count(
+        "SELECT count(*)::int AS n FROM admin_users WHERE password_hash NOT LIKE 'scrypt$%'",
+      ),
+    ).toBe(0);
     expect(await count('SELECT count(*)::int AS n FROM neighbourhoods')).toBe(3);
     expect(await count('SELECT count(*)::int AS n FROM vet_clinics')).toBe(6);
     expect(await count('SELECT count(*)::int AS n FROM vet_clinics WHERE is_training_data')).toBe(

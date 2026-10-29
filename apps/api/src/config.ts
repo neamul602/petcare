@@ -62,6 +62,10 @@ const trainingDecisionsSchema = z.object({
 const runtimeSchema = z.object({
   DATABASE_URL: z.string().url().default('postgres://petcare:petcare@localhost:5433/petcare'),
   API_PORT: z.coerce.number().int().positive().default(3000),
+  /** Where the Dummy SMS/OTP service listens (training only). */
+  DUMMY_URL: z.string().url().default('http://localhost:4100'),
+  /** Codes one number may ask for per window; training and test environments may raise it. */
+  OTP_SEND_LIMIT_MAX: z.coerce.number().int().positive().optional(),
 });
 
 export type RuntimeConfig = z.infer<typeof runtimeSchema>;

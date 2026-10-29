@@ -33,5 +33,14 @@
   "error.permission.body": "Sign in with the admin account to continue.",
   "error.permission.action": "Sign in",
   "error.offline.title": "You're offline",
-  "error.offline.body": "Pages opened before still work. This one needs a connection."
+  "error.offline.body": "Pages opened before still work. This one needs a connection.",
+  "nav.signOut": "Sign out",
+  "nav.signedInAs": "Signed in as {name}",
+  "signin.title": "Admin sign in",
+  "signin.email": "Email",
+  "signin.password": "Password",
+  "signin.submit": "Sign in",
+  "signin.error.invalid_credentials": "The email or password is not right.",
+  "signin.error.too_many_requests": "Too many attempts. Please wait a few minutes.",
+  "signin.error.generic": "Something went wrong. Please try again."
 }

@@ -12,6 +12,8 @@ export const DEFAULT_LOCALE: Locale = 'bn';
 export const LOCALE_COOKIE = 'pc_locale';
 
 export type MessageKey = keyof typeof en;
+/** Every owner/provider message key (used to pick which strings a screen sends to the browser). */
+export const MESSAGE_KEYS = Object.keys(en) as MessageKey[];
 export type AdminMessageKey = keyof typeof adminEn;
 
 const catalogs: Record<Locale, Record<MessageKey, string>> = { bn, en };

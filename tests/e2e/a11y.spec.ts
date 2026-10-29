@@ -1,25 +1,35 @@
 import AxeBuilder from '@axe-core/playwright';
 import { expect, test } from '@playwright/test';
 import { SCREEN_ROUTES } from '../../apps/web/src/lib/routes.ts';
+import { contextAs, type Role } from './sessions.ts';
 
 // FND-06 / DR-19: WCAG 2.1 AA on every route, in Bangla and English, keyboard order and spacing.
 const EXTRA_PAGES = ['/dev/kit', '/offline', '/no-such-page'];
 const PATHS = [...new Set([...SCREEN_ROUTES.map((route) => route.path), ...EXTRA_PAGES])];
 const TAGS = ['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa'];
 
+const ROLE_FOR_PATH = new Map<string, Role | null>(
+  SCREEN_ROUTES.map((route) => [route.path, route.role]),
+);
+for (const path of ['/sign-in', '/admin/sign-in', ...EXTRA_PAGES]) ROLE_FOR_PATH.set(path, null); // opened as a guest
+
 for (const locale of ['bn', 'en']) {
   test.describe(`axe scan (${locale})`, () => {
-    test.beforeEach(async ({ context, baseURL }) => {
-      await context.addCookies([{ name: 'pc_locale', value: locale, url: baseURL! }]);
-    });
     for (const path of PATHS) {
-      test(`${path} has no WCAG 2.1 AA violations`, async ({ page }) => {
+      test(`${path} has no WCAG 2.1 AA violations`, async ({ browser, baseURL, viewport }) => {
+        const context = await contextAs(browser, ROLE_FOR_PATH.get(path) ?? null, {
+          baseURL,
+          viewport,
+        });
+        await context.addCookies([{ name: 'pc_locale', value: locale, url: baseURL! }]);
+        const page = await context.newPage();
         await page.goto(path, { waitUntil: 'networkidle' }); // settles first-compile reloads in dev
         const results = await new AxeBuilder({ page }).withTags(TAGS).analyze();
         const summary = results.violations.map(
           (v) => `${v.id}: ${v.nodes.map((n) => n.target.join(' ')).join(' | ')}`,
         );
         expect(summary).toEqual([]);
+        await context.close();
       });
     }
   });
@@ -48,8 +58,14 @@ test.describe('keyboard and spacing', () => {
     }
   });
 
-  test('adjacent touch targets are at least 8 px apart', async ({ page }) => {
-    for (const path of ['/', '/provider', '/admin']) {
+  test('adjacent touch targets are at least 8 px apart', async ({ browser, baseURL, viewport }) => {
+    for (const [path, role] of [
+      ['/', 'owner'],
+      ['/provider', 'provider'],
+      ['/admin', 'admin'],
+    ] as const) {
+      const context = await contextAs(browser, role, { baseURL, viewport });
+      const page = await context.newPage();
       await page.goto(path);
       const boxes = await page.evaluate(() =>
         Array.from(
@@ -78,6 +94,7 @@ test.describe('keyboard and spacing', () => {
           expect(gap, `${path}: "${a.label}" and "${b.label}"`).toBeGreaterThanOrEqual(8);
         }
       }
+      await context.close();
     }
   });
 });

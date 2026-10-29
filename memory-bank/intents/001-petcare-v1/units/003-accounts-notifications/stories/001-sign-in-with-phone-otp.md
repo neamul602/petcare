@@ -3,12 +3,12 @@ id: 001-sign-in-with-phone-otp
 code: ACC-01
 unit: 003-accounts-notifications
 intent: 001-petcare-v1
-status: ready
+status: complete
 priority: must
 journeys: UJ-1
-created: 2026-10-29T16:00:00Z
+created: '2026-10-29T16:00:00Z'
 assigned_bolt: 004-accounts-notifications
-implemented: false
+implemented: true
 ---
 
 # Story ACC-01: Sign in with phone OTP

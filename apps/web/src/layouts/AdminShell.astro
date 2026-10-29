@@ -2,6 +2,7 @@
 /** Admin console shell: English only, no language toggle, left sidebar that becomes a menu below 768 px. */
 import { ta, type AdminMessageKey } from '@petcare/shared/i18n';
 import AdminMenu from '../components/shell/AdminMenu.tsx';
+import Button from '../components/kit/Button.astro';
 import BaseLayout from './BaseLayout.astro';
 
 interface Props {
@@ -10,6 +11,7 @@ interface Props {
 }
 const { titleKey, bare = false } = Astro.props;
 const current = Astro.url.pathname;
+const admin = Astro.locals.admin;
 const items = [
   { href: '/admin', label: ta('nav.queue') },
   { href: '/admin/providers', label: ta('nav.providers') },
@@ -39,11 +41,18 @@ const items = [
             ))}
           </ul>
         </nav>
+        {admin && (
+          <div class="mt-6 space-y-2 border-t border-border px-5 pt-4" data-testid="admin-account">
+            <p class="text-sm font-medium" data-testid="signed-in-as">{ta('nav.signedInAs', { name: admin.name })}</p>
+            <form method="post" action="/admin/sign-out"><Button type="submit" variant="outline" size="sm" data-testid="sign-out">{ta('nav.signOut')}</Button></form>
+          </div>
+        )}
       </aside>
     )}
     <div class="min-w-0 flex-1">
       <header class="relative flex items-center gap-3 border-b border-border bg-background px-4 py-2 md:hidden">
         <span class="mr-auto font-serif text-lg font-semibold text-primary">{ta('app.name')}</span>
+        {admin && !bare && <form method="post" action="/admin/sign-out"><Button type="submit" variant="outline" size="sm" data-testid="sign-out-mobile">{ta('nav.signOut')}</Button></form>}
         {!bare && <AdminMenu client:load items={items} menuLabel={ta('nav.menu')} navLabel={ta('a11y.adminNav')} />}
       </header>
       <main id="main" class="mx-auto max-w-6xl px-4 py-6 sm:px-6">

@@ -1,10 +1,13 @@
 ---
 import { t } from '@petcare/shared/i18n';
+import AccountCard from '@/components/AccountCard.astro';
 import Placeholder from '@/components/Placeholder.astro';
 import ProviderShell from '@/layouts/ProviderShell.astro';
 import { getLocale } from '@/lib/locale';
 const locale = getLocale(Astro.cookies);
+const user = Astro.locals.user;
 ---
 <ProviderShell titleKey="screen.settings">
   <Placeholder screenId="P-settings" title={t(locale, 'screen.settings')} body={t(locale, 'placeholder.body')} />
+  {user && <div class="pt-4"><AccountCard name={user.name} locale={locale} action="/sign-out" /></div>}
 </ProviderShell>

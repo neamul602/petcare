@@ -3,15 +3,17 @@ id: 004-inbox
 code: ACC-04
 unit: 003-accounts-notifications
 intent: 001-petcare-v1
-status: ready
+status: deferred
 priority: should
 journeys: UJ-1
 created: 2026-10-29T16:00:00Z
-assigned_bolt: 016-accounts-notifications
+assigned_bolt: null
 implemented: false
 ---
 
 # Story ACC-04: Inbox
+
+> **DEFERRED (owner decision, 2026-10-29):** Inbox screens is skipped for now and tracked in `memory-bank/deferred-scope.md`. The acceptance criteria below are kept for when it is picked up again.
 
 ## User Story
 
@@ -45,7 +47,6 @@ Playwright
 ## Dependencies
 
 ### Requires
-- ACC-03 Notification port and delivery (`003-accounts-notifications/stories/003-notification-port-and-delivery.md`)
 - FND-04 PWA, offline and shared states (`001-platform-foundation/stories/004-pwa-offline-and-shared-states.md`)
 
 ### Enables

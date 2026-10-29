@@ -11,6 +11,7 @@
     "seed": "tsx src/seed/run.ts"
   },
   "dependencies": {
+    "@fastify/cookie": "^11.1.5",
     "@petcare/shared": "^0.1.0",
     "drizzle-orm": "^0.45.4",
     "fastify": "^5.12.7",

@@ -8,7 +8,6 @@ phase: UJ-1 complete
 stories:
   - 010-start-the-stay
   - 012-daily-updates
-  - 013-booking-chat
   - 014-vet-clinic-directory
   - 018-owner-booking-page-during-the-stay
 created: 2026-10-29T17:00:00Z
@@ -37,13 +36,12 @@ Plan phase **UJ-1 complete**, bolt 11 of 25. Journeys served: UJ-1, UJ-2.
 
 ## Objective
 
-The stay: start stay, daily updates with photos and reminders, booking chat, vet clinics and the owner's booking page during the stay.
+The stay: start stay, daily updates with photos, vet clinics and the owner's booking page during the stay. (Booking chat, BKG-13, and scheduled reminders are deferred.)
 
 ## Stories Included
 
 - **010-start-the-stay** (BKG-10): Start the stay (Must) · [story](../../intents/001-petcare-v1/units/008-booking-stay/stories/010-start-the-stay.md)
 - **012-daily-updates** (BKG-12): Daily updates (Must) · [story](../../intents/001-petcare-v1/units/008-booking-stay/stories/012-daily-updates.md)
-- **013-booking-chat** (BKG-13): Booking chat (Must) · [story](../../intents/001-petcare-v1/units/008-booking-stay/stories/013-booking-chat.md)
 - **014-vet-clinic-directory** (BKG-14): Vet-clinic directory (Must) · [story](../../intents/001-petcare-v1/units/008-booking-stay/stories/014-vet-clinic-directory.md)
 - **018-owner-booking-page-during-the-stay** (BKG-18): Owner booking page during the stay (Must) · [story](../../intents/001-petcare-v1/units/008-booking-stay/stories/018-owner-booking-page-during-the-stay.md)
 

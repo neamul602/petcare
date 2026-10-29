@@ -1,8 +1,44 @@
 ---
 import { ta } from '@petcare/shared/i18n';
-import Placeholder from '@/components/Placeholder.astro';
+import Button from '@/components/kit/Button.astro';
+import Card from '@/components/kit/Card.astro';
+import Input from '@/components/kit/Input.astro';
 import AdminShell from '@/layouts/AdminShell.astro';
+import { apiFetch, copyCookies } from '@/lib/api';
+
+let error = '';
+if (Astro.request.method === 'POST') {
+  const form = await Astro.request.formData();
+  try {
+    const response = await apiFetch('/admin/auth/sign-in', {
+      method: 'POST',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify({ email: String(form.get('email') ?? ''), password: String(form.get('password') ?? '') }),
+    });
+    if (response.ok) {
+      const headers = new Headers({ location: '/admin' });
+      copyCookies(response, headers);
+      return new Response(null, { status: 303, headers });
+    }
+    const body = (await response.json().catch(() => ({}))) as { error?: { code?: string } };
+    const key = `signin.error.${body.error?.code ?? 'generic'}`;
+    error = ta((['signin.error.invalid_credentials', 'signin.error.too_many_requests'].includes(key) ? key : 'signin.error.generic') as never);
+  } catch {
+    error = ta('signin.error.generic');
+  }
+  Astro.response.status = 401;
+}
 ---
 <AdminShell titleKey="screen.signIn" bare>
-  <Placeholder screenId="A-sign-in" title={ta('screen.signIn')} body={ta('placeholder.body')} />
+  <section data-screen="A-sign-in" class="mx-auto max-w-md space-y-4 pt-6">
+    <h1 class="text-2xl font-semibold leading-snug">{ta('signin.title')}</h1>
+    <Card>
+      <form method="post" class="space-y-4">
+        <Input id="email" name="email" type="email" autocomplete="username" label={ta('signin.email')} required />
+        <Input id="password" name="password" type="password" autocomplete="current-password" label={ta('signin.password')} required />
+        {error && <p role="alert" data-testid="error-message" class="rounded-md bg-destructive-soft px-4 py-3 text-sm text-destructive">{error}</p>}
+        <Button type="submit" class="w-full">{ta('signin.submit')}</Button>
+      </form>
+    </Card>
+  </section>
 </AdminShell>

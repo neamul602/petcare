@@ -1,0 +1,18 @@
+---
+/** Who is signed in, with the sign-out button. Lives on the settings pages (account actions belong to settings). */
+import { t, ta, type Locale, type MessageKey } from '@petcare/shared/i18n';
+import Button from './kit/Button.astro';
+import Card from './kit/Card.astro';
+interface Props {
+  name: string;
+  locale: Locale;
+  action: string;
+  admin?: boolean;
+}
+const { name, locale, action, admin = false } = Astro.props;
+const text = (key: 'nav.signedInAs' | 'nav.signOut') => (admin ? ta(key, { name }) : t(locale, key as MessageKey, { name }));
+---
+<Card variant="muted" class="flex flex-wrap items-center justify-between gap-4" data-testid="account-card">
+  <p data-testid="signed-in-as" class="font-medium">{text('nav.signedInAs')}</p>
+  <form method="post" action={action}><Button type="submit" variant="outline" data-testid="sign-out">{text('nav.signOut')}</Button></form>
+</Card>

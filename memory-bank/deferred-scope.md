@@ -18,3 +18,4 @@ Rules while deferred: do not build the feature; if a story needs a small honest 
 |---|---|---|
 | 2026-10-29 | Recorded the list above | Owner instruction |
 | 2026-10-30 | Seed loaders for owner, pet, provider, admin and pending application | Not deferred by choice: their tables do not exist yet. The seed files are validated now; the bolts that create the tables (004 accounts, 005 pets, 006 providers) must add the loader and call it from `apps/api/src/seed/run.ts`. |
+| 2026-10-30 | Replanned the bolts: ACC-03 (notification port) out of bolt 004; ACC-04 (inbox) out of bolt 016; BKG-13 (booking chat) out of bolt 011 | Stories marked `deferred`, no longer assigned to a bolt. Other stories that mention notifications (BKG-09 timeout notice, BKG-12 18:00 reminder, ACU-02 owner notice) keep only their non-notification behaviour and show the state on the booking page. |

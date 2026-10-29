@@ -3,15 +3,17 @@ id: 013-booking-chat
 code: BKG-13
 unit: 008-booking-stay
 intent: 001-petcare-v1
-status: ready
+status: deferred
 priority: must
 journeys: UJ-1
 created: 2026-10-29T16:00:00Z
-assigned_bolt: 011-booking-stay
+assigned_bolt: null
 implemented: false
 ---
 
 # Story BKG-13: Booking chat
+
+> **DEFERRED (owner decision, 2026-10-29):** Live booking chat is skipped for now and tracked in `memory-bank/deferred-scope.md`. The acceptance criteria below are kept for when it is picked up again.
 
 ## User Story
 
