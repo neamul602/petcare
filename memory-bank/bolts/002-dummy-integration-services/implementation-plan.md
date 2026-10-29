@@ -118,3 +118,7 @@ The five Dummy APIs themselves (below), exposed on port 4100. No external system
 ### Out of scope for this bolt
 
 PetCare-side ports and adapters (bolts 004, 005, 008); OTP wiring into sign-in (bolt 004); the training seed (bolt 003); video uploads (TD-15); real provider contracts; authentication on the Dummy endpoints (it is a local training service).
+
+### Approval
+
+Approved 2026-10-29 (`APPROVE PLAN`) with the three recommendations: state in memory; idempotency key required on authorize, capture, refund and payout batches; 30 s default timeout, configurable.

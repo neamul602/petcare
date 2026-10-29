@@ -32,3 +32,5 @@ last_updated: 2026-10-29T22:00:00Z
 | Date | Bolt | Event | Details |
 |------|------|-------|---------|
 | 2026-10-29T22:00:00Z | 002-dummy-integration-services | started | Stage 1: plan |
+| 2026-10-29T22:20:00Z | 002-dummy-integration-services | stage-complete | plan → implement (APPROVE PLAN) |
+| 2026-10-29T23:30:00Z | 002-dummy-integration-services | stage-ready | implement done, awaiting human checkpoint |
