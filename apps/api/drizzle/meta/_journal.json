@@ -50,6 +50,13 @@
       "when": 1793274617407,
       "tag": "0006_capacity",
       "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "7",
+      "when": 1793275597842,
+      "tag": "0007_payments",
+      "breakpoints": true
     }
   ]
 }

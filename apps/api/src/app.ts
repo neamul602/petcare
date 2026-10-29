@@ -15,6 +15,9 @@ import { loadBusinessRules } from './config.ts';
 import type { Database } from './db/client.ts';
 import { denyAllPetAccess, type PetAccessPolicy } from './pets/care-summary.ts';
 import type { PhotoPort } from './pets/photo-port.ts';
+import { createPaymentService } from './payments/payment-service.ts';
+import type { PaymentPort } from './payments/port.ts';
+import { registerPaymentRoutes } from './payments/routes.ts';
 import { registerPetRoutes } from './pets/routes.ts';
 import { registerCapacityRoutes } from './capacity/routes.ts';
 import { registerProviderRoutes } from './providers/routes.ts';
@@ -24,6 +27,7 @@ export interface AppDeps {
   db?: Database;
   otp?: OtpPort;
   photos?: PhotoPort;
+  payments?: PaymentPort;
   /** Which providers may see which pets (bookings decide, in later bolts). Default: nobody. */
   petAccess?: PetAccessPolicy;
   clock?: Clock;
@@ -82,6 +86,11 @@ export async function buildApp(deps: AppDeps = {}) {
     await registerAdminRoutes(app, authDeps);
     registerProviderRoutes(app, { db: deps.db, authn });
     registerCapacityRoutes(app, { db: deps.db, authn, clock });
+    if (deps.payments)
+      registerPaymentRoutes(app, {
+        authn,
+        service: createPaymentService({ db: deps.db, port: deps.payments, clock }),
+      });
     if (deps.photos)
       registerPetRoutes(app, {
         db: deps.db,

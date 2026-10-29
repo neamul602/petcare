@@ -135,13 +135,13 @@ Intent `001-petcare-v1`: **76 stories** in 11 units (generated 2026-10-29T16:00:
 
 ## 007-payments-payouts
 
-### 001-authorize-payment-at-request.md ✅ GENERATED
+### 001-authorize-payment-at-request.md ✅ COMPLETED
 **PAY-01** Authorize payment at request · must · UJ-1, UJ-4
 
-### 002-capture-on-confirmation.md ✅ GENERATED
+### 002-capture-on-confirmation.md ✅ COMPLETED
 **PAY-02** Capture on confirmation · must · UJ-1
 
-### 003-release-authorization.md ✅ GENERATED
+### 003-release-authorization.md ✅ COMPLETED
 **PAY-03** Release authorization · must · UJ-1
 
 ### 004-commission-and-payout-queue.md ✅ GENERATED

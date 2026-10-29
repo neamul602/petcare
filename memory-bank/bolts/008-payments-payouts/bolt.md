@@ -3,23 +3,34 @@ id: 008-payments-payouts
 unit: 007-payments-payouts
 intent: 001-petcare-v1
 type: ddd-construction-bolt
-status: planned
+status: complete
 phase: Thin slice
 stories:
   - 001-authorize-payment-at-request
   - 002-capture-on-confirmation
   - 003-release-authorization
-created: 2026-10-29T17:00:00Z
-started: null
-completed: null
+created: '2026-10-29T17:00:00Z'
+started: '2026-10-30T19:00:00Z'
+completed: '2026-10-29T12:11:47Z'
 current_stage: null
-stages_completed: []
-
-requires_bolts: [001-platform-foundation, 002-dummy-integration-services]
-enables_bolts: [009-booking-stay, 010-booking-stay, 012-payments-payouts]
-requires_units: [dummy-integration-services, platform-foundation]
+stages_completed:
+  - name: model
+    completed: '2026-10-30T19:00:00Z'
+    artifact: implementation-plan.md
+  - name: design
+    completed: '2026-10-30T19:00:00Z'
+    artifact: implementation-plan.md
+requires_bolts:
+  - 001-platform-foundation
+  - 002-dummy-integration-services
+enables_bolts:
+  - 009-booking-stay
+  - 010-booking-stay
+  - 012-payments-payouts
+requires_units:
+  - dummy-integration-services
+  - platform-foundation
 blocks: true
-
 complexity:
   avg_complexity: 3
   avg_uncertainty: 2
