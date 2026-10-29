@@ -27,7 +27,10 @@ const DEFAULT_TIMEOUT_MS = 30_000;
 const DEFAULT_PAYOUT_SETTLE_MS = 60_000;
 
 export function buildDummyApp(options: DummyOptions = {}) {
-  const app = Fastify({ logger: process.env.NODE_ENV !== 'test', bodyLimit: 1024 * 1024 });
+  const app = Fastify({
+    logger: process.env.NODE_ENV !== 'test',
+    bodyLimit: MAX_PHOTO_BYTES + 1024 * 1024,
+  });
 
   const sleepers = new Set<() => void>();
   const ctx: DummyContext = {

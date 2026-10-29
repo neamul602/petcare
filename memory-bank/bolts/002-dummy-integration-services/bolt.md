@@ -3,7 +3,7 @@ id: 002-dummy-integration-services
 unit: 002-dummy-integration-services
 intent: 001-petcare-v1
 type: simple-construction-bolt
-status: in-progress
+status: complete
 phase: Thin slice
 stories:
   - 001-dummy-service-host-and-training-controls
@@ -11,20 +11,32 @@ stories:
   - 003-dummy-payment-gateway-api
   - 004-dummy-mfs-payout-api
   - 005-dummy-notification-and-photo-apis
-created: 2026-10-29T17:00:00Z
-started: 2026-10-29T22:00:00Z
-completed: null
-current_stage: implement
+created: '2026-10-29T17:00:00Z'
+started: '2026-10-29T22:00:00Z'
+completed: '2026-10-29T04:23:25Z'
+current_stage: null
 stages_completed:
   - name: plan
-    completed: 2026-10-29T22:20:00Z
+    completed: '2026-10-29T22:20:00Z'
     artifact: implementation-plan.md
-
-requires_bolts: [001-platform-foundation]
-enables_bolts: [004-accounts-notifications, 005-pet-care-profile, 008-payments-payouts, 011-booking-stay, 012-payments-payouts, 014-reviews-disputes]
-requires_units: [platform-foundation]
+  - name: implement
+    completed: '2026-10-29T23:40:00Z'
+    artifact: implementation-walkthrough.md
+  - name: test
+    completed: '2026-10-30T01:00:00Z'
+    artifact: test-walkthrough.md
+requires_bolts:
+  - 001-platform-foundation
+enables_bolts:
+  - 004-accounts-notifications
+  - 005-pet-care-profile
+  - 008-payments-payouts
+  - 011-booking-stay
+  - 012-payments-payouts
+  - 014-reviews-disputes
+requires_units:
+  - platform-foundation
 blocks: false
-
 complexity:
   avg_complexity: 2
   avg_uncertainty: 1
@@ -62,8 +74,8 @@ Every Dummy endpoint from workbook Step 16 answers; each failure mode is switcha
 ## Stages
 
 - ✅ **1. Plan**: Complete → implementation-plan.md
-- ⏳ **2. Implement**: In progress → source code
-- [ ] **3. Test**: Pending → test-walkthrough.md
+- ✅ **2. Implement**: Complete → source code
+- ✅ **3. Test**: Complete → test-walkthrough.md → test-walkthrough.md
 
 ## Dependencies
 

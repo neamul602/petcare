@@ -3,12 +3,12 @@ id: 002-dummy-sms-otp-api
 code: DUM-02
 unit: 002-dummy-integration-services
 intent: 001-petcare-v1
-status: ready
+status: complete
 priority: must
 journeys: UJ-1
-created: 2026-10-29T16:00:00Z
+created: '2026-10-29T16:00:00Z'
 assigned_bolt: 002-dummy-integration-services
-implemented: false
+implemented: true
 ---
 
 # Story DUM-02: Dummy SMS / OTP API

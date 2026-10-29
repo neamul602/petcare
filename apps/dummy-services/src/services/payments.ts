@@ -11,7 +11,12 @@
 import type { FastifyInstance } from 'fastify';
 import { z } from 'zod';
 import { ApiError } from '../core/errors.ts';
-import { requireIdempotencyKey, type ActionResult, type DummyService } from '../core/service.ts';
+import {
+  CARD_DATA,
+  requireIdempotencyKey,
+  type ActionResult,
+  type DummyService,
+} from '../core/service.ts';
 
 const METHODS = ['bkash', 'nagad', 'card'] as const;
 type Method = (typeof METHODS)[number];
@@ -49,7 +54,6 @@ const refundBody = z.strictObject({
   amount: z.number().int().positive().max(MAX_AMOUNT),
   reason: z.string().max(200).optional(),
 });
-const CARD_DATA = /card.?(number|no|cvv|cvc|expiry|exp|holder)|^(pan|cvv|cvc)$/i;
 
 const view = (a: Authorization) => ({ ...a, capturedAmount: a.capturedAt ? a.amount : 0 });
 

@@ -3,12 +3,12 @@ id: 001-dummy-service-host-and-training-controls
 code: DUM-01
 unit: 002-dummy-integration-services
 intent: 001-petcare-v1
-status: ready
+status: complete
 priority: must
 journeys: all
-created: 2026-10-29T16:00:00Z
+created: '2026-10-29T16:00:00Z'
 assigned_bolt: 002-dummy-integration-services
-implemented: false
+implemented: true
 ---
 
 # Story DUM-01: Dummy service host and training controls

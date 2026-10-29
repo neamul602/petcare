@@ -41,19 +41,19 @@ Intent `001-petcare-v1`: **76 stories** in 11 units (generated 2026-10-29T16:00:
 
 ## 002-dummy-integration-services
 
-### 001-dummy-service-host-and-training-controls.md ✅ GENERATED
+### 001-dummy-service-host-and-training-controls.md ✅ COMPLETED
 **DUM-01** Dummy service host and training controls · must · all
 
-### 002-dummy-sms-otp-api.md ✅ GENERATED
+### 002-dummy-sms-otp-api.md ✅ COMPLETED
 **DUM-02** Dummy SMS / OTP API · must · UJ-1
 
-### 003-dummy-payment-gateway-api.md ✅ GENERATED
+### 003-dummy-payment-gateway-api.md ✅ COMPLETED
 **DUM-03** Dummy payment gateway API · must · UJ-1, UJ-4
 
-### 004-dummy-mfs-payout-api.md ✅ GENERATED
+### 004-dummy-mfs-payout-api.md ✅ COMPLETED
 **DUM-04** Dummy MFS payout API · must · UJ-2
 
-### 005-dummy-notification-and-photo-apis.md ✅ GENERATED
+### 005-dummy-notification-and-photo-apis.md ✅ COMPLETED
 **DUM-05** Dummy notification and photo APIs · must · UJ-1
 
 ## 003-accounts-notifications

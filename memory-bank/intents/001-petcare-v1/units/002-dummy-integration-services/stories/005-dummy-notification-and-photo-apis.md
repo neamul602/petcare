@@ -3,12 +3,12 @@ id: 005-dummy-notification-and-photo-apis
 code: DUM-05
 unit: 002-dummy-integration-services
 intent: 001-petcare-v1
-status: ready
+status: complete
 priority: must
 journeys: UJ-1
-created: 2026-10-29T16:00:00Z
+created: '2026-10-29T16:00:00Z'
 assigned_bolt: 002-dummy-integration-services
-implemented: false
+implemented: true
 ---
 
 # Story DUM-05: Dummy notification and photo APIs

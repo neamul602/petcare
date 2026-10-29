@@ -46,6 +46,23 @@ interface StoredResult {
 
 const MAX_LOG = 500;
 
+/** Field names that look like card data; these are never kept, not even in the request log (NFR-9). */
+export const CARD_DATA = /card.?(number|no|cvv|cvc|expiry|exp|holder)|^(pan|cvv|cvc)$/i;
+
+/** Copy of a request body with any card-data fields blanked out. */
+export function redactCardData(value: unknown): unknown {
+  if (Array.isArray(value)) return value.map(redactCardData);
+  if (value && typeof value === 'object') {
+    return Object.fromEntries(
+      Object.entries(value).map(([key, inner]) => [
+        key,
+        CARD_DATA.test(key) ? '[redacted]' : redactCardData(inner),
+      ]),
+    );
+  }
+  return value;
+}
+
 export class DummyService {
   mode: FailureMode = 'none';
   timeoutMs: number;
@@ -113,7 +130,8 @@ export class DummyService {
       request.dummyEntry = entry;
     });
     app.addHook('preHandler', async (request) => {
-      if (request.dummyEntry && request.body !== undefined) request.dummyEntry.body = request.body;
+      if (request.dummyEntry && request.body !== undefined)
+        request.dummyEntry.body = redactCardData(request.body);
     });
     app.addHook('onResponse', async (request, reply) => {
       const entry = request.dummyEntry;

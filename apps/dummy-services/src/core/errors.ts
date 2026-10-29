@@ -31,6 +31,16 @@ export function registerErrorHandling(app: FastifyInstance) {
     if (failure.code === 'FST_REQ_FILE_TOO_LARGE') {
       return reply.code(413).send(errorBody('photo_too_large', 'Photos can be at most 5 MB'));
     }
+    if (failure.code === 'FST_ERR_CTP_BODY_TOO_LARGE') {
+      return reply
+        .code(413)
+        .send(
+          errorBody(
+            'request_too_large',
+            'The request is larger than this training service accepts',
+          ),
+        );
+    }
     const status = failure.statusCode;
     if (status && status >= 400 && status < 500) {
       return reply.code(status).send(errorBody('bad_request', failure.message ?? 'Bad request'));

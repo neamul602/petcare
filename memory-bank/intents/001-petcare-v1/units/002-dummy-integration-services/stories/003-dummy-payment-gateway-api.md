@@ -3,12 +3,12 @@ id: 003-dummy-payment-gateway-api
 code: DUM-03
 unit: 002-dummy-integration-services
 intent: 001-petcare-v1
-status: ready
+status: complete
 priority: must
 journeys: UJ-1, UJ-4
-created: 2026-10-29T16:00:00Z
+created: '2026-10-29T16:00:00Z'
 assigned_bolt: 002-dummy-integration-services
-implemented: false
+implemented: true
 ---
 
 # Story DUM-03: Dummy payment gateway API
