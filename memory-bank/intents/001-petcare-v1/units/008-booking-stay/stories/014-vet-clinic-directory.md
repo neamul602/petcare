@@ -3,12 +3,12 @@ id: 014-vet-clinic-directory
 code: BKG-14
 unit: 008-booking-stay
 intent: 001-petcare-v1
-status: ready
+status: complete
 priority: must
 journeys: UJ-1
-created: 2026-10-29T16:00:00Z
+created: '2026-10-29T16:00:00Z'
 assigned_bolt: 011-booking-stay
-implemented: false
+implemented: true
 ---
 
 # Story BKG-14: Vet-clinic directory

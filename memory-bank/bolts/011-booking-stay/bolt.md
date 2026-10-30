@@ -3,24 +3,35 @@ id: 011-booking-stay
 unit: 008-booking-stay
 intent: 001-petcare-v1
 type: ddd-construction-bolt
-status: planned
+status: complete
 phase: UJ-1 complete
 stories:
   - 010-start-the-stay
   - 012-daily-updates
   - 014-vet-clinic-directory
   - 018-owner-booking-page-during-the-stay
-created: 2026-10-29T17:00:00Z
-started: null
-completed: null
+created: '2026-10-29T17:00:00Z'
+started: '2026-10-31T11:00:00Z'
+completed: '2026-10-30T13:03:09Z'
 current_stage: null
-stages_completed: []
-
-requires_bolts: [002-dummy-integration-services, 003-platform-foundation, 010-booking-stay]
-enables_bolts: [013-booking-stay, 015-acute-event-response]
-requires_units: [dummy-integration-services, platform-foundation]
+stages_completed:
+  - name: model
+    completed: '2026-10-31T11:00:00Z'
+    artifact: implementation-plan.md
+  - name: design
+    completed: '2026-10-31T11:00:00Z'
+    artifact: implementation-plan.md
+requires_bolts:
+  - 002-dummy-integration-services
+  - 003-platform-foundation
+  - 010-booking-stay
+enables_bolts:
+  - 013-booking-stay
+  - 015-acute-event-response
+requires_units:
+  - dummy-integration-services
+  - platform-foundation
 blocks: true
-
 complexity:
   avg_complexity: 2
   avg_uncertainty: 1

@@ -64,6 +64,13 @@
       "when": 1793276630269,
       "tag": "0008_bookings",
       "breakpoints": true
+    },
+    {
+      "idx": 9,
+      "version": "7",
+      "when": 1793364806040,
+      "tag": "0009_stay",
+      "breakpoints": true
     }
   ]
 }

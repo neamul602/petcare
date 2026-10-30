@@ -6,13 +6,17 @@ import Card from '@/components/kit/Card.astro';
 import StatePill from '@/components/kit/StatePill.astro';
 import OwnerShell from '@/layouts/OwnerShell.astro';
 import { apiFetch } from '@/lib/api';
+import UpdateList from '@/components/stay/UpdateList.astro';
+import VetClinics from '@/components/stay/VetClinics.astro';
 import { getLocale } from '@/lib/locale';
 const locale = getLocale(Astro.cookies);
 const L = (key: string, params?: Record<string, string | number>) => t(locale, key as MessageKey, params);
 const response = await apiFetch(`/owner/bookings/${Astro.params.id}`, { cookie: Astro.request.headers.get('cookie') }).catch(() => null);
 if (!response || response.status === 404) return Astro.rewrite('/404');
 if (!response.ok) return Astro.redirect('/bookings');
-const { booking: b, history } = (await response.json()) as { booking: any; history: Array<{ to: string; at: string }> };
+const { booking: b, history, updates } = (await response.json()) as { booking: any; history: Array<{ to: string; at: string }>; updates: any[] };
+const clinicsRes = ['captured', 'in_stay'].includes(b.state) ? await apiFetch(`/bookings/${Astro.params.id}/vet-clinics`, { cookie: Astro.request.headers.get('cookie') }).catch(() => null) : null;
+const clinics = clinicsRes?.ok ? ((await clinicsRes.json()) as { clinics: any[] }).clinics : [];
 const name: string = b.provider.name[locale];
 const day = (d: string) => formatDate(new Date(`${d}T00:00:00+06:00`), locale);
 const when = (iso: string) => `${formatDate(new Date(iso), locale)} ${formatTime(new Date(iso), locale)}`;
@@ -41,6 +45,9 @@ const pending = Astro.url.searchParams.get('pending') === '1';
       </Card>
     )}
     {b.state === 'captured' && <Card><p>{L('booking.captured.body', { name, amount })}</p></Card>}
+    {b.state === 'in_stay' && <Card><p>{L('stay.inStay.body', { name, pet: b.pet.name })}</p></Card>}
+    {['in_stay', 'completed'].includes(b.state) && <UpdateList locale={locale} updates={updates} />}
+    {clinics.length > 0 && <VetClinics locale={locale} clinics={clinics} />}
     {b.state === 'declined' && (
       <Card class="space-y-3" data-testid="declined">
         <p>{L('booking.declined.body', { name })}</p>

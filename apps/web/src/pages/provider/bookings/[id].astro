@@ -10,12 +10,19 @@ import ProviderShell from '@/layouts/ProviderShell.astro';
 import { apiFetch } from '@/lib/api';
 import { getLocale } from '@/lib/locale';
 import { remaining } from '@/lib/time';
+import UpdateForm from '@/components/stay/UpdateForm';
+import UpdateList from '@/components/stay/UpdateList.astro';
+import VetClinics from '@/components/stay/VetClinics.astro';
+import { textFor } from '@/lib/text';
 const locale = getLocale(Astro.cookies);
 const L = (key: string, params?: Record<string, string | number>) => t(locale, key as MessageKey, params);
 const response = await apiFetch(`/provider/bookings/${Astro.params.id}`, { cookie: Astro.request.headers.get('cookie') }).catch(() => null);
 if (!response || response.status === 404) return Astro.rewrite('/404');
 if (!response.ok) return Astro.redirect('/provider/bookings');
-const { booking: b, careSummary: cs } = (await response.json()) as { booking: any; careSummary: any };
+const { booking: b, careSummary: cs, updates } = (await response.json()) as { booking: any; careSummary: any; updates: any[] };
+const cookie = Astro.request.headers.get('cookie');
+const clinicsRes = ['captured', 'in_stay'].includes(b.state) ? await apiFetch(`/bookings/${Astro.params.id}/vet-clinics`, { cookie }).catch(() => null) : null;
+const clinics = clinicsRes?.ok ? ((await clinicsRes.json()) as { clinics: any[] }).clinics : [];
 const day = (d: string) => formatDate(new Date(`${d}T00:00:00+06:00`), locale);
 const error = Astro.url.searchParams.get('error');
 const plan = b.carePlan;
@@ -78,7 +85,26 @@ const field = 'flex min-h-11 items-center gap-3';
       </div>
     )}
     {!b.canAct && b.state === 'authorized' && <p data-testid="request-closed">{L('request.closed')}</p>}
-    {b.state === 'captured' && <p>{L('request.confirmed')}</p>}
+    {b.state === 'captured' && (
+      <div class="space-y-3">
+        <p>{L('request.confirmed')}</p>
+        {b.canStart && (
+          <form method="post" action={`/provider/bookings/${b.id}/act`} class="space-y-2">
+            <input type="hidden" name="intent" value="start" />
+            <p>{L('stay.start.hint', { pet: b.pet.name })}</p>
+            <Button type="submit" size="lg" class="w-full" data-testid="start-stay">{L('stay.start')}</Button>
+          </form>
+        )}
+      </div>
+    )}
+    {b.state === 'in_stay' && (
+      <div class="space-y-4">
+        {b.reminderDue && <p role="status" data-testid="reminder" class="rounded-md bg-info-soft px-4 py-3 text-info">{L('stay.reminder')}</p>}
+        <UpdateForm client:load bookingId={b.id} text={textFor(locale, 'stay.update.', 'food.', 'mood.')} />
+      </div>
+    )}
+    {['in_stay', 'completed'].includes(b.state) && <UpdateList locale={locale} updates={updates} />}
+    {clinics.length > 0 && <VetClinics locale={locale} clinics={clinics} />}
     {b.state === 'declined' && <p>{L('request.declined')}</p>}
   </div>
 </ProviderShell>

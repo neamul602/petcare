@@ -9,6 +9,7 @@ import type { Database } from '../db/client.ts';
 import { bookings, providers } from '../db/schema/index.ts';
 import type { PaymentService } from '../payments/payment-service.ts';
 import type { BookingService, SubmitResult } from './booking-service.ts';
+import type { StayService } from '../stay/stay-service.ts';
 import { transitionHistory } from './transitions.ts';
 
 const refuse = (
@@ -53,9 +54,15 @@ const FAILURES: Record<string, { status: number; message: string }> = {
 
 export function registerBookingRoutes(
   app: FastifyInstance,
-  deps: { db: Database; authn: Authenticator; service: BookingService; payments: PaymentService },
+  deps: {
+    db: Database;
+    authn: Authenticator;
+    service: BookingService;
+    payments: PaymentService;
+    stay?: StayService;
+  },
 ) {
-  const { db, authn, service, payments } = deps;
+  const { db, authn, service, payments, stay } = deps;
   const owner = { preHandler: authn.requireRole('owner') };
 
   app.post('/owner/bookings', owner, async (request, reply) => {
@@ -113,6 +120,12 @@ export function registerBookingRoutes(
         timedOut: history.some((h) => h.trigger === 'confirmation_timeout'),
       },
       history,
+      updates: stay
+        ? (await stay.listUpdates(b.id)).map((u) => ({
+            ...u,
+            photos: u.photos.map((photoId) => `/api/bookings/${b.id}/photos/${photoId}`),
+          }))
+        : [],
     };
   });
 

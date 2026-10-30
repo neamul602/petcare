@@ -7,8 +7,8 @@ import { apiFetch } from '@/lib/api';
 import { getLocale } from '@/lib/locale';
 const locale = getLocale(Astro.cookies);
 const response = await apiFetch('/provider/today', { cookie: Astro.request.headers.get('cookie') }).catch(() => null);
-const data = response?.ok ? ((await response.json()) as { requests: any[]; inStay: any[] }) : { requests: [], inStay: [] };
-const empty = data.requests.length === 0 && data.inStay.length === 0;
+const data = response?.ok ? ((await response.json()) as { requests: any[]; inStay: any[]; startToday: any[] }) : { requests: [], inStay: [], startToday: [] };
+const empty = data.requests.length === 0 && data.inStay.length === 0 && data.startToday.length === 0;
 ---
 <ProviderShell titleKey="screen.today">
   <div class="space-y-6 py-4">
@@ -20,10 +20,16 @@ const empty = data.requests.length === 0 && data.inStay.length === 0;
         {data.requests.map((b) => <BookingCard locale={locale} booking={b} />)}
       </section>
     )}
+    {data.startToday.length > 0 && (
+      <section class="space-y-3" data-testid="today-start">
+        <h2 class="text-xl font-semibold">{t(locale, 'stay.startToday')}</h2>
+        {data.startToday.map((b) => <BookingCard locale={locale} booking={b} />)}
+      </section>
+    )}
     {data.inStay.length > 0 && (
       <section class="space-y-3">
         <h2 class="text-xl font-semibold">{t(locale, 'today.inStay')}</h2>
-        {data.inStay.map((b) => <BookingCard locale={locale} booking={b} />)}
+        {data.inStay.map((b) => <><BookingCard locale={locale} booking={b} />{b.reminderDue && <p class="rounded-md bg-info-soft px-4 py-3 text-info" data-testid="today-reminder">{t(locale, 'stay.reminder')}</p>}</>)}
       </section>
     )}
   </div>

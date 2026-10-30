@@ -135,6 +135,7 @@ describe('BKG-05 Today and Bookings', () => {
     expect((await call('GET', '/provider/today', 'rashid')).json()).toEqual({
       requests: [],
       inStay: [],
+      startToday: [],
     });
     await request();
     expect((await call('GET', '/provider/today', 'farzana')).json().requests).toEqual([]);

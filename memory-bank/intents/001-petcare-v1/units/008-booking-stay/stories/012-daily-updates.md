@@ -3,12 +3,12 @@ id: 012-daily-updates
 code: BKG-12
 unit: 008-booking-stay
 intent: 001-petcare-v1
-status: ready
+status: complete
 priority: must
 journeys: UJ-1, UJ-2
-created: 2026-10-29T16:00:00Z
+created: '2026-10-29T16:00:00Z'
 assigned_bolt: 011-booking-stay
-implemented: false
+implemented: true
 ---
 
 # Story BKG-12: Daily updates

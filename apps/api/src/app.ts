@@ -24,6 +24,8 @@ import { bookingPetAccess } from './bookings/pet-access.ts';
 import { registerProviderBookingRoutes } from './bookings/provider-routes.ts';
 import { createProviderBookingService } from './bookings/provider-service.ts';
 import { registerBookingRoutes } from './bookings/routes.ts';
+import { createStayService, type StayService } from './stay/stay-service.ts';
+import { registerStayRoutes } from './stay/routes.ts';
 import { registerCapacityRoutes } from './capacity/routes.ts';
 import { registerProviderRoutes } from './providers/routes.ts';
 
@@ -31,6 +33,8 @@ declare module 'fastify' {
   interface FastifyInstance {
     /** Closes requests past their confirmation window; the server runs it every minute. */
     processTimeouts?: () => Promise<{ closed: string[] }>;
+    /** Flags confirmed stays not started by the deadline (TD-12). */
+    flagLateStarts?: () => Promise<{ flagged: string[] }>;
   }
 }
 
@@ -98,6 +102,13 @@ export async function buildApp(deps: AppDeps = {}) {
     await registerAdminRoutes(app, authDeps);
     registerProviderRoutes(app, { db: deps.db, authn });
     registerCapacityRoutes(app, { db: deps.db, authn, clock });
+    const stay: StayService | undefined = deps.photos
+      ? createStayService({ db: deps.db, photos: deps.photos, clock })
+      : undefined;
+    if (stay && deps.photos) {
+      registerStayRoutes(app, { db: deps.db, authn, service: stay, photos: deps.photos });
+      app.decorate('flagLateStarts', stay.flagLateStarts);
+    }
     if (deps.payments) {
       const paymentService = createPaymentService({ db: deps.db, port: deps.payments, clock });
       registerPaymentRoutes(app, { authn, service: paymentService });
@@ -105,6 +116,7 @@ export async function buildApp(deps: AppDeps = {}) {
         db: deps.db,
         authn,
         payments: paymentService,
+        stay,
         service: createBookingService({ db: deps.db, payments: paymentService, clock }),
       });
       const providerBookings = createProviderBookingService({
@@ -116,6 +128,7 @@ export async function buildApp(deps: AppDeps = {}) {
         db: deps.db,
         authn,
         service: providerBookings,
+        stay,
         clock,
       });
       app.decorate('processTimeouts', providerBookings.processTimeouts);

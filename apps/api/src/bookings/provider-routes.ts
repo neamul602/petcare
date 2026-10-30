@@ -11,6 +11,7 @@ import { bookings, providers } from '../db/schema/index.ts';
 import { buildCareSummary } from '../pets/care-summary.ts';
 import type { Clock } from '@petcare/shared/clock';
 import type { ProviderBookingService } from './provider-service.ts';
+import type { StayService } from '../stay/stay-service.ts';
 import { transitionHistory } from './transitions.ts';
 
 const refuse = (reply: FastifyReply, status: number, code: string, message: string) =>
@@ -20,9 +21,15 @@ const declineSchema = z.strictObject({ reason: z.enum(trainingDecisions.declineR
 
 export function registerProviderBookingRoutes(
   app: FastifyInstance,
-  deps: { db: Database; authn: Authenticator; service: ProviderBookingService; clock: Clock },
+  deps: {
+    db: Database;
+    authn: Authenticator;
+    service: ProviderBookingService;
+    stay?: StayService;
+    clock: Clock;
+  },
 ) {
-  const { db, authn, service, clock } = deps;
+  const { db, authn, service, stay, clock } = deps;
   const provider = { preHandler: authn.requireRole('provider') };
 
   async function mine(userId: string) {
@@ -65,7 +72,17 @@ export function registerProviderBookingRoutes(
       return refuse(reply, 404, 'no_provider_record', 'No provider record for this account');
     return {
       requests: rows.filter((b) => b.state === 'authorized').map(card),
-      inStay: rows.filter((b) => b.state === 'in_stay').map(card),
+      inStay: await Promise.all(
+        rows
+          .filter((b) => b.state === 'in_stay')
+          .map(async (b) => ({
+            ...card(b),
+            reminderDue: stay ? await stay.reminderDue(b.id) : false,
+          })),
+      ),
+      startToday: rows
+        .filter((b) => b.state === 'captured' && b.startDate <= dhakaToday(clock))
+        .map(card),
     };
   });
 
@@ -116,6 +133,8 @@ export function registerProviderBookingRoutes(
         instructions: booking.instructions,
         declineReason: booking.declineReason,
         priorStaysWithYou: prior.length,
+        canStart: booking.state === 'captured' && booking.startDate <= dhakaToday(clock),
+        reminderDue: stay && booking.state === 'in_stay' ? await stay.reminderDue(id) : false,
         canAct:
           booking.state === 'authorized' &&
           !!booking.confirmationDeadline &&
@@ -123,6 +142,12 @@ export function registerProviderBookingRoutes(
       },
       careSummary: summary,
       history: await transitionHistory(db, id),
+      updates: stay
+        ? (await stay.listUpdates(id)).map((u) => ({
+            ...u,
+            photos: u.photos.map((photoId) => `/api/bookings/${id}/photos/${photoId}`),
+          }))
+        : [],
     };
   });
 

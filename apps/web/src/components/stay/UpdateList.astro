@@ -1,0 +1,26 @@
+---
+/** Daily updates, newest first (BKG-12, BKG-18). Read-only: posted updates are never edited. */
+import { t, type Locale, type MessageKey } from '@petcare/shared/i18n';
+import { formatDate, formatTime } from '@petcare/shared/locale';
+import Card from '../kit/Card.astro';
+interface Update { id: string; at: string; note: string; careLog: { medicationsGiven?: Array<{ name: string; time: string }>; food?: string; mood?: string }; photos: string[] }
+interface Props { locale: Locale; updates: Update[] }
+const { locale, updates } = Astro.props;
+const L = (key: string, params?: Record<string, string | number>) => t(locale, key as MessageKey, params);
+---
+<section class="space-y-3" data-testid="updates">
+  <h2 class="text-xl font-semibold">{L('stay.updates')}</h2>
+  {updates.length === 0 && <p class="text-muted-foreground">{L('stay.updates.empty')}</p>}
+  {updates.map((u) => (
+    <Card class="space-y-2" data-testid="update">
+      <p class="text-sm text-muted-foreground">{formatDate(new Date(u.at), locale)} {formatTime(new Date(u.at), locale)}</p>
+      {u.photos.length > 0 && <ul class="grid grid-cols-2 gap-2">{u.photos.map((src) => <li><img src={src} alt={L('stay.updates.photoAlt')} loading="lazy" class="aspect-square w-full rounded-md object-cover" /></li>)}</ul>}
+      {u.note && <p>{u.note}</p>}
+      <ul class="text-sm">
+        {(u.careLog.medicationsGiven?.length ?? 0) > 0 && <li>{L('stay.log.meds', { list: u.careLog.medicationsGiven!.map((m) => `${m.name} ${m.time}`).join(', ') })}</li>}
+        {u.careLog.food && <li>{L('stay.log.food', { value: L(`food.${u.careLog.food}`) })}</li>}
+        {u.careLog.mood && <li>{L('stay.log.mood', { value: L(`mood.${u.careLog.mood}`) })}</li>}
+      </ul>
+    </Card>
+  ))}
+</section>

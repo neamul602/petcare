@@ -1,0 +1,23 @@
+---
+/** Vet clinics for the booking's neighbourhood with tap-to-call (BKG-14). A lookup, not a recommendation. */
+import { t, type Locale, type MessageKey } from '@petcare/shared/i18n';
+import Card from '../kit/Card.astro';
+interface Clinic { id: string; name: { en: string; bn: string }; address: { en: string; bn: string }; phone: string; hours: { en: string; bn: string }; species: string[] }
+interface Props { locale: Locale; clinics: Clinic[] }
+const { locale, clinics } = Astro.props;
+const L = (key: string, params?: Record<string, string | number>) => t(locale, key as MessageKey, params);
+---
+<section class="space-y-3" data-testid="vet-clinics">
+  <h2 class="text-xl font-semibold">{L('stay.vet.title')}</h2>
+  <p class="text-muted-foreground">{L('stay.vet.lookup')}</p>
+  {clinics.length === 0 && <p>{L('stay.vet.empty')}</p>}
+  {clinics.map((c) => (
+    <Card class="space-y-1">
+      <p class="font-semibold">{c.name[locale]}</p>
+      <p>{c.address[locale]}</p>
+      <p class="text-sm">{L('stay.vet.hours', { hours: c.hours[locale] })}</p>
+      <p class="text-sm">{L('stay.vet.species', { species: c.species.map((s) => L(`provider.species.${s}`)).join(', ') })}</p>
+      <a href={`tel:${c.phone}`} data-testid="vet-call" class="inline-flex min-h-11 items-center text-primary underline">{L('stay.vet.call', { name: c.name[locale] })} · {c.phone}</a>
+    </Card>
+  ))}
+</section>

@@ -188,19 +188,19 @@ Intent `001-petcare-v1`: **76 stories** in 11 units (generated 2026-10-29T16:00:
 ### 009-confirmation-window-timeout.md ✅ COMPLETED
 **BKG-09** Confirmation-window timeout · must · UJ-1
 
-### 010-start-the-stay.md ✅ GENERATED
+### 010-start-the-stay.md ✅ COMPLETED
 **BKG-10** Start the stay · must · UJ-1
 
 ### 011-cancellations-and-no-shows.md ✅ GENERATED
 **BKG-11** Cancellations and no-shows · should · none
 
-### 012-daily-updates.md ✅ GENERATED
+### 012-daily-updates.md ✅ COMPLETED
 **BKG-12** Daily updates · must · UJ-1, UJ-2
 
 ### 013-booking-chat.md ✅ GENERATED
 **BKG-13** Booking chat · must · UJ-1
 
-### 014-vet-clinic-directory.md ✅ GENERATED
+### 014-vet-clinic-directory.md ✅ COMPLETED
 **BKG-14** Vet-clinic directory · must · UJ-1
 
 ### 015-mark-complete-and-confirm-completion.md ✅ GENERATED
@@ -212,7 +212,7 @@ Intent `001-petcare-v1`: **76 stories** in 11 units (generated 2026-10-29T16:00:
 ### 017-owner-bookings-list.md ✅ GENERATED
 **BKG-17** Owner bookings list · should · UJ-4
 
-### 018-owner-booking-page-during-the-stay.md ✅ GENERATED
+### 018-owner-booking-page-during-the-stay.md ✅ COMPLETED
 **BKG-18** Owner booking page during the stay · must · UJ-1
 
 ## 009-reviews-disputes
