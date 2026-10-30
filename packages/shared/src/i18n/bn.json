@@ -489,5 +489,15 @@
   "settings.saved": "সংরক্ষিত হয়েছে।",
   "settings.error": "সংরক্ষণ করা যায়নি। নাম দেখে আবার চেষ্টা করুন।",
   "settings.language.bn": "বাংলা",
-  "settings.language.en": "English"
+  "settings.language.en": "English",
+  "bookings.upcoming": "আসন্ন",
+  "bookings.past": "আগের",
+  "bookings.empty.title": "এখনও কোনো বুকিং নেই",
+  "bookings.empty.body": "আপনি কোনো থাকা বুক করলে তা এখানে দেখা যাবে।",
+  "booking.again": "আবার বুক করুন",
+  "book.again.from": "{pet}-এর আগের থাকা থেকে · আগেরবার {n} রাত",
+  "book.again.elapsed": "এ পর্যন্ত সময়: {time}",
+  "book.again.unavailable": "{name} এখন পাওয়া যাচ্ছে না।",
+  "book.again.alternatives": "অন্য প্রোভাইডার দেখুন",
+  "home.again.title": "{pet}-এর জন্য {name}-কে আবার বুক করুন"
 }

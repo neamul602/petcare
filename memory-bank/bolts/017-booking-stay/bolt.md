@@ -3,22 +3,27 @@ id: 017-booking-stay
 unit: 008-booking-stay
 intent: 001-petcare-v1
 type: simple-construction-bolt
-status: planned
+status: complete
 phase: UJ-4
 stories:
   - 016-book-again
   - 017-owner-bookings-list
-created: 2026-10-29T17:00:00Z
-started: null
-completed: null
+created: '2026-10-29T17:00:00Z'
+started: '2026-11-01T09:00:00Z'
+completed: '2026-10-30T13:57:47Z'
 current_stage: null
-stages_completed: []
-
-requires_bolts: [005-pet-care-profile, 009-booking-stay, 013-booking-stay]
+stages_completed:
+  - name: plan
+    completed: '2026-11-01T09:00:00Z'
+    artifact: implementation-plan.md
+requires_bolts:
+  - 005-pet-care-profile
+  - 009-booking-stay
+  - 013-booking-stay
 enables_bolts: []
-requires_units: [pet-care-profile]
+requires_units:
+  - pet-care-profile
 blocks: true
-
 complexity:
   avg_complexity: 2
   avg_uncertainty: 1

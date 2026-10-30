@@ -23,6 +23,7 @@ import { createPaymentService } from './payments/payment-service.ts';
 import type { PaymentPort } from './payments/port.ts';
 import { registerPaymentRoutes } from './payments/routes.ts';
 import { registerPetRoutes } from './pets/routes.ts';
+import { registerBookAgainRoutes } from './bookings/book-again.ts';
 import { createBookingService } from './bookings/booking-service.ts';
 import { bookingPetAccess } from './bookings/pet-access.ts';
 import { createCompletionService } from './bookings/completion-service.ts';
@@ -142,6 +143,7 @@ export async function buildApp(deps: AppDeps = {}) {
     if (deps.payments) {
       const paymentService = createPaymentService({ db: deps.db, port: deps.payments, clock });
       registerPaymentRoutes(app, { authn, service: paymentService });
+      registerBookAgainRoutes(app, { db: deps.db, authn, clock });
       registerBookingRoutes(app, {
         db: deps.db,
         authn,

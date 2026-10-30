@@ -489,5 +489,15 @@
   "settings.saved": "Saved.",
   "settings.error": "We could not save that. Check your name and try again.",
   "settings.language.bn": "বাংলা (Bangla)",
-  "settings.language.en": "English"
+  "settings.language.en": "English",
+  "bookings.upcoming": "Upcoming",
+  "bookings.past": "Past",
+  "bookings.empty.title": "No bookings yet",
+  "bookings.empty.body": "When you book a stay it will appear here.",
+  "booking.again": "Book again",
+  "book.again.from": "From {pet}'s last stay · {n} nights last time",
+  "book.again.elapsed": "Time so far: {time}",
+  "book.again.unavailable": "{name} is not available right now.",
+  "book.again.alternatives": "See other providers",
+  "home.again.title": "Book {name} again for {pet}"
 }

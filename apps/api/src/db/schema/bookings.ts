@@ -69,3 +69,15 @@ export const bookingFlags = pgTable('booking_flags', {
   resolvedAt: timestamp('resolved_at', { withTimezone: true }),
   createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
 });
+
+/** The Book again timer (UJ-4): started when the owner taps Book again, closed when the new request is submitted. */
+export const bookAgainTimers = pgTable('book_again_timers', {
+  id: text('id').primaryKey(),
+  ownerId: text('owner_id').notNull(),
+  sourceBookingId: text('source_booking_id')
+    .notNull()
+    .references(() => bookings.id),
+  startedAt: timestamp('started_at', { withTimezone: true }).notNull(),
+  submittedAt: timestamp('submitted_at', { withTimezone: true }),
+  bookingId: text('booking_id'),
+});

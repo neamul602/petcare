@@ -18,3 +18,5 @@ created: 2026-10-30T20:00:00Z
 | 2026-10-31T12:45:00Z | 011-booking-stay | bolt-complete | BKG-10, 12, 14, 18; 562 tests pass |
 | 2026-10-31T16:00:00Z | 013-booking-stay | started | model and design approved under the standing instruction |
 | 2026-10-31T18:15:00Z | 013-booking-stay | bolt-complete | BKG-15, BKG-11; 596 tests pass. Remaining in this unit: BKG-16 book again, BKG-17 owner bookings list (bolt 017) |
+| 2026-11-01T09:00:00Z | 017-booking-stay | started | plan approved under the standing instruction |
+| 2026-11-01T10:15:00Z | 017-booking-stay | bolt-complete | BKG-16, BKG-17; 632 tests pass. Unit 008 complete except deferred BKG-13 chat |

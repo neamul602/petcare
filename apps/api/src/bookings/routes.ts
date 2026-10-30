@@ -19,6 +19,7 @@ import {
 import type { PaymentService } from '../payments/payment-service.ts';
 import type { BookingService, SubmitResult } from './booking-service.ts';
 import type { StayService } from '../stay/stay-service.ts';
+import { closeBookAgainTimer } from './book-again.ts';
 import { transitionHistory } from './transitions.ts';
 
 const refuse = (
@@ -36,6 +37,7 @@ const submitSchema = z.strictObject({
   from: z.string(),
   to: z.string(),
   method: z.enum(PAYMENT_METHODS),
+  bookAgainId: z.string().optional(),
   instructions: z.string().max(1000).optional(),
   declaredClinical: z.boolean().optional(),
   confirmedNotClinical: z.boolean().optional(),
@@ -76,11 +78,13 @@ export function registerBookingRoutes(
   const owner = { preHandler: authn.requireRole('owner') };
 
   app.post('/owner/bookings', owner, async (request, reply) => {
-    const input = submitSchema.parse(request.body);
+    const { bookAgainId, ...input } = submitSchema.parse(request.body);
     const result: SubmitResult = await service.submit({
       ownerId: request.currentUser!.id,
       ...input,
     });
+    if (result.ok && !result.duplicate && bookAgainId)
+      await closeBookAgainTimer(db, clock, bookAgainId, request.currentUser!.id, result.booking.id);
     if (result.ok)
       return reply
         .code(result.duplicate ? 200 : 201)

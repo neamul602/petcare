@@ -8,7 +8,8 @@ import { formatMoney } from '@petcare/shared/locale';
 interface Props {
   provider: { slug: string; name: string; pricePerNightPoisha: number; species: string[] };
   pets: Array<{ id: string; name: string; species: string }>;
-  initial: { from: string; to: string; petId: string };
+  initial: { from: string; to: string; petId: string; instructions?: string };
+  again?: { id: string; startedAt: string; petName: string; nights: number } | null;
   methods: string[];
   today: string;
   text: Record<string, string>;
@@ -41,7 +42,7 @@ const btn =
 const primary =
   'inline-flex min-h-12 items-center justify-center rounded-md bg-primary px-6 text-base font-medium text-primary-foreground hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:opacity-50';
 
-export default function BookFlow({ provider, pets, initial, methods, today, text }: Props) {
+export default function BookFlow({ provider, pets, initial, again, methods, today, text }: Props) {
   const storageKey = `pc:book:${provider.slug}`;
   const [s, setS] = useState<Saved>({
     step: 1,
@@ -49,7 +50,7 @@ export default function BookFlow({ provider, pets, initial, methods, today, text
     from: initial.from,
     to: initial.to,
     useSaved: true,
-    instructions: '',
+    instructions: initial.instructions ?? '',
     declaredClinical: false,
     confirmedNotClinical: false,
     method: methods[0] ?? 'bkash',
@@ -67,6 +68,16 @@ export default function BookFlow({ provider, pets, initial, methods, today, text
   const [error, setError] = useState('');
   const [busy, setBusy] = useState(false);
   const restored = useRef(false);
+  const [elapsed, setElapsed] = useState(0);
+  useEffect(() => {
+    if (!again) return;
+    const tick = () =>
+      setElapsed(Math.max(0, Math.round((Date.now() - Date.parse(again.startedAt)) / 1000)));
+    tick();
+    const handle = window.setInterval(tick, 1000);
+    return () => window.clearInterval(handle);
+  }, []);
+  const clock = `${Math.floor(elapsed / 60)}:${String(elapsed % 60).padStart(2, '0')}`;
 
   const t = (key: string, params?: Record<string, string | number>) =>
     (text[key] ?? key).replace(/\{(\w+)\}/g, (m, k: string) =>
@@ -81,7 +92,8 @@ export default function BookFlow({ provider, pets, initial, methods, today, text
         at: number;
         state: Saved;
       } | null;
-      if (saved && Date.now() - saved.at < 24 * 3_600_000) {
+      // Book again starts from the earlier stay, not from a half-finished draft.
+      if (!again && saved && Date.now() - saved.at < 24 * 3_600_000) {
         const keep = { ...saved.state };
         if (initial.from && initial.to) {
           keep.from = initial.from;
@@ -182,6 +194,7 @@ export default function BookFlow({ provider, pets, initial, methods, today, text
           instructions: s.instructions,
           declaredClinical: s.declaredClinical,
           confirmedNotClinical: s.confirmedNotClinical,
+          ...(again ? { bookAgainId: again.id } : {}),
         }),
       });
       const body = (await response.json().catch(() => ({}))) as {
@@ -241,6 +254,15 @@ export default function BookFlow({ provider, pets, initial, methods, today, text
 
   return (
     <div class="space-y-5 pb-28">
+      {again && (
+        <p
+          class="rounded-md bg-primary-soft px-4 py-3 text-primary-soft-foreground"
+          data-testid="again-note"
+        >
+          {t('book.again.from', { pet: again.petName, n: again.nights })} ·{' '}
+          <span data-testid="again-elapsed">{t('book.again.elapsed', { time: clock })}</span>
+        </p>
+      )}
       <Stepper />
       {s.step === 1 && (
         <div class="space-y-4">

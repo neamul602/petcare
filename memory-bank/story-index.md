@@ -206,10 +206,10 @@ Intent `001-petcare-v1`: **76 stories** in 11 units (generated 2026-10-29T16:00:
 ### 015-mark-complete-and-confirm-completion.md ✅ COMPLETED
 **BKG-15** Mark complete and confirm completion · must · UJ-1
 
-### 016-book-again.md ✅ GENERATED
+### 016-book-again.md ✅ COMPLETED
 **BKG-16** Book again · must · UJ-4
 
-### 017-owner-bookings-list.md ✅ GENERATED
+### 017-owner-bookings-list.md ✅ COMPLETED
 **BKG-17** Owner bookings list · should · UJ-4
 
 ### 018-owner-booking-page-during-the-stay.md ✅ COMPLETED

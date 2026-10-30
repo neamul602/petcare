@@ -4,9 +4,15 @@ import SearchForm from '@/components/SearchForm.astro';
 import Button from '@/components/kit/Button.astro';
 import Card from '@/components/kit/Card.astro';
 import OwnerShell from '@/layouts/OwnerShell.astro';
+import { apiFetch } from '@/lib/api';
 import { getLocale } from '@/lib/locale';
 const locale = getLocale(Astro.cookies);
 const isOwner = Astro.locals.user?.role === 'owner';
+let latest: any = null;
+if (isOwner) {
+  const list = await apiFetch('/owner/bookings', { cookie: Astro.request.headers.get('cookie') }).then((r) => (r.ok ? r.json() : null)).catch(() => null);
+  latest = (list?.past ?? []).find((b: any) => b.canBookAgain) ?? null;
+}
 ---
 <OwnerShell titleKey="screen.home">
   <div class="space-y-6 py-4">
@@ -14,6 +20,12 @@ const isOwner = Astro.locals.user?.role === 'owner';
       <h1 class="font-serif text-3xl font-semibold leading-tight">{t(locale, 'home.promise.title')}</h1>
       <p class="text-lg text-muted-foreground">{t(locale, 'home.promise.body')}</p>
     </section>
+    {latest && (
+      <Card class="space-y-3" data-testid="home-book-again">
+        <p class="font-semibold">{t(locale, 'home.again.title', { name: latest.provider.name[locale], pet: latest.pet.name })}</p>
+        <form method="post" action={`/bookings/${latest.id}/act`}><input type="hidden" name="intent" value="book-again" /><Button type="submit" data-testid="home-book-again-button">{t(locale, 'booking.again')}</Button></form>
+      </Card>
+    )}
     {isOwner
       ? <Card><SearchForm locale={locale} /></Card>
       : <Button href="/search" size="lg" class="w-full" data-testid="find-care">{t(locale, 'home.cta')}</Button>}

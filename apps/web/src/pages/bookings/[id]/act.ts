@@ -21,6 +21,23 @@ export const POST: APIRoute = async ({ request, params }) => {
         : intent === 'request-cancellation'
           ? { note: String(form.get('note') ?? '') }
           : {};
+  if (intent === 'book-again') {
+    const started = await apiFetch('/owner/book-again', {
+      method: 'POST',
+      cookie: request.headers.get('cookie'),
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify({ bookingId: params.id }),
+    }).catch(() => null);
+    const info = started?.ok
+      ? ((await started.json()) as { timerId: string; providerSlug: string })
+      : null;
+    return new Response(null, {
+      status: 303,
+      headers: {
+        location: info ? `/book/${info.providerSlug}?again=${info.timerId}` : '/bookings',
+      },
+    });
+  }
   const path =
     intent === 'review'
       ? `${base}/review`

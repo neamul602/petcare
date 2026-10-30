@@ -2,6 +2,8 @@
 import { trainingDecisions } from '@petcare/shared/config';
 import { t } from '@petcare/shared/i18n';
 import BookFlow from '@/components/book/BookFlow';
+import Button from '@/components/kit/Button.astro';
+import Card from '@/components/kit/Card.astro';
 import OwnerShell from '@/layouts/OwnerShell.astro';
 import { apiFetch } from '@/lib/api';
 import { todayInDhaka } from '@/lib/dates';
@@ -9,26 +11,40 @@ import { getLocale } from '@/lib/locale';
 import { textFor } from '@/lib/text';
 const locale = getLocale(Astro.cookies);
 const cookie = Astro.request.headers.get('cookie');
-const res = await apiFetch(`/providers/${Astro.params.providerSlug}`, { cookie }).catch(() => null);
-if (!res || res.status === 404) return Astro.rewrite('/404');
-if (!res.ok) return Astro.redirect('/search');
-const { provider } = (await res.json()) as { provider: any };
-const petsRes = await apiFetch('/owner/pets', { cookie }).catch(() => null);
-const pets = petsRes?.ok ? ((await petsRes.json()) as { pets: Array<{ id: string; name: string; species: string }> }).pets : [];
 const q = Astro.url.searchParams;
-const name: string = provider.name[locale];
+const againId = q.get('again');
+const againRes = againId ? await apiFetch(`/owner/book-again/${againId}`, { cookie }).catch(() => null) : null;
+const again = againRes?.ok ? ((await againRes.json()) as { startedAt: string; provider: { name: { en: string; bn: string } }; prefill: { petId: string; petName: string; instructions: string; nights: number } }) : null;
+const res = await apiFetch(`/providers/${Astro.params.providerSlug}`, { cookie }).catch(() => null);
+const unavailable = !res || res.status === 404;
+// Book again for a provider who can no longer be booked says so and offers other providers.
+if (unavailable && !again) return Astro.rewrite('/404');
+if (res && !res.ok && !unavailable) return Astro.redirect('/search');
+const provider = unavailable ? null : ((await res!.json()) as { provider: any }).provider;
+const petsRes = unavailable ? null : await apiFetch('/owner/pets', { cookie }).catch(() => null);
+const pets = petsRes?.ok ? ((await petsRes.json()) as { pets: Array<{ id: string; name: string; species: string }> }).pets : [];
+const name: string = provider ? provider.name[locale] : again!.provider.name[locale];
 ---
 <OwnerShell titleKey="screen.book" showTabs={false}>
   <div class="space-y-4 py-4">
     <h1 class="text-2xl font-semibold">{t(locale, 'book.title', { name })}</h1>
-    <BookFlow
-      client:load
-      provider={{ slug: provider.slug, name, pricePerNightPoisha: provider.pricePerNightPoisha ?? 0, species: provider.species }}
-      pets={pets}
-      initial={{ from: q.get('from') ?? '', to: q.get('to') ?? '', petId: '' }}
-      methods={[...trainingDecisions.paymentMethods]}
-      today={todayInDhaka()}
-      text={textFor(locale, 'book.', 'pay.', 'search.from', 'search.to', 'pets.species.')}
-    />
+    {unavailable && (
+      <Card class="space-y-3" data-testid="provider-unavailable">
+        <p>{t(locale, 'book.again.unavailable', { name })}</p>
+        <Button href="/search">{t(locale, 'book.again.alternatives')}</Button>
+      </Card>
+    )}
+    {provider && (
+      <BookFlow
+        client:load
+        provider={{ slug: provider.slug, name, pricePerNightPoisha: provider.pricePerNightPoisha ?? 0, species: provider.species }}
+        pets={pets}
+        initial={{ from: q.get('from') ?? '', to: q.get('to') ?? '', petId: again?.prefill.petId ?? '', instructions: again?.prefill.instructions ?? '' }}
+        again={again && againId ? { id: againId, startedAt: again.startedAt, petName: again.prefill.petName, nights: again.prefill.nights } : null}
+        methods={[...trainingDecisions.paymentMethods]}
+        today={todayInDhaka()}
+        text={textFor(locale, 'book.', 'pay.', 'search.from', 'search.to', 'pets.species.')}
+      />
+    )}
   </div>
 </OwnerShell>
