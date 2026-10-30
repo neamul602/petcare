@@ -3,22 +3,24 @@ id: 020-payments-payouts
 unit: 007-payments-payouts
 intent: 001-petcare-v1
 type: simple-construction-bolt
-status: planned
+status: complete
 phase: UJ-2
 stories:
   - 007-provider-earnings
   - 008-admin-payouts-and-reconciliation
-created: 2026-10-29T17:00:00Z
-started: null
-completed: null
+created: '2026-10-29T17:00:00Z'
+started: '2026-11-01T15:00:00Z'
+completed: '2026-10-30T14:30:04Z'
 current_stage: null
-stages_completed: []
-
-requires_bolts: [012-payments-payouts]
+stages_completed:
+  - name: plan
+    completed: '2026-11-01T15:00:00Z'
+    artifact: implementation-plan.md
+requires_bolts:
+  - 012-payments-payouts
 enables_bolts: []
 requires_units: []
 blocks: true
-
 complexity:
   avg_complexity: 1
   avg_uncertainty: 1

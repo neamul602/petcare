@@ -404,3 +404,104 @@ describe('PAY-06 freeze, release and refund', () => {
     ).toBe(200);
   });
 });
+
+describe('PAY-07 provider earnings', () => {
+  it('lists payouts by payout week with gross, commission, net, status and the freeze reason; empty for a new provider', async () => {
+    const a = await completed();
+    const b = await completed({
+      from: '2026-12-20',
+      to: '2026-12-22',
+      completedAt: '2026-12-22T06:00:00Z',
+    });
+    await call('POST', `/admin/bookings/${b.id}/freeze`, 'admin', {
+      reason: 'owner reported a problem',
+    });
+    clock.set(new Date(a.at.getTime() + 73 * 3_600_000));
+    await service().runBatch('e1');
+    const { weeks } = (await call('GET', '/provider/earnings', 'rashid')).json();
+    expect(weeks.map((w: { week: string }) => w.week)).toEqual(['2026-12-27']);
+    const lines = weeks.flatMap((w: { lines: unknown[] }) => w.lines) as Array<
+      Record<string, unknown>
+    >;
+    const first = lines.find((l) => l.bookingId === a.id)!;
+    expect(first).toMatchObject({
+      pet: 'Tito',
+      grossPoisha: 2_000_000,
+      commissionBasisPoints: 1000,
+      commissionPoisha: 200_000,
+      netPoisha: 1_800_000,
+      status: 'sent',
+      freezeReason: null,
+    });
+    const second = lines.find((l) => l.bookingId === b.id)!;
+    expect(second).toMatchObject({ status: 'frozen', freezeReason: 'owner reported a problem' });
+    const store = createSessionStore(db, clock);
+    const farzana = `pc_session=${(await store.create('user', 'farzana', 3_600_000)).token}`;
+    const empty = await app.inject({
+      method: 'GET',
+      url: '/provider/earnings',
+      headers: { cookie: farzana },
+    });
+    expect(empty.json()).toEqual({ weeks: [] });
+    expect((await call('GET', '/provider/earnings', 'bibi')).statusCode).toBe(403);
+    expect((await call('GET', '/provider/earnings', null)).statusCode).toBe(401);
+  });
+});
+
+describe('PAY-08 admin payouts and reconciliation', () => {
+  it('lists batches with lines and frozen payouts, and totals match the payout rail', async () => {
+    const a = await completed();
+    const b = await completed({
+      from: '2026-12-20',
+      to: '2026-12-22',
+      completedAt: '2026-12-22T06:00:00Z',
+    });
+    await call('POST', `/admin/bookings/${b.id}/freeze`, 'admin', {
+      reason: 'acute_event:serious',
+    });
+    clock.set(new Date(a.at.getTime() + 73 * 3_600_000));
+    await service().runBatch('o1');
+    const overview = (await call('GET', '/admin/payouts/overview', 'admin')).json();
+    expect(overview.batches).toHaveLength(1);
+    expect(overview.batches[0]).toMatchObject({
+      lineCount: 1,
+      totalPoisha: 1_800_000,
+      lines: [{ bookingId: a.id, status: 'sent' }],
+    });
+    expect(overview.frozen).toMatchObject([{ bookingId: b.id, reason: 'acute_event:serious' }]);
+    expect(overview.reconciliation).toMatchObject({
+      available: true,
+      matches: true,
+      localTotalPoisha: 1_800_000,
+      gatewayTotalPoisha: 1_800_000,
+      mismatches: [],
+    });
+  });
+  it('highlights a difference between our records and the payout rail', async () => {
+    const a = await completed();
+    clock.set(new Date(a.at.getTime() + 73 * 3_600_000));
+    await service().runBatch('o2');
+    await pool.query('UPDATE payouts SET net_poisha = net_poisha + 100 WHERE booking_id = $1', [
+      a.id,
+    ]);
+    let rec = (await call('GET', '/admin/payouts/overview', 'admin')).json().reconciliation;
+    expect(rec.matches).toBe(false);
+    expect(rec.mismatches).toEqual([
+      { bookingId: a.id, kind: 'amount_differs', localPoisha: 1_800_100, gatewayPoisha: 1_800_000 },
+    ]);
+    await pool.query(
+      'UPDATE payouts SET net_poisha = 1800000, gateway_payout_id = NULL WHERE booking_id = $1',
+      [a.id],
+    );
+    rec = (await call('GET', '/admin/payouts/overview', 'admin')).json().reconciliation;
+    expect(rec.mismatches[0]).toMatchObject({ bookingId: a.id, kind: 'unknown_locally' });
+  });
+  it('is admin only (the rail inspection is a training read and works even when the payout service is switched to down)', async () => {
+    await mode('payouts', 'down');
+    expect(
+      (await call('GET', '/admin/payouts/overview', 'admin')).json().reconciliation.available,
+    ).toBe(true);
+    expect((await call('GET', '/admin/payouts/overview', 'bibi')).statusCode).toBe(403);
+    expect((await call('GET', '/admin/payouts/overview', null)).statusCode).toBe(401);
+  });
+});

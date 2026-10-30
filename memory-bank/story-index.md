@@ -153,10 +153,10 @@ Intent `001-petcare-v1`: **76 stories** in 11 units (generated 2026-10-29T16:00:
 ### 006-freeze-release-and-refund.md ✅ COMPLETED
 **PAY-06** Freeze, release and refund · must · UJ-3
 
-### 007-provider-earnings.md ✅ GENERATED
+### 007-provider-earnings.md ✅ COMPLETED
 **PAY-07** Provider earnings · should · UJ-2
 
-### 008-admin-payouts-and-reconciliation.md ✅ GENERATED
+### 008-admin-payouts-and-reconciliation.md ✅ COMPLETED
 **PAY-08** Admin payouts and reconciliation · should · UJ-3
 
 ## 008-booking-stay

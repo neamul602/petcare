@@ -507,5 +507,19 @@
   "calendar.peak.apply": "ব্যস্ত সময়ের জন্য বাড়ান",
   "calendar.peak.mark": "ব্যস্ত সময়",
   "calendar.peak.done": "হয়েছে। {n}টি রাত বদলানো হয়েছে।",
-  "calendar.peak.error": "কিছু রাতে আগেই এর চেয়ে বেশি পোষা প্রাণী বুক করা আছে।"
+  "calendar.peak.error": "কিছু রাতে আগেই এর চেয়ে বেশি পোষা প্রাণী বুক করা আছে।",
+  "earnings.week": "{date} সপ্তাহের পেমেন্ট",
+  "earnings.gross": "বুকিংয়ের মোট",
+  "earnings.commission": "কমিশন ({rate} %)",
+  "earnings.net": "আপনি পাবেন",
+  "earnings.status.queued": "অপেক্ষায়",
+  "earnings.status.sent": "পাঠানো হয়েছে",
+  "earnings.status.paid": "পরিশোধিত",
+  "earnings.status.frozen": "স্থগিত",
+  "earnings.status.cancelled": "বাতিল",
+  "earnings.frozenReason": "স্থগিত: {reason}",
+  "earnings.reason.report": "মালিক একটি সমস্যা জানিয়েছেন",
+  "earnings.reason.acute_event": "থাকার সময় একটি উদ্বেগের কথা জানানো হয়েছে",
+  "earnings.empty.title": "এখনও কোনো পেমেন্ট নেই",
+  "earnings.empty.body": "থাকা সম্পন্ন হলে আপনার পেমেন্ট এখানে দেখা যাবে এবং সাপ্তাহিক রবিবারের ব্যাচে পরিশোধ হবে।"
 }

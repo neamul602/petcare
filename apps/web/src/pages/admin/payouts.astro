@@ -1,8 +1,44 @@
 ---
 import { ta } from '@petcare/shared/i18n';
-import Placeholder from '@/components/Placeholder.astro';
+import { formatMoney } from '@petcare/shared/locale';
+import Button from '@/components/kit/Button.astro';
+import Card from '@/components/kit/Card.astro';
 import AdminShell from '@/layouts/AdminShell.astro';
+import { apiFetch } from '@/lib/api';
+const response = await apiFetch('/admin/payouts/overview', { cookie: Astro.request.headers.get('cookie') }).catch(() => null);
+const data: any = response?.ok ? await response.json() : { batches: [], frozen: [], reconciliation: { available: false, matches: false, mismatches: [], localTotalPoisha: 0, gatewayTotalPoisha: 0 } };
+const rec = data.reconciliation;
+const ran = Astro.url.searchParams.get('ran');
 ---
 <AdminShell titleKey="screen.payouts">
-  <Placeholder screenId="A6" title={ta('screen.payouts')} body={ta('placeholder.body')} />
+  <div class="space-y-6 py-4">
+    <div class="flex flex-wrap items-center gap-3"><h1 class="mr-auto text-2xl font-semibold">{ta('screen.payouts')}</h1>
+      <form method="post" action="/admin/payouts/run"><Button type="submit" data-testid="run-batch">{ta('payouts.runNow')}</Button></form></div>
+    {ran !== null && <p role="status" data-testid="batch-result" class="rounded-md bg-primary-soft px-4 py-3 text-primary-soft-foreground">{ran === 'failed' ? ta('payouts.runFailed') : ta('payouts.ran', { n: ran })}</p>}
+
+    <Card class={`space-y-2 ${rec.available && !rec.matches ? 'border-2 border-destructive' : ''}`} data-testid="reconciliation">
+      <h2 class="text-xl font-semibold">{ta('payouts.reconciliation')}</h2>
+      {!rec.available && <p>{ta('payouts.unavailable')}</p>}
+      {rec.available && <p data-testid="reconciliation-result" class={rec.matches ? '' : 'font-semibold text-destructive'}>{rec.matches ? ta('payouts.matches') : ta('payouts.mismatch')}</p>}
+      <p>{ta('payouts.local')}: {formatMoney(rec.localTotalPoisha)} · {ta('payouts.gateway')}: {formatMoney(rec.gatewayTotalPoisha)}</p>
+      <ul>{rec.mismatches.map((m: any) => <li class="text-destructive" data-testid="mismatch">{m.bookingId}: {m.kind}{m.localPoisha !== undefined ? ` · ${formatMoney(m.localPoisha)}` : ''}{m.gatewayPoisha !== undefined ? ` / ${formatMoney(m.gatewayPoisha)}` : ''}</li>)}</ul>
+    </Card>
+
+    <section class="space-y-3" data-testid="batches">
+      <h2 class="text-xl font-semibold">{ta('payouts.batches')}</h2>
+      {data.batches.length === 0 && <p class="text-muted-foreground">{ta('payouts.noBatches')}</p>}
+      {data.batches.map((b: any) => (
+        <Card class="space-y-1" data-testid="batch">
+          <p class="font-semibold">{b.runKey} · {ta('payouts.lines', { n: b.lineCount })} · {formatMoney(b.totalPoisha)}</p>
+          <ul class="text-sm">{b.lines.map((l: any) => <li>{l.bookingId} · {l.providerId} · {formatMoney(l.netPoisha)} · {l.status}</li>)}</ul>
+        </Card>
+      ))}
+    </section>
+
+    <section class="space-y-3" data-testid="frozen">
+      <h2 class="text-xl font-semibold">{ta('payouts.frozen')}</h2>
+      {data.frozen.length === 0 && <p class="text-muted-foreground">{ta('payouts.noFrozen')}</p>}
+      <ul class="space-y-2">{data.frozen.map((f: any) => <li data-testid="frozen-line">{f.bookingId} · {f.providerId} · {formatMoney(f.netPoisha)} · {f.reason}</li>)}</ul>
+    </section>
+  </div>
 </AdminShell>

@@ -83,5 +83,19 @@
   "peak.start": "First night",
   "peak.end": "Last night",
   "peak.create": "Add peak window",
-  "peak.empty": "No upcoming peak windows."
+  "peak.empty": "No upcoming peak windows.",
+  "payouts.runNow": "Run batch now",
+  "payouts.batches": "Batches",
+  "payouts.noBatches": "No batches yet.",
+  "payouts.frozen": "Frozen payouts",
+  "payouts.noFrozen": "No frozen payouts.",
+  "payouts.reconciliation": "Reconciliation",
+  "payouts.matches": "Totals match the payout service.",
+  "payouts.mismatch": "Totals do not match the payout service. Check the lines below.",
+  "payouts.unavailable": "The payout service could not be asked.",
+  "payouts.local": "Our records",
+  "payouts.gateway": "Payout service",
+  "payouts.lines": "{n} payouts",
+  "payouts.ran": "Batch run: {n} payouts sent.",
+  "payouts.runFailed": "The payout service is not available. Payouts stay queued."
 }

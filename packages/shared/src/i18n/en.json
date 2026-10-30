@@ -507,5 +507,19 @@
   "calendar.peak.apply": "Expand for peak",
   "calendar.peak.mark": "Peak",
   "calendar.peak.done": "Done. {n} nights updated.",
-  "calendar.peak.error": "Some nights already have more pets booked than that."
+  "calendar.peak.error": "Some nights already have more pets booked than that.",
+  "earnings.week": "Payout week of {date}",
+  "earnings.gross": "Booking total",
+  "earnings.commission": "Commission ({rate} %)",
+  "earnings.net": "You receive",
+  "earnings.status.queued": "Queued",
+  "earnings.status.sent": "Sent",
+  "earnings.status.paid": "Paid",
+  "earnings.status.frozen": "On hold",
+  "earnings.status.cancelled": "Cancelled",
+  "earnings.frozenReason": "On hold: {reason}",
+  "earnings.reason.report": "The owner reported a problem",
+  "earnings.reason.acute_event": "A concern was reported during the stay",
+  "earnings.empty.title": "No payouts yet",
+  "earnings.empty.body": "After a stay is completed, your payout appears here and is paid in the weekly Sunday batch."
 }

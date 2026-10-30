@@ -1,10 +1,40 @@
 ---
-import { t } from '@petcare/shared/i18n';
-import Placeholder from '@/components/Placeholder.astro';
+import { t, type MessageKey } from '@petcare/shared/i18n';
+import { formatDate, formatMoney } from '@petcare/shared/locale';
+import Card from '@/components/kit/Card.astro';
+import StatePill from '@/components/kit/StatePill.astro';
+import EmptyState from '@/components/states/EmptyState.astro';
 import ProviderShell from '@/layouts/ProviderShell.astro';
+import { apiFetch } from '@/lib/api';
 import { getLocale } from '@/lib/locale';
 const locale = getLocale(Astro.cookies);
+const L = (key: string, params?: Record<string, string | number>) => t(locale, key as MessageKey, params);
+const response = await apiFetch('/provider/earnings', { cookie: Astro.request.headers.get('cookie') }).catch(() => null);
+const weeks: Array<{ week: string; lines: any[] }> = response?.ok ? ((await response.json()) as { weeks: Array<{ week: string; lines: any[] }> }).weeks : [];
+const pill = (status: string) => (status === 'paid' ? 'payout-released' : status === 'frozen' ? 'payout-frozen' : status === 'cancelled' ? 'refunded' : 'payout-pending') as any;
+const reason = (code: string | null) => {
+  if (!code) return '';
+  const key = `earnings.reason.${code.split(':')[0]}`;
+  try { return L(key); } catch { return code; }
+};
 ---
 <ProviderShell titleKey="screen.earnings">
-  <Placeholder screenId="P5" title={t(locale, 'screen.earnings')} body={t(locale, 'placeholder.body')} />
+  <div class="space-y-6 py-4">
+    <h1 class="text-2xl font-semibold">{L('screen.earnings')}</h1>
+    {weeks.length === 0 && <EmptyState title={L('earnings.empty.title')} body={L('earnings.empty.body')} />}
+    {weeks.map((w) => (
+      <section class="space-y-3" data-testid="earnings-week">
+        <h2 class="text-xl font-semibold">{L('earnings.week', { date: formatDate(new Date(`${w.week}T00:00:00+06:00`), locale) })}</h2>
+        {w.lines.map((l) => (
+          <Card class="space-y-2" data-testid="earnings-line">
+            <div class="flex flex-wrap items-center gap-3"><span class="mr-auto font-semibold">{l.pet} · {formatDate(new Date(`${l.startDate}T00:00:00+06:00`), locale)}</span><StatePill state={pill(l.status)} label={L(`earnings.status.${l.status}`)} /></div>
+            <p>{L('earnings.gross')}: {formatMoney(l.grossPoisha)}</p>
+            <p>{L('earnings.commission', { rate: l.commissionBasisPoints / 100 })}: {formatMoney(l.commissionPoisha)}</p>
+            <p class="font-semibold" data-testid="earnings-net">{L('earnings.net')}: {formatMoney(l.netPoisha)}</p>
+            {l.status === 'frozen' && l.freezeReason && <p data-testid="earnings-reason" class="text-sm">{L('earnings.frozenReason', { reason: reason(l.freezeReason) })}</p>}
+          </Card>
+        ))}
+      </section>
+    ))}
+  </div>
 </ProviderShell>

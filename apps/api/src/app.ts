@@ -18,7 +18,7 @@ import type { PetAccessPolicy } from './pets/care-summary.ts';
 import type { PhotoPort } from './pets/photo-port.ts';
 import { createPayoutService } from './payouts/payout-service.ts';
 import type { PayoutPort } from './payouts/port.ts';
-import { registerPayoutRoutes } from './payouts/routes.ts';
+import { registerEarningsRoutes, registerPayoutRoutes } from './payouts/routes.ts';
 import { createPaymentService } from './payments/payment-service.ts';
 import type { PaymentPort } from './payments/port.ts';
 import { registerPaymentRoutes } from './payments/routes.ts';
@@ -167,6 +167,7 @@ export async function buildApp(deps: AppDeps = {}) {
         });
         payoutService = created;
         registerPayoutRoutes(app, { db: deps.db, authn, service: created });
+        registerEarningsRoutes(app, { db: deps.db, authn, port: deps.payouts });
         app.decorate('payoutService', created);
         app.decorate('runScheduledPayouts', async () => {
           await created.runScheduledBatch();

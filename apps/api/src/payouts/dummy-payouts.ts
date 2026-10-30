@@ -72,6 +72,33 @@ export function createDummyPayouts(baseUrl: string, timeoutMs = 8000): PayoutPor
     async release(id) {
       await call('POST', `/api/payouts/${encodeURIComponent(id)}/release`);
     },
+    async listAll() {
+      let response: Response;
+      try {
+        response = await fetch(`${baseUrl}/_training/payouts/inspect`, {
+          signal: AbortSignal.timeout(timeoutMs),
+        });
+      } catch {
+        throw new PayoutUnavailableError('The payout service did not answer');
+      }
+      if (!response.ok) throw new PayoutUnavailableError();
+      const json = (await response.json()) as {
+        state: {
+          payouts: Array<{
+            id: string;
+            bookingRef: string;
+            amount: number;
+            status: GatewayPayoutStatus;
+          }>;
+        };
+      };
+      return json.state.payouts.map((p) => ({
+        gatewayPayoutId: p.id,
+        bookingRef: p.bookingRef,
+        amountPoisha: p.amount,
+        status: p.status,
+      }));
+    },
     async status(id) {
       const json = await call('GET', `/api/payouts/${encodeURIComponent(id)}`);
       return json.status as GatewayPayoutStatus;

@@ -20,6 +20,15 @@ export interface PayoutPort {
   freeze(gatewayPayoutId: string): Promise<void>;
   release(gatewayPayoutId: string): Promise<void>;
   status(gatewayPayoutId: string): Promise<GatewayPayoutStatus>;
+  /** Everything the payout service holds, for reconciliation (training inspection in the Dummy). */
+  listAll(): Promise<
+    Array<{
+      gatewayPayoutId: string;
+      bookingRef: string;
+      amountPoisha: number;
+      status: GatewayPayoutStatus;
+    }>
+  >;
 }
 
 /** The payout service did not answer or is down. Nothing was sent. */

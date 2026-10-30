@@ -3,12 +3,12 @@ id: 007-provider-earnings
 code: PAY-07
 unit: 007-payments-payouts
 intent: 001-petcare-v1
-status: ready
+status: complete
 priority: should
 journeys: UJ-2
-created: 2026-10-29T16:00:00Z
+created: '2026-10-29T16:00:00Z'
 assigned_bolt: 020-payments-payouts
-implemented: false
+implemented: true
 ---
 
 # Story PAY-07: Provider earnings
