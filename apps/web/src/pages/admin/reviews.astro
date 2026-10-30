@@ -1,8 +1,37 @@
 ---
 import { ta } from '@petcare/shared/i18n';
-import Placeholder from '@/components/Placeholder.astro';
+import Button from '@/components/kit/Button.astro';
+import Card from '@/components/kit/Card.astro';
 import AdminShell from '@/layouts/AdminShell.astro';
+import { apiFetch } from '@/lib/api';
+const response = await apiFetch('/admin/reviews', { cookie: Astro.request.headers.get('cookie') }).catch(() => null);
+const reviews: any[] = response?.ok ? ((await response.json()) as { reviews: any[] }).reviews : [];
 ---
 <AdminShell titleKey="screen.reviews">
-  <Placeholder screenId="A5" title={ta('screen.reviews')} body={ta('placeholder.body')} />
+  <div class="space-y-5 py-4">
+    <h1 class="text-2xl font-semibold">{ta('screen.reviews')}</h1>
+    <h2 class="text-xl font-semibold">{ta('reviews.recent')}</h2>
+    {reviews.length === 0 && <p class="text-muted-foreground">{ta('reviews.none')}</p>}
+    {reviews.map((r) => (
+      <Card class="space-y-2" data-testid="admin-review">
+        <p class="font-semibold">{r.provider} · {r.rating}/5{r.photos > 0 ? ` · ${r.photos} photos` : ''}</p>
+        {r.text && <p>{r.text}</p>}
+        {r.status === 'removed'
+          ? <p data-testid="review-removed" class="text-muted-foreground">{ta('reviews.removed', { reason: r.removedReason })}</p>
+          : (
+            <>
+              {r.negativeReminder && <p role="note" data-testid="negative-reminder" class="rounded-md bg-warning-soft px-4 py-3 text-warning">{ta('reviews.negativeReminder')}</p>}
+              <form method="post" action="/admin/reviews/remove" class="flex flex-wrap items-end gap-2">
+                <input type="hidden" name="id" value={r.id} />
+                <div class="space-y-1"><label for={`reason-${r.id}`} class="block text-sm font-medium">{ta('reviews.reason')}</label>
+                  <select id={`reason-${r.id}`} name="reason" class="h-12 rounded-md border border-border bg-input px-3" data-testid="remove-reason">
+                    {['abuse', 'off_topic', 'contact_details'].map((v) => <option value={v}>{ta(`reviews.reason.${v}` as 'reviews.reason.abuse')}</option>)}
+                  </select></div>
+                <Button type="submit" variant="outline" data-testid="remove-review">{ta('reviews.remove')}</Button>
+              </form>
+            </>
+          )}
+      </Card>
+    ))}
+  </div>
 </AdminShell>

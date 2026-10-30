@@ -151,7 +151,14 @@ export function registerBookingRoutes(
           b.state === 'captured' && !openKinds.has('owner_cancellation_request'),
         cancellationRequested: openKinds.has('owner_cancellation_request'),
         completedAt: b.completedAt,
-        review: review ? { rating: review.rating, text: review.text } : null,
+        review: review
+          ? {
+              rating: review.rating,
+              text: review.text,
+              removed: review.status === 'removed',
+              removedReason: review.removedReason,
+            }
+          : null,
         canReview:
           !review &&
           !!b.completedAt &&

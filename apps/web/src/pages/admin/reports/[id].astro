@@ -1,8 +1,46 @@
 ---
 import { ta } from '@petcare/shared/i18n';
-import Placeholder from '@/components/Placeholder.astro';
+import { formatMoney } from '@petcare/shared/locale';
+import Button from '@/components/kit/Button.astro';
+import Card from '@/components/kit/Card.astro';
 import AdminShell from '@/layouts/AdminShell.astro';
+import { apiFetch } from '@/lib/api';
+const response = await apiFetch(`/admin/reports/${Astro.params.id}`, { cookie: Astro.request.headers.get('cookie') }).catch(() => null);
+if (!response || response.status === 404) return Astro.rewrite('/404');
+if (!response.ok) return Astro.redirect('/admin');
+const v: any = await response.json();
+const field = 'h-12 w-full rounded-md border border-border bg-input px-4 text-base';
 ---
 <AdminShell titleKey="screen.report">
-  <Placeholder screenId="A3" title={ta('screen.report')} body={ta('placeholder.body')} />
+  <div class="space-y-5 py-4">
+    <h1 class="text-2xl font-semibold" data-testid="report-title">{v.report.category} · {v.report.status === 'open' ? ta('reports.open') : ta('reports.resolved')}</h1>
+    {Astro.url.searchParams.has('error') && <p role="alert" data-testid="resolve-error" class="rounded-md bg-destructive-soft px-4 py-3 text-destructive">{ta('reports.error')}</p>}
+    <Card class="space-y-1"><p>{v.report.description}</p><p class="text-sm text-muted-foreground">{v.report.photoIds.length} photos</p></Card>
+    <Card class="space-y-1" data-testid="booking-record"><h2 class="text-xl font-semibold">{ta('reports.record')}</h2>
+      <p>{v.booking.pet.name} · {v.booking.startDate} → {v.booking.endDate} · {formatMoney(v.booking.totalPoisha)} · {v.booking.state}</p>
+      <p>{v.provider.name} · tier {v.provider.tier} · {v.provider.status}</p></Card>
+    <Card class="space-y-1"><h2 class="text-xl font-semibold">{ta('reports.history')}</h2>
+      <ul>{v.careHistory.map((h: any) => <li>{h.startDate} → {h.endDate}: {h.outcome}{h.declineReason ? ` (${h.declineReason})` : ''}</li>)}</ul></Card>
+    <Card class="space-y-1"><h2 class="text-xl font-semibold">{ta('reports.updates')}</h2>
+      <ul>{v.updates.map((u: any) => <li>{u.note || '—'} ({u.photos} photos)</li>)}</ul></Card>
+    <Card class="space-y-1"><h2 class="text-xl font-semibold">{ta('reports.patterns')}</h2>
+      <ul>{v.declinePatterns.map((d: any) => <li>{d.reason}: {d.count}</li>)}</ul></Card>
+    <Card class="space-y-1"><h2 class="text-xl font-semibold">{ta('reports.review')}</h2>{v.review ? <p>{v.review.rating}/5 {v.review.text}</p> : <p>—</p>}<p class="text-sm text-muted-foreground">{ta('reports.chat')}</p></Card>
+    {v.report.status === 'open' && (
+      <Card class="space-y-3" data-testid="resolve-card">
+        <h2 class="text-xl font-semibold">{ta('reports.resolve')}</h2>
+        <form method="post" action={`/admin/reports/${v.report.id}/resolve`} class="space-y-3">
+          <label for="rationale" class="block text-sm font-medium">{ta('reports.rationale')}</label>
+          <textarea id="rationale" name="rationale" required minlength="3" class="min-h-24 w-full rounded-md border border-border bg-input p-3 text-base" data-testid="rationale"></textarea>
+          <label for="refund" class="block text-sm font-medium">{ta('reports.refund')}</label>
+          <input id="refund" name="refund" type="number" min="1" inputmode="numeric" class={field} data-testid="refund" />
+          <label for="action" class="block text-sm font-medium">{ta('reports.action')}</label>
+          <select id="action" name="providerAction" class={field} data-testid="provider-action">
+            <option value="">{ta('reports.action.none')}</option><option value="warning">{ta('reports.action.warning')}</option><option value="suspension">{ta('reports.action.suspension')}</option><option value="removal">{ta('reports.action.removal')}</option>
+          </select>
+          <Button type="submit" data-testid="resolve-submit">{ta('reports.submit')}</Button>
+        </form>
+      </Card>
+    )}
+  </div>
 </AdminShell>

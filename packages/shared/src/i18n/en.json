@@ -539,5 +539,17 @@
   "profile.field.price": "price",
   "profile.field.capacity": "usual room",
   "profile.field.species": "pets you look after",
-  "profile.tierNote": "Your tier and status are managed by PetCare."
+  "profile.tierNote": "Your tier and status are managed by PetCare.",
+  "review.removed": "PetCare removed this review ({reason}). This decision is final.",
+  "review.removedReason.abuse": "abuse",
+  "review.removedReason.off_topic": "off-topic",
+  "review.removedReason.contact_details": "contact details",
+  "record.title": "Your care record",
+  "record.stays": "{n} completed, reviewed stays",
+  "record.diabetic": "Diabetic pets",
+  "record.senior": "Senior pets",
+  "record.medication": "Pets on medication",
+  "record.anxious": "Anxious pets",
+  "record.extraAttention": "Pets needing extra attention",
+  "record.empty": "Your care record grows with each completed and reviewed stay."
 }

@@ -223,16 +223,16 @@ Intent `001-petcare-v1`: **76 stories** in 11 units (generated 2026-10-29T16:00:
 ### 002-public-reviews-and-aggregates.md ✅ COMPLETED
 **REV-02** Public reviews and aggregates · must · UJ-1
 
-### 003-moderate-reviews-for-cause.md ✅ GENERATED
+### 003-moderate-reviews-for-cause.md ✅ COMPLETED
 **REV-03** Moderate reviews for cause · must · UJ-3
 
-### 004-provider-care-record.md ✅ GENERATED
+### 004-provider-care-record.md ✅ COMPLETED
 **REV-04** Provider care record · should · UJ-2
 
 ### 005-report-a-problem.md ✅ COMPLETED
 **REV-05** Report a problem · must · UJ-1
 
-### 006-investigate-and-resolve-a-report.md ✅ GENERATED
+### 006-investigate-and-resolve-a-report.md ✅ COMPLETED
 **REV-06** Investigate and resolve a report · must · UJ-3
 
 ## 010-acute-event-response

@@ -119,7 +119,7 @@ export function registerProviderBookingRoutes(
     const { id } = request.params as { id: string };
     const booking = await service.ownBooking(request.currentUser!.id, id);
     if (!booking) return refuse(reply, 404, 'booking_not_found', 'No such booking');
-    const summary = await buildCareSummary(db, request.currentUser!.id, booking.petId);
+    const summary = await buildCareSummary(db, booking.providerId, booking.petId);
     const prior = await db
       .select({ id: bookings.id })
       .from(bookings)

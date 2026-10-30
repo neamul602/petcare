@@ -6,7 +6,7 @@ import { z } from 'zod';
 import { MAX_PHOTOS, petInputSchema } from '@petcare/shared/pets';
 import type { Authenticator } from '../auth/guards.ts';
 import type { Database } from '../db/client.ts';
-import { careHistory, petPhotos, pets } from '../db/schema/index.ts';
+import { careHistory, petPhotos, pets, providers } from '../db/schema/index.ts';
 import { appendLogEntry } from '../log/append.ts';
 import { buildCareSummary, type PetAccessPolicy } from './care-summary.ts';
 import { lastCompletedStay, listCareHistory } from './care-history.ts';
@@ -305,7 +305,11 @@ export function registerPetRoutes(app: FastifyInstance, deps: PetDeps) {
           'You can see a pet only when it has a request with you',
         );
       }
-      const summary = await buildCareSummary(db, request.currentUser!.id, petId);
+      const [mine] = await db
+        .select({ id: providers.id })
+        .from(providers)
+        .where(eq(providers.userId, request.currentUser!.id));
+      const summary = await buildCareSummary(db, mine?.id ?? request.currentUser!.id, petId);
       return summary ? { summary } : refuse(reply, 404, 'pet_not_found', 'No such pet');
     },
   );

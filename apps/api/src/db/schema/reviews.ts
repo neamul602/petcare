@@ -1,4 +1,4 @@
-import { integer, pgTable, text, timestamp } from 'drizzle-orm/pg-core';
+import { integer, jsonb, pgTable, text, timestamp } from 'drizzle-orm/pg-core';
 import { bookings } from './bookings.ts';
 import { providers } from './providers.ts';
 
@@ -20,6 +20,9 @@ export const reviews = pgTable('reviews', {
   status: text('status', { enum: ['published', 'removed'] })
     .notNull()
     .default('published'),
+  removedReason: text('removed_reason'),
+  removedBy: text('removed_by'),
+  removedAt: timestamp('removed_at', { withTimezone: true }),
   createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
 });
 
@@ -37,5 +40,7 @@ export const reports = pgTable('reports', {
   status: text('status', { enum: ['open', 'resolved'] })
     .notNull()
     .default('open'),
+  resolution: jsonb('resolution').$type<Record<string, unknown>>(),
+  resolvedAt: timestamp('resolved_at', { withTimezone: true }),
   createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
 });

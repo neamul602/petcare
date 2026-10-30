@@ -1,0 +1,19 @@
+---
+import { ta } from '@petcare/shared/i18n';
+import Card from '@/components/kit/Card.astro';
+import AdminShell from '@/layouts/AdminShell.astro';
+import { apiFetch } from '@/lib/api';
+const response = await apiFetch('/admin/reports', { cookie: Astro.request.headers.get('cookie') }).catch(() => null);
+const reports: any[] = response?.ok ? ((await response.json()) as { reports: any[] }).reports : [];
+---
+<AdminShell titleKey="screen.report">
+  <div class="space-y-5 py-4">
+    <h1 class="text-2xl font-semibold">{ta('reports.title')}</h1>
+    {reports.length === 0 && <p class="text-muted-foreground">{ta('reports.none')}</p>}
+    {reports.map((r) => (
+      <a href={`/admin/reports/${r.id}`} data-testid="report-row" class="block rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring">
+        <Card class="space-y-1"><p class="font-semibold">{r.category} · {r.status === 'open' ? ta('reports.open') : ta('reports.resolved')}</p><p>{r.description}</p></Card>
+      </a>
+    ))}
+  </div>
+</AdminShell>

@@ -3,12 +3,12 @@ id: 004-provider-care-record
 code: REV-04
 unit: 009-reviews-disputes
 intent: 001-petcare-v1
-status: ready
+status: complete
 priority: should
 journeys: UJ-2
-created: 2026-10-29T16:00:00Z
+created: '2026-10-29T16:00:00Z'
 assigned_bolt: 022-reviews-disputes
-implemented: false
+implemented: true
 ---
 
 # Story REV-04: Provider care record

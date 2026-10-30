@@ -120,6 +120,13 @@
       "when": 1793370633801,
       "tag": "0016_vetting",
       "breakpoints": true
+    },
+    {
+      "idx": 17,
+      "version": "7",
+      "when": 1793371433549,
+      "tag": "0017_moderation",
+      "breakpoints": true
     }
   ]
 }

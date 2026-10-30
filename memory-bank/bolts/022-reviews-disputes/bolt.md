@@ -3,23 +3,28 @@ id: 022-reviews-disputes
 unit: 009-reviews-disputes
 intent: 001-petcare-v1
 type: ddd-construction-bolt
-status: planned
+status: complete
 phase: UJ-3
 stories:
   - 004-provider-care-record
   - 003-moderate-reviews-for-cause
   - 006-investigate-and-resolve-a-report
-created: 2026-10-29T17:00:00Z
-started: null
-completed: null
+created: '2026-10-29T17:00:00Z'
+started: '2026-11-01T19:30:00Z'
+completed: '2026-10-30T14:53:21Z'
 current_stage: null
-stages_completed: []
-
-requires_bolts: [004-accounts-notifications, 014-reviews-disputes]
-enables_bolts: [025-admin-operations]
-requires_units: [accounts-notifications]
+stages_completed:
+  - name: plan
+    completed: '2026-11-01T19:30:00Z'
+    artifact: implementation-plan.md
+requires_bolts:
+  - 004-accounts-notifications
+  - 014-reviews-disputes
+enables_bolts:
+  - 025-admin-operations
+requires_units:
+  - accounts-notifications
 blocks: true
-
 complexity:
   avg_complexity: 3
   avg_uncertainty: 2

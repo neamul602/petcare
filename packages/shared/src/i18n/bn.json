@@ -539,5 +539,17 @@
   "profile.field.price": "মূল্য",
   "profile.field.capacity": "সাধারণ জায়গা",
   "profile.field.species": "যাদের যত্ন নেন",
-  "profile.tierNote": "আপনার টিয়ার ও অবস্থা PetCare ঠিক করে।"
+  "profile.tierNote": "আপনার টিয়ার ও অবস্থা PetCare ঠিক করে।",
+  "review.removed": "PetCare এই রিভিউ সরিয়েছে ({reason})। এই সিদ্ধান্ত চূড়ান্ত।",
+  "review.removedReason.abuse": "অপমানজনক ভাষা",
+  "review.removedReason.off_topic": "অপ্রাসঙ্গিক",
+  "review.removedReason.contact_details": "যোগাযোগের তথ্য",
+  "record.title": "আপনার যত্নের রেকর্ড",
+  "record.stays": "{n}টি সম্পন্ন ও রিভিউ করা থাকা",
+  "record.diabetic": "ডায়াবেটিস আক্রান্ত পোষা প্রাণী",
+  "record.senior": "বয়স্ক পোষা প্রাণী",
+  "record.medication": "ওষুধ চলছে এমন পোষা প্রাণী",
+  "record.anxious": "উদ্বিগ্ন পোষা প্রাণী",
+  "record.extraAttention": "বাড়তি নজর দরকার এমন পোষা প্রাণী",
+  "record.empty": "প্রতিটি সম্পন্ন ও রিভিউ করা থাকার সঙ্গে আপনার যত্নের রেকর্ড বাড়বে।"
 }

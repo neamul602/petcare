@@ -69,7 +69,13 @@ const pending = Astro.url.searchParams.get('pending') === '1';
         <form method="post" action={`/bookings/${b.id}/act`}><input type="hidden" name="intent" value="book-again" /><Button type="submit" variant="secondary" data-testid="book-again">{L('booking.again')}</Button></form>
       </Card>
     )}
-    {b.review && <Card data-testid="your-review"><p class="font-semibold">{L('review.yours')}: {b.review.rating}/5</p>{b.review.text && <p>{b.review.text}</p>}</Card>}
+    {b.review && (
+      <Card data-testid="your-review" class="space-y-1">
+        <p class="font-semibold">{L('review.yours')}: {b.review.rating}/5</p>
+        {b.review.text && <p>{b.review.text}</p>}
+        {b.review.removed && <p data-testid="review-removed" class="text-muted-foreground">{L('review.removed', { reason: L(`review.removedReason.${b.review.removedReason}`) })}</p>}
+      </Card>
+    )}
     {b.canReview && (
       <Card class="space-y-3" data-testid="review-card">
         <h2 class="text-xl font-semibold">{L('review.title')}</h2>

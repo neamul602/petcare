@@ -8,6 +8,8 @@ import { apiFetch } from '@/lib/api';
 import { getLocale } from '@/lib/locale';
 const locale = getLocale(Astro.cookies);
 const L = (key: string, params?: Record<string, string | number>) => t(locale, key as MessageKey, params);
+const recRes = await apiFetch('/provider/care-record', { cookie: Astro.request.headers.get('cookie') }).catch(() => null);
+const record: any = recRes?.ok ? await recRes.json() : null;
 const response = await apiFetch('/provider/profile', { cookie: Astro.request.headers.get('cookie') }).catch(() => null);
 const p = response?.ok ? ((await response.json()) as { profile: any }).profile : null;
 const field = 'h-12 w-full rounded-md border border-border bg-input px-4 text-base focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2';
@@ -18,6 +20,19 @@ const area = 'min-h-24 w-full rounded-md border border-border bg-input p-4 text-
     <h1 class="text-2xl font-semibold">{L('profile.title')}</h1>
     {Astro.url.searchParams.has('saved') && <p role="status" data-testid="profile-saved" class="rounded-md bg-primary-soft px-4 py-3 text-primary-soft-foreground">{L('profile.saved')}</p>}
     {Astro.url.searchParams.has('failed') && <p role="alert" data-testid="profile-error" class="rounded-md bg-destructive-soft px-4 py-3 text-destructive">{L('profile.error')}</p>}
+    {record && (
+      <Card class="space-y-2" data-testid="care-record">
+        <h2 class="text-xl font-semibold">{L('record.title')}</h2>
+        {record.stays === 0
+          ? <p class="text-muted-foreground">{L('record.empty')}</p>
+          : (
+            <>
+              <p class="font-medium">{L('record.stays', { n: record.stays })}</p>
+              <ul class="list-disc ps-5">{['diabetic', 'senior', 'medication', 'anxious', 'extraAttention'].map((k) => record.counts[k] > 0 && <li>{L(`record.${k}`)}: {record.counts[k]}</li>)}</ul>
+            </>
+          )}
+      </Card>
+    )}
     {p && (
       <Card class="space-y-4">
         <p data-testid="completeness">{p.missing.length === 0 ? L('profile.complete') : L('profile.missing', { list: p.missing.map((m: string) => L(`profile.field.${m}`)).join(', ') })}</p>
