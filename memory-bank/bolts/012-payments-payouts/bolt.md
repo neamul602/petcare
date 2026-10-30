@@ -3,23 +3,34 @@ id: 012-payments-payouts
 unit: 007-payments-payouts
 intent: 001-petcare-v1
 type: ddd-construction-bolt
-status: planned
+status: complete
 phase: UJ-1 complete
 stories:
   - 004-commission-and-payout-queue
   - 005-weekly-payout-batch
   - 006-freeze-release-and-refund
-created: 2026-10-29T17:00:00Z
-started: null
-completed: null
+created: '2026-10-29T17:00:00Z'
+started: '2026-10-31T13:30:00Z'
+completed: '2026-10-30T13:13:34Z'
 current_stage: null
-stages_completed: []
-
-requires_bolts: [002-dummy-integration-services, 008-payments-payouts]
-enables_bolts: [013-booking-stay, 014-reviews-disputes, 015-acute-event-response, 020-payments-payouts]
-requires_units: [dummy-integration-services]
+stages_completed:
+  - name: model
+    completed: '2026-10-31T13:30:00Z'
+    artifact: implementation-plan.md
+  - name: design
+    completed: '2026-10-31T13:30:00Z'
+    artifact: implementation-plan.md
+requires_bolts:
+  - 002-dummy-integration-services
+  - 008-payments-payouts
+enables_bolts:
+  - 013-booking-stay
+  - 014-reviews-disputes
+  - 015-acute-event-response
+  - 020-payments-payouts
+requires_units:
+  - dummy-integration-services
 blocks: true
-
 complexity:
   avg_complexity: 3
   avg_uncertainty: 2

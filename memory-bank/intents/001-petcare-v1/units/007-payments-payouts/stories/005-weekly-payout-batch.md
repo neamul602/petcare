@@ -3,12 +3,12 @@ id: 005-weekly-payout-batch
 code: PAY-05
 unit: 007-payments-payouts
 intent: 001-petcare-v1
-status: ready
+status: complete
 priority: must
 journeys: UJ-2
-created: 2026-10-29T16:00:00Z
+created: '2026-10-29T16:00:00Z'
 assigned_bolt: 012-payments-payouts
-implemented: false
+implemented: true
 ---
 
 # Story PAY-05: Weekly payout batch

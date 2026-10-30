@@ -31,6 +31,8 @@ export const bookings = pgTable(
     instructions: text('instructions').notNull().default(''),
     state: text('state').$type<BookingState>().notNull(),
     confirmationDeadline: timestamp('confirmation_deadline', { withTimezone: true }),
+    /** Commission rate fixed when the provider confirms; later tier changes never change it. */
+    commissionBasisPoints: integer('commission_basis_points'),
     declineReason: text('decline_reason'),
     /** The owner's retry key for one checkout: a double tap or a resend is the same booking. */
     submissionKey: text('submission_key').notNull(),

@@ -3,12 +3,12 @@ id: 006-freeze-release-and-refund
 code: PAY-06
 unit: 007-payments-payouts
 intent: 001-petcare-v1
-status: ready
+status: complete
 priority: must
 journeys: UJ-3
-created: 2026-10-29T16:00:00Z
+created: '2026-10-29T16:00:00Z'
 assigned_bolt: 012-payments-payouts
-implemented: false
+implemented: true
 ---
 
 # Story PAY-06: Freeze, release and refund

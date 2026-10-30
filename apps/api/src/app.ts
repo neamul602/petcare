@@ -15,6 +15,9 @@ import { loadBusinessRules } from './config.ts';
 import type { Database } from './db/client.ts';
 import type { PetAccessPolicy } from './pets/care-summary.ts';
 import type { PhotoPort } from './pets/photo-port.ts';
+import { createPayoutService } from './payouts/payout-service.ts';
+import type { PayoutPort } from './payouts/port.ts';
+import { registerPayoutRoutes } from './payouts/routes.ts';
 import { createPaymentService } from './payments/payment-service.ts';
 import type { PaymentPort } from './payments/port.ts';
 import { registerPaymentRoutes } from './payments/routes.ts';
@@ -31,10 +34,14 @@ import { registerProviderRoutes } from './providers/routes.ts';
 
 declare module 'fastify' {
   interface FastifyInstance {
+    /** For other units (completion queues the payout, reports freeze it). */
+    payoutService?: import('./payouts/payout-service.ts').PayoutService;
     /** Closes requests past their confirmation window; the server runs it every minute. */
     processTimeouts?: () => Promise<{ closed: string[] }>;
     /** Flags confirmed stays not started by the deadline (TD-12). */
     flagLateStarts?: () => Promise<{ flagged: string[] }>;
+    /** Runs the weekly payout batch when due and marks settled payouts paid. */
+    runScheduledPayouts?: () => Promise<unknown>;
   }
 }
 
@@ -44,6 +51,7 @@ export interface AppDeps {
   otp?: OtpPort;
   photos?: PhotoPort;
   payments?: PaymentPort;
+  payouts?: PayoutPort;
   /** Which providers may see which pets (bookings decide, in later bolts). Default: nobody. */
   petAccess?: PetAccessPolicy;
   clock?: Clock;
@@ -119,6 +127,20 @@ export async function buildApp(deps: AppDeps = {}) {
         stay,
         service: createBookingService({ db: deps.db, payments: paymentService, clock }),
       });
+      if (deps.payouts) {
+        const payoutService = createPayoutService({
+          db: deps.db,
+          port: deps.payouts,
+          payments: paymentService,
+          clock,
+        });
+        registerPayoutRoutes(app, { db: deps.db, authn, service: payoutService });
+        app.decorate('payoutService', payoutService);
+        app.decorate('runScheduledPayouts', async () => {
+          await payoutService.runScheduledBatch();
+          return payoutService.syncPaid();
+        });
+      }
       const providerBookings = createProviderBookingService({
         db: deps.db,
         payments: paymentService,

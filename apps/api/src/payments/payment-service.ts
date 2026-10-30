@@ -195,6 +195,54 @@ export function createPaymentService(deps: { db: Database; port: PaymentPort; cl
     }
   }
 
+  /** Give money back to the original method, up to what was captured and not yet refunded (FR-42). */
+  async function refund(
+    bookingId: string,
+    amountPoisha: number,
+    actor: string,
+    reason?: string,
+  ): Promise<
+    | { ok: true; payment: PaymentRow; refundedTotal: number }
+    | {
+        ok: false;
+        reason:
+          | 'not_found'
+          | 'not_captured'
+          | 'exceeds_captured'
+          | 'declined'
+          | 'unavailable'
+          | 'invalid_amount';
+      }
+  > {
+    if (!Number.isInteger(amountPoisha) || amountPoisha <= 0)
+      return { ok: false, reason: 'invalid_amount' };
+    const row = await find(bookingId);
+    if (!row) return { ok: false, reason: 'not_found' };
+    if (row.status !== 'captured' || !row.gatewayPaymentId)
+      return { ok: false, reason: 'not_captured' };
+    if (amountPoisha > row.amountPoisha - row.refundedPoisha)
+      return { ok: false, reason: 'exceeds_captured' };
+    // One key per refund (booking and how much was refunded before), so a retry never refunds twice.
+    const key = `ref-${bookingId}-${row.refundedPoisha}`;
+    await log(bookingId, actor, 'refund_attempt', row, { refundPoisha: amountPoisha });
+    try {
+      await port.refund(row.gatewayPaymentId, amountPoisha, key, reason);
+      const saved = await update(row.id, { refundedPoisha: row.refundedPoisha + amountPoisha });
+      await log(bookingId, actor, 'refund_issued', saved, {
+        refundPoisha: amountPoisha,
+        refundedTotal: saved.refundedPoisha,
+        reason: reason ?? null,
+      });
+      return { ok: true, payment: saved, refundedTotal: saved.refundedPoisha };
+    } catch (error) {
+      if (!(error instanceof PaymentDeclinedError) && !(error instanceof PaymentUnavailableError))
+        throw error;
+      const why = error instanceof PaymentDeclinedError ? 'declined' : 'unavailable';
+      await log(bookingId, actor, 'refund_failed', row, { reason: why });
+      return { ok: false, reason: why };
+    }
+  }
+
   const pendingReleases = () =>
     db.select().from(payments).where(eq(payments.status, 'release_pending'));
 
@@ -208,7 +256,7 @@ export function createPaymentService(deps: { db: Database; port: PaymentPort; cl
     return { completed: done, stillPending: (await pendingReleases()).length };
   }
 
-  return { find, authorize, capture, release, pendingReleases, retryPendingReleases };
+  return { find, authorize, capture, release, refund, pendingReleases, retryPendingReleases };
 }
 
 export type PaymentService = ReturnType<typeof createPaymentService>;

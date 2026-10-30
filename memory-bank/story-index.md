@@ -144,13 +144,13 @@ Intent `001-petcare-v1`: **76 stories** in 11 units (generated 2026-10-29T16:00:
 ### 003-release-authorization.md ✅ COMPLETED
 **PAY-03** Release authorization · must · UJ-1
 
-### 004-commission-and-payout-queue.md ✅ GENERATED
+### 004-commission-and-payout-queue.md ✅ COMPLETED
 **PAY-04** Commission and payout queue · must · UJ-1, UJ-2
 
-### 005-weekly-payout-batch.md ✅ GENERATED
+### 005-weekly-payout-batch.md ✅ COMPLETED
 **PAY-05** Weekly payout batch · must · UJ-2
 
-### 006-freeze-release-and-refund.md ✅ GENERATED
+### 006-freeze-release-and-refund.md ✅ COMPLETED
 **PAY-06** Freeze, release and refund · must · UJ-3
 
 ### 007-provider-earnings.md ✅ GENERATED

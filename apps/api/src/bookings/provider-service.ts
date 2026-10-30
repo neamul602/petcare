@@ -6,6 +6,7 @@ import { and, eq, lte } from 'drizzle-orm';
 import type { Clock } from '@petcare/shared/clock';
 import { trainingDecisions } from '@petcare/shared/config';
 import type { CarePlan } from '@petcare/shared/pets';
+import { commissionBasisPoints } from '@petcare/shared/payments';
 import { releaseNights } from '../capacity/nights.ts';
 import type { Database } from '../db/client.ts';
 import { bookings, providers } from '../db/schema/index.ts';
@@ -14,6 +15,9 @@ import type { PaymentService } from '../payments/payment-service.ts';
 import { recordCareHistory } from '../pets/care-history.ts';
 import { exclusive } from './lock.ts';
 import { transitionBooking, type BookingRow } from './transitions.ts';
+
+/** Peak windows arrive with bolt 019; until then no stay is inside one. */
+const isPeakWindow = (): boolean => false;
 
 export type DeclineReason = (typeof trainingDecisions.declineReasons)[number];
 
@@ -52,12 +56,19 @@ export function createProviderBookingService(deps: {
       if (pastDeadline(booking)) return { ok: false, reason: 'expired' };
       const captured = await payments.capture(bookingId);
       if (!captured.ok) return { ok: false, reason: 'capture_failed' };
+      // The commission rate is fixed now and never changes, even if the provider's tier does later (PAY-04).
+      const [owner] = await db
+        .select({ tier: providers.tier })
+        .from(providers)
+        .where(eq(providers.id, booking.providerId));
+      const rate = commissionBasisPoints(owner!.tier, isPeakWindow());
       const moved = await transitionBooking(db, clock, {
         bookingId,
         to: 'captured',
         trigger: 'provider_confirmed',
         actor: `provider:${booking.providerId}`,
         expectedFrom: 'authorized',
+        set: { commissionBasisPoints: rate },
       });
       return moved.ok
         ? { ok: true, booking: moved.booking, alreadyConfirmed: false }
