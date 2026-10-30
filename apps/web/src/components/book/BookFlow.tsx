@@ -46,7 +46,7 @@ export default function BookFlow({ provider, pets, initial, again, methods, toda
   const storageKey = `pc:book:${provider.slug}`;
   const [s, setS] = useState<Saved>({
     step: 1,
-    petId: initial.petId || pets[0]?.id || '',
+    petId: pets.some((p) => p.id === initial.petId) ? initial.petId : (pets[0]?.id ?? ''),
     from: initial.from,
     to: initial.to,
     useSaved: true,

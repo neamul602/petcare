@@ -3,21 +3,25 @@ id: 018-pet-care-profile
 unit: 004-pet-care-profile
 intent: 001-petcare-v1
 type: simple-construction-bolt
-status: planned
+status: complete
 phase: UJ-4
 stories:
   - 007-archive-and-retention
-created: 2026-10-29T17:00:00Z
-started: null
-completed: null
+created: '2026-10-29T17:00:00Z'
+started: '2026-11-01T11:00:00Z'
+completed: '2026-10-30T14:02:26Z'
 current_stage: null
-stages_completed: []
-
-requires_bolts: [004-accounts-notifications, 005-pet-care-profile]
+stages_completed:
+  - name: plan
+    completed: '2026-11-01T11:00:00Z'
+    artifact: implementation-plan.md
+requires_bolts:
+  - 004-accounts-notifications
+  - 005-pet-care-profile
 enables_bolts: []
-requires_units: [accounts-notifications]
+requires_units:
+  - accounts-notifications
 blocks: true
-
 complexity:
   avg_complexity: 1
   avg_uncertainty: 1

@@ -93,7 +93,7 @@ Intent `001-petcare-v1`: **76 stories** in 11 units (generated 2026-10-29T16:00:
 ### 006-provider-care-summary.md ✅ COMPLETED
 **PET-06** Provider care summary · must · UJ-1, UJ-4
 
-### 007-archive-and-retention.md ✅ GENERATED
+### 007-archive-and-retention.md ✅ COMPLETED
 **PET-07** Archive and retention · should · none
 
 ## 005-provider-supply-vetting

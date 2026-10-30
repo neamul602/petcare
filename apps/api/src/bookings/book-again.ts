@@ -7,7 +7,7 @@ import type { Clock } from '@petcare/shared/clock';
 import { pillFor } from '@petcare/shared/bookings';
 import type { Authenticator } from '../auth/guards.ts';
 import type { Database } from '../db/client.ts';
-import { bookAgainTimers, bookings, providers } from '../db/schema/index.ts';
+import { bookAgainTimers, bookings, pets, providers } from '../db/schema/index.ts';
 
 const refuse = (reply: FastifyReply, status: number, code: string, message: string) =>
   reply.code(status).send({ error: { code, message } });
@@ -60,6 +60,14 @@ export function registerBookAgainRoutes(
   });
 
   /** Tapping Book again starts the timer on the server and says what to pre-fill. */
+  const petIsArchived = async (petId: string) => {
+    const [p] = await db
+      .select({ archivedAt: pets.archivedAt })
+      .from(pets)
+      .where(eq(pets.id, petId));
+    return !p || p.archivedAt !== null;
+  };
+
   app.post('/owner/book-again', owner, async (request, reply) => {
     const { bookingId } = z.strictObject({ bookingId: z.string() }).parse(request.body);
     const [row] = await db
@@ -83,6 +91,7 @@ export function registerBookAgainRoutes(
       startedAt,
       providerSlug: row.p.slug,
       providerAvailable: row.p.status === 'approved',
+      petArchived: await petIsArchived(row.b.petId),
     });
   });
 
@@ -106,7 +115,7 @@ export function registerBookAgainRoutes(
         available: row.p.status === 'approved',
       },
       prefill: {
-        petId: row.b.petId,
+        petId: (await petIsArchived(row.b.petId)) ? '' : row.b.petId,
         petName: (row.b.petSnapshot as { name?: string }).name ?? '',
         instructions: row.b.instructions,
         nights: row.b.nights,

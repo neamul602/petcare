@@ -22,6 +22,7 @@ import { registerPayoutRoutes } from './payouts/routes.ts';
 import { createPaymentService } from './payments/payment-service.ts';
 import type { PaymentPort } from './payments/port.ts';
 import { registerPaymentRoutes } from './payments/routes.ts';
+import { registerRetentionRoutes } from './pets/retention.ts';
 import { registerPetRoutes } from './pets/routes.ts';
 import { registerBookAgainRoutes } from './bookings/book-again.ts';
 import { createBookingService } from './bookings/booking-service.ts';
@@ -193,6 +194,7 @@ export async function buildApp(deps: AppDeps = {}) {
       });
       app.decorate('processTimeouts', providerBookings.processTimeouts);
     }
+    registerRetentionRoutes(app, { db: deps.db, authn, clock });
     if (deps.photos)
       registerPetRoutes(app, {
         db: deps.db,

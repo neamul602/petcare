@@ -3,12 +3,12 @@ id: 007-archive-and-retention
 code: PET-07
 unit: 004-pet-care-profile
 intent: 001-petcare-v1
-status: ready
+status: complete
 priority: should
 journeys: none
-created: 2026-10-29T16:00:00Z
+created: '2026-10-29T16:00:00Z'
 assigned_bolt: 018-pet-care-profile
-implemented: false
+implemented: true
 ---
 
 # Story PET-07: Archive and retention
