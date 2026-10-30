@@ -6,7 +6,9 @@ import { pillFor } from '@petcare/shared/bookings';
 import { PAYMENT_METHODS } from '@petcare/shared/payments';
 import type { Authenticator } from '../auth/guards.ts';
 import type { Database } from '../db/client.ts';
-import { bookingFlags, bookings, providers } from '../db/schema/index.ts';
+import type { Clock } from '@petcare/shared/clock';
+import { trainingDecisions } from '@petcare/shared/config';
+import { bookingFlags, bookings, providers, reports, reviews } from '../db/schema/index.ts';
 import type { PaymentService } from '../payments/payment-service.ts';
 import type { BookingService, SubmitResult } from './booking-service.ts';
 import type { StayService } from '../stay/stay-service.ts';
@@ -60,9 +62,10 @@ export function registerBookingRoutes(
     service: BookingService;
     payments: PaymentService;
     stay?: StayService;
+    clock: Clock;
   },
 ) {
-  const { db, authn, service, payments, stay } = deps;
+  const { db, authn, service, payments, stay, clock } = deps;
   const owner = { preHandler: authn.requireRole('owner') };
 
   app.post('/owner/bookings', owner, async (request, reply) => {
@@ -96,6 +99,11 @@ export function registerBookingRoutes(
     const b = row.booking;
     const payment = await payments.find(b.id);
     const history = await transitionHistory(db, b.id);
+    const [review] = await db.select().from(reviews).where(eq(reviews.bookingId, b.id));
+    const [report] = await db.select().from(reports).where(eq(reports.bookingId, b.id));
+    const reportClosesAt = b.completedAt
+      ? new Date(b.completedAt.getTime() + trainingDecisions.disputeWindowMinutes * 60_000)
+      : null;
     const openKinds = new Set(
       (
         await db
@@ -131,6 +139,18 @@ export function registerBookingRoutes(
           b.state === 'captured' && !openKinds.has('owner_cancellation_request'),
         cancellationRequested: openKinds.has('owner_cancellation_request'),
         completedAt: b.completedAt,
+        review: review ? { rating: review.rating, text: review.text } : null,
+        canReview:
+          !review &&
+          !!b.completedAt &&
+          ['completed', 'disputed', 'resolved', 'refunded'].includes(b.state),
+        report: report ? { category: report.category, status: report.status } : null,
+        canReport:
+          b.state === 'completed' &&
+          !report &&
+          !!reportClosesAt &&
+          clock.now().getTime() <= reportClosesAt.getTime(),
+        reportClosesAt,
         timedOut: history.some((h) => h.trigger === 'confirmation_timeout'),
       },
       history,

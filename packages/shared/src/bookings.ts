@@ -58,4 +58,5 @@ export type Trigger =
   | 'provider_completed'
   | 'owner_confirmed'
   | 'provider_flagged_no_show'
+  | 'owner_reported'
   | 'admin_action';

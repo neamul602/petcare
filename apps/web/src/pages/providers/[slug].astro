@@ -14,6 +14,9 @@ if (!response || response.status === 404) return Astro.rewrite('/404');
 if (!response.ok) return Astro.redirect('/search');
 const { provider } = (await response.json()) as { provider: any };
 const name: string = provider.name[locale];
+const revRes = await apiFetch(`/providers/${provider.slug}/reviews`).then((r) => (r.ok ? r.json() : null)).catch(() => null);
+const reviewList: any[] = revRes?.reviews ?? [];
+const agg = revRes?.aggregates;
 const from = Astro.url.searchParams.get('from') ?? '';
 const to = Astro.url.searchParams.get('to') ?? '';
 let busy: string[] | null = null;
@@ -56,7 +59,23 @@ const L = (key: string, params?: Record<string, string | number>) => t(locale, k
       <h2 class="text-xl font-semibold">{L('provider.photos')}</h2>
       {provider.photos.length === 0 && <p class="text-muted-foreground">{L('provider.photos.none')}</p>}
     </Card>
-    <p data-testid="provider-new" class="rounded-md bg-muted px-4 py-3">{L('provider.new')}</p>
+    {reviewList.length === 0
+      ? <p data-testid="provider-new" class="rounded-md bg-muted px-4 py-3">{L('provider.new')}</p>
+      : (
+        <Card class="space-y-3" data-testid="reviews">
+          <h2 class="text-xl font-semibold">{L('provider.reviews')}</h2>
+          <p class="font-medium" data-testid="review-summary">{L('provider.reviews.summary', { avg: agg.average, count: agg.count })} · {L('provider.reviews.photosShare', { pct: agg.withPhotosPercent })}</p>
+          <ul class="space-y-3">
+            {reviewList.map((r) => (
+              <li class="space-y-2 border-t border-border pt-3" data-testid="review">
+                <p><strong>{r.rating}/5</strong> · <span class="text-sm text-muted-foreground">{L('review.verified')}</span></p>
+                {r.text && <p>{r.text}</p>}
+                {r.photos.length > 0 && <ul class="grid grid-cols-3 gap-2">{r.photos.map((src: string) => <li><img src={src} alt="" loading="lazy" class="aspect-square w-full rounded-md object-cover" /></li>)}</ul>}
+              </li>
+            ))}
+          </ul>
+        </Card>
+      )}
   </div>
   <div class="fixed inset-x-0 bottom-16 z-10 border-t border-border bg-background/95 px-4 py-3 backdrop-blur md:bottom-0">
     <div class="mx-auto max-w-5xl"><Button href={bookHref} class="w-full" data-testid="book-button">{L('provider.book', { name })}</Button></div>

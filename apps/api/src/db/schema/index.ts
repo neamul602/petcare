@@ -7,3 +7,4 @@ export { nightCapacity, nightReservations } from './capacity.ts';
 export { payments, payoutBatches, payouts } from './payments.ts';
 export { bookingFlags, bookings } from './bookings.ts';
 export { dailyUpdates, updatePhotos } from './stay.ts';
+export { reports, reviews } from './reviews.ts';

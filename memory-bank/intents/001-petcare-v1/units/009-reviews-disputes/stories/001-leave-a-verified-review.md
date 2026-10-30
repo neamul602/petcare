@@ -3,12 +3,12 @@ id: 001-leave-a-verified-review
 code: REV-01
 unit: 009-reviews-disputes
 intent: 001-petcare-v1
-status: ready
+status: complete
 priority: must
 journeys: UJ-1
-created: 2026-10-29T16:00:00Z
+created: '2026-10-29T16:00:00Z'
 assigned_bolt: 014-reviews-disputes
-implemented: false
+implemented: true
 ---
 
 # Story REV-01: Leave a verified review

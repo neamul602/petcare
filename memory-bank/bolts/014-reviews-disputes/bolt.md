@@ -3,23 +3,33 @@ id: 014-reviews-disputes
 unit: 009-reviews-disputes
 intent: 001-petcare-v1
 type: ddd-construction-bolt
-status: planned
+status: complete
 phase: UJ-1 complete
 stories:
   - 001-leave-a-verified-review
   - 002-public-reviews-and-aggregates
   - 005-report-a-problem
-created: 2026-10-29T17:00:00Z
-started: null
-completed: null
+created: '2026-10-29T17:00:00Z'
+started: '2026-10-31T19:00:00Z'
+completed: '2026-10-30T13:39:41Z'
 current_stage: null
-stages_completed: []
-
-requires_bolts: [002-dummy-integration-services, 006-provider-supply-vetting, 012-payments-payouts, 013-booking-stay]
-enables_bolts: [022-reviews-disputes]
-requires_units: [booking-stay, dummy-integration-services, payments-payouts, provider-supply-vetting]
+stages_completed:
+  - name: plan
+    completed: '2026-10-31T19:00:00Z'
+    artifact: implementation-plan.md
+requires_bolts:
+  - 002-dummy-integration-services
+  - 006-provider-supply-vetting
+  - 012-payments-payouts
+  - 013-booking-stay
+enables_bolts:
+  - 022-reviews-disputes
+requires_units:
+  - booking-stay
+  - dummy-integration-services
+  - payments-payouts
+  - provider-supply-vetting
 blocks: true
-
 complexity:
   avg_complexity: 2
   avg_uncertainty: 1

@@ -31,6 +31,8 @@ import { createProviderBookingService } from './bookings/provider-service.ts';
 import { registerBookingRoutes } from './bookings/routes.ts';
 import { createStayService, type StayService } from './stay/stay-service.ts';
 import { registerStayRoutes } from './stay/routes.ts';
+import { createReviewService } from './reviews/service.ts';
+import { registerReviewRoutes } from './reviews/routes.ts';
 import { registerCapacityRoutes } from './capacity/routes.ts';
 import { registerProviderRoutes } from './providers/routes.ts';
 
@@ -110,7 +112,13 @@ export async function buildApp(deps: AppDeps = {}) {
     const authDeps = { db: deps.db, otp: deps.otp, clock, store, limiter, authn };
     registerAuthRoutes(app, authDeps);
     await registerAdminRoutes(app, authDeps);
-    registerProviderRoutes(app, { db: deps.db, authn });
+    const reviewService = createReviewService({
+      db: deps.db,
+      clock,
+      payouts: () => app.payoutService,
+    });
+    registerReviewRoutes(app, { db: deps.db, authn, service: reviewService, photos: deps.photos });
+    registerProviderRoutes(app, { db: deps.db, authn, reviews: reviewService });
     registerCapacityRoutes(app, { db: deps.db, authn, clock });
     const stay: StayService | undefined = deps.photos
       ? createStayService({ db: deps.db, photos: deps.photos, clock })
@@ -127,6 +135,7 @@ export async function buildApp(deps: AppDeps = {}) {
         authn,
         payments: paymentService,
         stay,
+        clock,
         service: createBookingService({ db: deps.db, payments: paymentService, clock }),
       });
       let payoutService: ReturnType<typeof createPayoutService> | undefined;

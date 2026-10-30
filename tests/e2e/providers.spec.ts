@@ -19,15 +19,15 @@ test.describe('public provider page', () => {
   test('a Tier-A provider shows the badge with an accessible name, price, area and no ratings', async ({
     page,
   }) => {
-    await page.goto('/providers/rashid');
-    await expect(page.getByTestId('provider-title')).toHaveText('রশিদ');
+    await page.goto('/providers/farzana');
+    await expect(page.getByTestId('provider-title')).toHaveText('ফারজানা');
     await expect(
       page.getByLabel('টিয়ার এ: PetCare অ্যাডমিন নিজে পরিচয় করিয়ে দিয়েছেন'),
     ).toBeVisible();
-    await expect(page.getByTestId('provider-price')).toContainText('৳2,500');
+    await expect(page.getByTestId('provider-price')).toContainText('৳2,200');
     await expect(page.getByTestId('provider-new')).toHaveText('PetCare-এ নতুন। সুনাম গড়ে তুলছেন।');
-    await expect(page.locator('main')).not.toContainText('+8801712000002');
-    await expect(page.getByTestId('book-button')).toHaveAttribute('href', '/book/rashid');
+    await expect(page.locator('main')).not.toContainText('+8801712000003');
+    await expect(page.getByTestId('book-button')).toHaveAttribute('href', '/book/farzana');
     expect(await scan(page)).toEqual([]);
   });
 

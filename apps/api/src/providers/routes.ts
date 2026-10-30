@@ -8,6 +8,7 @@ import type { Authenticator } from '../auth/guards.ts';
 import { recordAdminAction } from '../auth/audit.ts';
 import type { Database } from '../db/client.ts';
 import { neighbourhoods, providerStatusEvents, providers } from '../db/schema/index.ts';
+import type { ReviewService } from '../reviews/service.ts';
 import { changeTier, moveStatus, slugFor, type ProviderRow } from './provider-records.ts';
 
 const refuse = (reply: FastifyReply, status: number, code: string, message: string) =>
@@ -28,9 +29,9 @@ const tierSchema = z.strictObject({ tier: z.enum(TIERS), reason });
 
 export function registerProviderRoutes(
   app: FastifyInstance,
-  deps: { db: Database; authn: Authenticator },
+  deps: { db: Database; authn: Authenticator; reviews: ReviewService },
 ) {
-  const { db, authn } = deps;
+  const { db, authn, reviews } = deps;
   const admin = { preHandler: authn.requireRole('admin') };
 
   const summary = (row: ProviderRow) => ({
@@ -67,7 +68,7 @@ export function registerProviderRoutes(
         capabilities: p.capabilities,
         experience: { en: p.experienceEn, bn: p.experienceBn },
         photos: [],
-        reviews: { count: 0 },
+        reviews: await reviews.aggregates(p.id),
       },
     };
   });
