@@ -127,7 +127,7 @@ beforeEach(async () => {
   await mode('payouts', 'none');
   await fetch(`${dummyUrl}/_training/reset-all`, { method: 'POST' });
   await pool.query(
-    'DELETE FROM payout_batches; DELETE FROM payouts; DELETE FROM bookings; DELETE FROM payments; DELETE FROM night_reservations; DELETE FROM night_capacity',
+    'DELETE FROM payout_batches; DELETE FROM payouts; DELETE FROM booking_flags; DELETE FROM bookings; DELETE FROM payments; DELETE FROM night_reservations; DELETE FROM night_capacity',
   );
   await pool.query("UPDATE providers SET tier = 'A' WHERE id = 'rashid'");
 });

@@ -105,7 +105,7 @@ beforeEach(async () => {
   await mode('none');
   await fetch(`${dummyUrl}/_training/reset-all`, { method: 'POST' });
   await pool.query(
-    'DELETE FROM care_history; DELETE FROM bookings; DELETE FROM payments; DELETE FROM night_reservations; DELETE FROM night_capacity',
+    'DELETE FROM care_history; DELETE FROM booking_flags; DELETE FROM bookings; DELETE FROM payments; DELETE FROM night_reservations; DELETE FROM night_capacity',
   );
 });
 

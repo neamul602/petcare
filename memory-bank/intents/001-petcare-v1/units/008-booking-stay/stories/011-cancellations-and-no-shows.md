@@ -3,12 +3,12 @@ id: 011-cancellations-and-no-shows
 code: BKG-11
 unit: 008-booking-stay
 intent: 001-petcare-v1
-status: ready
+status: complete
 priority: should
 journeys: none
-created: 2026-10-29T16:00:00Z
+created: '2026-10-29T16:00:00Z'
 assigned_bolt: 013-booking-stay
-implemented: false
+implemented: true
 ---
 
 # Story BKG-11: Cancellations and no-shows

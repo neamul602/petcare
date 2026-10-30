@@ -191,7 +191,7 @@ Intent `001-petcare-v1`: **76 stories** in 11 units (generated 2026-10-29T16:00:
 ### 010-start-the-stay.md ✅ COMPLETED
 **BKG-10** Start the stay · must · UJ-1
 
-### 011-cancellations-and-no-shows.md ✅ GENERATED
+### 011-cancellations-and-no-shows.md ✅ COMPLETED
 **BKG-11** Cancellations and no-shows · should · none
 
 ### 012-daily-updates.md ✅ COMPLETED
@@ -203,7 +203,7 @@ Intent `001-petcare-v1`: **76 stories** in 11 units (generated 2026-10-29T16:00:
 ### 014-vet-clinic-directory.md ✅ COMPLETED
 **BKG-14** Vet-clinic directory · must · UJ-1
 
-### 015-mark-complete-and-confirm-completion.md ✅ GENERATED
+### 015-mark-complete-and-confirm-completion.md ✅ COMPLETED
 **BKG-15** Mark complete and confirm completion · must · UJ-1
 
 ### 016-book-again.md ✅ GENERATED

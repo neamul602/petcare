@@ -57,4 +57,5 @@ export type Trigger =
   | 'stay_started'
   | 'provider_completed'
   | 'owner_confirmed'
+  | 'provider_flagged_no_show'
   | 'admin_action';

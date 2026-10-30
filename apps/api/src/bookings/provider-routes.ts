@@ -133,6 +133,10 @@ export function registerProviderBookingRoutes(
         instructions: booking.instructions,
         declineReason: booking.declineReason,
         priorStaysWithYou: prior.length,
+        canComplete: booking.state === 'in_stay' && booking.endDate <= dhakaToday(clock),
+        completionRequested: booking.completionRequestedAt !== null,
+        canCancel: booking.state === 'captured',
+        canFlagNoShow: booking.state === 'captured' && booking.startDate <= dhakaToday(clock),
         canStart: booking.state === 'captured' && booking.startDate <= dhakaToday(clock),
         reminderDue: stay && booking.state === 'in_stay' ? await stay.reminderDue(id) : false,
         canAct:

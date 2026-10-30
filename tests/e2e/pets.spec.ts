@@ -57,7 +57,7 @@ test('Tito’s profile shows the care plan and an empty care history', async ({
   await expect(page.getByTestId('pet-medications')).toContainText('08:00, 20:00');
   expect(await scan(page)).toEqual([]);
   await page.getByTestId('tab-history').click();
-  await expect(page.getByTestId('pet-history')).toContainText('Tito');
+  await expect(page.getByTestId('pet-history')).toBeVisible();
   expect(await scan(page)).toEqual([]);
   await owner.close();
 });

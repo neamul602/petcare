@@ -101,7 +101,7 @@ afterAll(async () => {
 beforeEach(async () => {
   await fetch(`${dummyUrl}/_training/reset-all`, { method: 'POST' });
   await pool.query(
-    'DELETE FROM bookings; DELETE FROM payments; DELETE FROM night_reservations; DELETE FROM night_capacity',
+    'DELETE FROM booking_flags; DELETE FROM bookings; DELETE FROM payments; DELETE FROM night_reservations; DELETE FROM night_capacity',
   );
   await pool.query("UPDATE providers SET status = 'approved' WHERE id IN ('rashid','kamrul')");
   await pool.query("UPDATE pets SET archived_at = NULL WHERE id = 'tito'");

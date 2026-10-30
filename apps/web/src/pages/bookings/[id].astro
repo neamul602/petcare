@@ -46,6 +46,31 @@ const pending = Astro.url.searchParams.get('pending') === '1';
     )}
     {b.state === 'captured' && <Card><p>{L('booking.captured.body', { name, amount })}</p></Card>}
     {b.state === 'in_stay' && <Card><p>{L('stay.inStay.body', { name, pet: b.pet.name })}</p></Card>}
+    {b.canConfirmCompletion && (
+      <Card class="space-y-3" data-testid="confirm-completion-card">
+        <p class="font-semibold">{L('booking.confirmCompletion.title', { name })}</p>
+        <form method="post" action={`/bookings/${b.id}/act`}>
+          <input type="hidden" name="intent" value="confirm-completion" />
+          <Button type="submit" size="lg" class="w-full" data-testid="confirm-completion">{L('booking.confirmCompletion')}</Button>
+        </form>
+      </Card>
+    )}
+    {b.state === 'completed' && <Card data-testid="completed"><p>{L('booking.completed.body')}</p></Card>}
+    {b.state === 'no_show' && <Card data-testid="no-show"><p>{L('booking.noShow.body')}</p></Card>}
+    {b.state === 'refunded' && <Card><p>{L('booking.refunded.body')}</p></Card>}
+    {b.cancellationRequested && <Card data-testid="cancel-requested"><p>{L('booking.cancelRequested')}</p></Card>}
+    {b.canRequestCancellation && (
+      <details class="rounded-lg border border-border bg-card p-4" data-testid="request-cancel-sheet">
+        <summary class="flex min-h-11 cursor-pointer items-center font-medium">{L('booking.requestCancel')}</summary>
+        <form method="post" action={`/bookings/${b.id}/act`} class="mt-3 space-y-3">
+          <input type="hidden" name="intent" value="request-cancellation" />
+          <p class="text-sm text-muted-foreground">{L('booking.requestCancel.help')}</p>
+          <label for="cancel-note" class="block text-sm font-medium">{L('booking.requestCancel.note')}</label>
+          <input id="cancel-note" name="note" maxlength="300" class="h-12 w-full rounded-md border border-border bg-input px-4 text-base" />
+          <Button type="submit" variant="outline" data-testid="request-cancel-send">{L('booking.requestCancel.send')}</Button>
+        </form>
+      </details>
+    )}
     {['in_stay', 'completed'].includes(b.state) && <UpdateList locale={locale} updates={updates} />}
     {clinics.length > 0 && <VetClinics locale={locale} clinics={clinics} />}
     {b.state === 'declined' && (

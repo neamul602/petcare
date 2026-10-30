@@ -33,6 +33,9 @@ export const bookings = pgTable(
     confirmationDeadline: timestamp('confirmation_deadline', { withTimezone: true }),
     /** Commission rate fixed when the provider confirms; later tier changes never change it. */
     commissionBasisPoints: integer('commission_basis_points'),
+    /** The provider has marked the stay complete and is waiting for the owner to confirm. */
+    completionRequestedAt: timestamp('completion_requested_at', { withTimezone: true }),
+    completedAt: timestamp('completed_at', { withTimezone: true }),
     declineReason: text('decline_reason'),
     /** The owner's retry key for one checkout: a double tap or a resend is the same booking. */
     submissionKey: text('submission_key').notNull(),
@@ -41,3 +44,24 @@ export const bookings = pgTable(
   },
   (t) => [unique('bookings_owner_key').on(t.ownerId, t.submissionKey)],
 );
+
+export type FlagKind =
+  'owner_cancellation_request' | 'provider_cancellation' | 'owner_no_show' | 'missed_start';
+
+/** An item for the admin queue: something after confirmation that a person must decide (TD-6). */
+export const bookingFlags = pgTable('booking_flags', {
+  id: text('id').primaryKey(),
+  bookingId: text('booking_id')
+    .notNull()
+    .references(() => bookings.id),
+  kind: text('kind').$type<FlagKind>().notNull(),
+  status: text('status', { enum: ['open', 'resolved'] })
+    .notNull()
+    .default('open'),
+  note: text('note').notNull().default(''),
+  raisedBy: text('raised_by').notNull(),
+  resolution: text('resolution'),
+  resolvedBy: text('resolved_by'),
+  resolvedAt: timestamp('resolved_at', { withTimezone: true }),
+  createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
+});

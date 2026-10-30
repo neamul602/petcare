@@ -101,10 +101,38 @@ const field = 'flex min-h-11 items-center gap-3';
       <div class="space-y-4">
         {b.reminderDue && <p role="status" data-testid="reminder" class="rounded-md bg-info-soft px-4 py-3 text-info">{L('stay.reminder')}</p>}
         <UpdateForm client:load bookingId={b.id} text={textFor(locale, 'stay.update.', 'food.', 'mood.')} />
+        {b.completionRequested && <p data-testid="completion-waiting" class="rounded-md bg-muted px-4 py-3">{L('stay.complete.waiting')}</p>}
+        {b.canComplete && !b.completionRequested && (
+          <form method="post" action={`/provider/bookings/${b.id}/act`} class="space-y-2">
+            <input type="hidden" name="intent" value="complete" />
+            <p class="text-sm text-muted-foreground">{L('stay.complete.hint')}</p>
+            <Button type="submit" size="lg" class="w-full" data-testid="mark-complete">{L('stay.complete')}</Button>
+          </form>
+        )}
       </div>
     )}
     {['in_stay', 'completed'].includes(b.state) && <UpdateList locale={locale} updates={updates} />}
     {clinics.length > 0 && <VetClinics locale={locale} clinics={clinics} />}
     {b.state === 'declined' && <p>{L('request.declined')}</p>}
+    {b.canCancel && (
+      <details class="rounded-lg border border-border bg-card p-4" data-testid="provider-cancel-sheet">
+        <summary class="flex min-h-11 cursor-pointer items-center font-medium">{L('stay.cancel')}</summary>
+        <form method="post" action={`/provider/bookings/${b.id}/act`} class="mt-3 space-y-3">
+          <input type="hidden" name="intent" value="cancel" />
+          <p class="text-sm text-muted-foreground">{L('stay.cancel.help')}</p>
+          <label for="pcancel-note" class="block text-sm font-medium">{L('stay.cancel.note')}</label>
+          <input id="pcancel-note" name="note" required minlength="3" maxlength="300" class="h-12 w-full rounded-md border border-border bg-input px-4 text-base" />
+          <Button type="submit" variant="outline" data-testid="provider-cancel-send">{L('stay.cancel.send')}</Button>
+        </form>
+      </details>
+    )}
+    {b.canFlagNoShow && (
+      <form method="post" action={`/provider/bookings/${b.id}/act`} class="space-y-2">
+        <input type="hidden" name="intent" value="no-show" />
+        <p class="text-sm text-muted-foreground">{L('stay.noShow.help')}</p>
+        <Button type="submit" variant="outline" data-testid="flag-no-show">{L('stay.noShow')}</Button>
+      </form>
+    )}
+    {b.state === 'completed' && <p data-testid="provider-completed">{L('booking.completed.body')}</p>}
   </div>
 </ProviderShell>

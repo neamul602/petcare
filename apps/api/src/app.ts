@@ -24,6 +24,8 @@ import { registerPaymentRoutes } from './payments/routes.ts';
 import { registerPetRoutes } from './pets/routes.ts';
 import { createBookingService } from './bookings/booking-service.ts';
 import { bookingPetAccess } from './bookings/pet-access.ts';
+import { createCompletionService } from './bookings/completion-service.ts';
+import { registerCompletionRoutes } from './bookings/completion-routes.ts';
 import { registerProviderBookingRoutes } from './bookings/provider-routes.ts';
 import { createProviderBookingService } from './bookings/provider-service.ts';
 import { registerBookingRoutes } from './bookings/routes.ts';
@@ -127,20 +129,33 @@ export async function buildApp(deps: AppDeps = {}) {
         stay,
         service: createBookingService({ db: deps.db, payments: paymentService, clock }),
       });
+      let payoutService: ReturnType<typeof createPayoutService> | undefined;
       if (deps.payouts) {
-        const payoutService = createPayoutService({
+        const created = createPayoutService({
           db: deps.db,
           port: deps.payouts,
           payments: paymentService,
           clock,
         });
-        registerPayoutRoutes(app, { db: deps.db, authn, service: payoutService });
-        app.decorate('payoutService', payoutService);
+        payoutService = created;
+        registerPayoutRoutes(app, { db: deps.db, authn, service: created });
+        app.decorate('payoutService', created);
         app.decorate('runScheduledPayouts', async () => {
-          await payoutService.runScheduledBatch();
-          return payoutService.syncPaid();
+          await created.runScheduledBatch();
+          return created.syncPaid();
         });
       }
+      registerCompletionRoutes(app, {
+        db: deps.db,
+        authn,
+        clock,
+        service: createCompletionService({
+          db: deps.db,
+          payments: paymentService,
+          payouts: payoutService,
+          clock,
+        }),
+      });
       const providerBookings = createProviderBookingService({
         db: deps.db,
         payments: paymentService,

@@ -11,6 +11,7 @@ import { dhakaToday } from '../capacity/dates.ts';
 import type { Database } from '../db/client.ts';
 import { bookings, dailyUpdates, eventLog, providers, updatePhotos } from '../db/schema/index.ts';
 import { appendLogEntry } from '../log/append.ts';
+import { raiseFlag } from '../bookings/flags.ts';
 import { exclusive } from '../bookings/lock.ts';
 import { transitionBooking, type BookingRow } from '../bookings/transitions.ts';
 import { PhotoRejectedError, PhotoUnavailableError, type PhotoPort } from '../pets/photo-port.ts';
@@ -119,6 +120,7 @@ export function createStayService(deps: { db: Database; photos: PhotoPort; clock
         at: clock.now(),
         payload: { providerId: b.providerId, startDate: b.startDate },
       });
+      await raiseFlag(db, clock, { bookingId: b.id, kind: 'missed_start', raisedBy: 'system' });
       flagged.push(b.id);
     }
     return { flagged };

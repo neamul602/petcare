@@ -3,12 +3,12 @@ id: 015-mark-complete-and-confirm-completion
 code: BKG-15
 unit: 008-booking-stay
 intent: 001-petcare-v1
-status: ready
+status: complete
 priority: must
 journeys: UJ-1
-created: 2026-10-29T16:00:00Z
+created: '2026-10-29T16:00:00Z'
 assigned_bolt: 013-booking-stay
-implemented: false
+implemented: true
 ---
 
 # Story BKG-15: Mark complete and confirm completion

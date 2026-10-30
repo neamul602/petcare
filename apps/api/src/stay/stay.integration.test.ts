@@ -148,7 +148,7 @@ beforeEach(async () => {
   await fetch(`${dummyUrl}/_training/reset-all`, { method: 'POST' });
   await pool.query('TRUNCATE update_photos, daily_updates');
   await pool.query(
-    'DELETE FROM bookings; DELETE FROM payments; DELETE FROM night_reservations; DELETE FROM night_capacity',
+    'DELETE FROM booking_flags; DELETE FROM bookings; DELETE FROM payments; DELETE FROM night_reservations; DELETE FROM night_capacity',
   );
 });
 

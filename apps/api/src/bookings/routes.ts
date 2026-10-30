@@ -6,7 +6,7 @@ import { pillFor } from '@petcare/shared/bookings';
 import { PAYMENT_METHODS } from '@petcare/shared/payments';
 import type { Authenticator } from '../auth/guards.ts';
 import type { Database } from '../db/client.ts';
-import { bookings, providers } from '../db/schema/index.ts';
+import { bookingFlags, bookings, providers } from '../db/schema/index.ts';
 import type { PaymentService } from '../payments/payment-service.ts';
 import type { BookingService, SubmitResult } from './booking-service.ts';
 import type { StayService } from '../stay/stay-service.ts';
@@ -96,6 +96,14 @@ export function registerBookingRoutes(
     const b = row.booking;
     const payment = await payments.find(b.id);
     const history = await transitionHistory(db, b.id);
+    const openKinds = new Set(
+      (
+        await db
+          .select()
+          .from(bookingFlags)
+          .where(and(eq(bookingFlags.bookingId, b.id), eq(bookingFlags.status, 'open')))
+      ).map((f) => f.kind),
+    );
     return {
       booking: {
         id: b.id,
@@ -117,6 +125,12 @@ export function registerBookingRoutes(
         declineReason: b.declineReason,
         instructions: b.instructions,
         canCancel: b.state === 'authorized',
+        completionRequested: b.completionRequestedAt !== null,
+        canConfirmCompletion: b.state === 'in_stay' && b.completionRequestedAt !== null,
+        canRequestCancellation:
+          b.state === 'captured' && !openKinds.has('owner_cancellation_request'),
+        cancellationRequested: openKinds.has('owner_cancellation_request'),
+        completedAt: b.completedAt,
         timedOut: history.some((h) => h.trigger === 'confirmation_timeout'),
       },
       history,

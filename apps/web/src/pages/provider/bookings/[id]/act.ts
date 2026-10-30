@@ -23,11 +23,19 @@ export const POST: APIRoute = async ({ request, params }) => {
       ? await send(`/provider/bookings/${params.id}/confirm`)
       : intent === 'start'
         ? await send(`/provider/bookings/${params.id}/start`)
-        : intent === 'decline'
-          ? await send(`/provider/bookings/${params.id}/decline`, {
-              reason: String(form.get('reason') ?? ''),
-            })
-          : null;
+        : intent === 'complete'
+          ? await send(`/provider/bookings/${params.id}/complete`)
+          : intent === 'cancel'
+            ? await send(`/provider/bookings/${params.id}/cancel`, {
+                note: String(form.get('note') ?? ''),
+              })
+            : intent === 'no-show'
+              ? await send(`/provider/bookings/${params.id}/no-show`, {})
+              : intent === 'decline'
+                ? await send(`/provider/bookings/${params.id}/decline`, {
+                    reason: String(form.get('reason') ?? ''),
+                  })
+                : null;
   if (response?.ok) return go();
   const code = ((await response?.json().catch(() => null)) as { error?: { code?: string } } | null)
     ?.error?.code;

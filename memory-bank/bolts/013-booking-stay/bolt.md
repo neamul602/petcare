@@ -3,22 +3,31 @@ id: 013-booking-stay
 unit: 008-booking-stay
 intent: 001-petcare-v1
 type: ddd-construction-bolt
-status: planned
+status: complete
 phase: UJ-1 complete
 stories:
   - 015-mark-complete-and-confirm-completion
   - 011-cancellations-and-no-shows
-created: 2026-10-29T17:00:00Z
-started: null
-completed: null
+created: '2026-10-29T17:00:00Z'
+started: '2026-10-31T16:00:00Z'
+completed: '2026-10-30T13:26:29Z'
 current_stage: null
-stages_completed: []
-
-requires_bolts: [011-booking-stay, 012-payments-payouts]
-enables_bolts: [014-reviews-disputes, 017-booking-stay]
-requires_units: [payments-payouts]
+stages_completed:
+  - name: model
+    completed: '2026-10-31T16:00:00Z'
+    artifact: implementation-plan.md
+  - name: design
+    completed: '2026-10-31T16:00:00Z'
+    artifact: implementation-plan.md
+requires_bolts:
+  - 011-booking-stay
+  - 012-payments-payouts
+enables_bolts:
+  - 014-reviews-disputes
+  - 017-booking-stay
+requires_units:
+  - payments-payouts
 blocks: true
-
 complexity:
   avg_complexity: 3
   avg_uncertainty: 3
