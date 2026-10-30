@@ -1,10 +1,25 @@
 ---
-import { t } from '@petcare/shared/i18n';
-import Placeholder from '@/components/Placeholder.astro';
+import { t, type MessageKey } from '@petcare/shared/i18n';
+import BookingCard from '@/components/provider/BookingCard.astro';
+import EmptyState from '@/components/states/EmptyState.astro';
 import ProviderShell from '@/layouts/ProviderShell.astro';
+import { apiFetch } from '@/lib/api';
 import { getLocale } from '@/lib/locale';
 const locale = getLocale(Astro.cookies);
+const response = await apiFetch('/provider/bookings', { cookie: Astro.request.headers.get('cookie') }).catch(() => null);
+const data = response?.ok ? ((await response.json()) as Record<'requests' | 'upcoming' | 'inStay' | 'past', any[]>) : { requests: [], upcoming: [], inStay: [], past: [] };
+const groups = ['requests', 'upcoming', 'inStay', 'past'] as const;
+const empty = groups.every((g) => data[g].length === 0);
 ---
 <ProviderShell titleKey="screen.providerBookings">
-  <Placeholder screenId="P4" title={t(locale, 'screen.providerBookings')} body={t(locale, 'placeholder.body')} />
+  <div class="space-y-6 py-4">
+    <h1 class="text-2xl font-semibold">{t(locale, 'screen.providerBookings')}</h1>
+    {empty && <EmptyState title={t(locale, 'pbookings.empty')} />}
+    {groups.map((g) => data[g].length > 0 && (
+      <section class="space-y-3" data-testid={`group-${g}`}>
+        <h2 class="text-xl font-semibold">{t(locale, `pbookings.${g}` as MessageKey)}</h2>
+        {data[g].map((b) => <BookingCard locale={locale} booking={b} />)}
+      </section>
+    ))}
+  </div>
 </ProviderShell>

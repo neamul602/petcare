@@ -48,7 +48,7 @@ async function enterCode(page: Page, normalised: string) {
 }
 
 test.beforeEach(async () => {
-  await fetch(`${DUMMY}/_training/reset-all`, { method: 'POST' });
+  await fetch(`${DUMMY}/_training/otp/reset`, { method: 'POST' });
 });
 
 test('a guest is sent to sign in and comes back to the page they wanted', async ({ page }) => {

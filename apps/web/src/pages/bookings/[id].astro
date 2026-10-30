@@ -44,13 +44,13 @@ const pending = Astro.url.searchParams.get('pending') === '1';
     {b.state === 'declined' && (
       <Card class="space-y-3" data-testid="declined">
         <p>{L('booking.declined.body', { name })}</p>
-        {b.declineReason && <p>{L('booking.declined.reason', { reason: b.declineReason })}</p>}
+        {b.declineReason && <p>{L('booking.declined.reason', { reason: L(`decline.${b.declineReason}`) })}</p>}
         <Button href="/search" variant="secondary">{L('booking.backToResults')}</Button>
       </Card>
     )}
     {b.state === 'canceled' && (
       <Card class="space-y-2" data-testid="canceled">
-        <p>{L('booking.canceled.body')}</p>
+        <p>{b.timedOut ? L('booking.timedOut.body', { name }) : L('booking.canceled.body')}</p>
         {pending && <p>{L('booking.paymentPending')}</p>}
         <Button href="/search" variant="secondary">{L('booking.backToResults')}</Button>
       </Card>

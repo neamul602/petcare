@@ -4,6 +4,8 @@ const DEV = 'http://localhost:4321';
 const PROD = 'http://localhost:4322';
 const E2E_DATABASE = 'postgres://petcare:petcare@localhost:5433/petcare_e2e';
 const PRODUCTION_SPECS = /(pwa|performance)\.spec\.ts/;
+// These switch the shared Dummy gateway into failure modes, so they run alone, after everything else.
+const MONEY_SPECS = /payment-failures\.spec\.ts/;
 
 export default defineConfig({
   testDir: 'tests/e2e',
@@ -52,7 +54,7 @@ export default defineConfig({
   projects: [
     {
       name: 'phone',
-      testIgnore: PRODUCTION_SPECS,
+      testIgnore: [PRODUCTION_SPECS, MONEY_SPECS],
       use: {
         ...devices['Pixel 7'],
         browserName: 'chromium',
@@ -62,8 +64,19 @@ export default defineConfig({
     },
     {
       name: 'desktop',
-      testIgnore: PRODUCTION_SPECS,
+      testIgnore: [PRODUCTION_SPECS, MONEY_SPECS],
       use: { browserName: 'chromium', viewport: { width: 1280, height: 800 }, baseURL: DEV },
+    },
+    {
+      name: 'money',
+      testMatch: MONEY_SPECS,
+      dependencies: ['phone', 'desktop', 'production'],
+      use: {
+        ...devices['Pixel 7'],
+        browserName: 'chromium',
+        viewport: { width: 390, height: 844 },
+        baseURL: DEV,
+      },
     },
     {
       name: 'production',

@@ -16,6 +16,7 @@ import type { Database } from '../db/client.ts';
 import { bookings, pets, providers } from '../db/schema/index.ts';
 import type { PaymentService } from '../payments/payment-service.ts';
 import { screenForClinicalPurpose } from '../pets/clinical-screen.ts';
+import { exclusive } from './lock.ts';
 import { logTransition, transitionBooking, type BookingRow } from './transitions.ts';
 
 export interface SubmitInput {
@@ -59,19 +60,6 @@ export function createBookingService(deps: {
   clock: Clock;
 }) {
   const { db, payments, clock } = deps;
-  // A double tap sends the same submission twice at once; the second waits for the first.
-  const inFlight = new Map<string, Promise<unknown>>();
-  async function exclusive<T>(id: string, work: () => Promise<T>): Promise<T> {
-    const previous = inFlight.get(id) ?? Promise.resolve();
-    const run = previous.then(work, work);
-    inFlight.set(id, run);
-    try {
-      return await run;
-    } finally {
-      if (inFlight.get(id) === run) inFlight.delete(id);
-    }
-  }
-
   async function submit(input: SubmitInput): Promise<SubmitResult> {
     const bookingId = bookingIdFor(input.ownerId, input.key);
     return exclusive(bookingId, () => submitOnce(input, bookingId));
@@ -192,6 +180,10 @@ export function createBookingService(deps: {
   async function cancelByOwner(ownerId: string, bookingId: string): Promise<CancelResult> {
     const [row] = await db.select().from(bookings).where(eq(bookings.id, bookingId));
     if (!row || row.ownerId !== ownerId) return { ok: false, reason: 'not_found' };
+    return exclusive(bookingId, () => cancelLocked(ownerId, bookingId));
+  }
+
+  async function cancelLocked(ownerId: string, bookingId: string): Promise<CancelResult> {
     const moved = await transitionBooking(db, clock, {
       bookingId,
       to: 'canceled',

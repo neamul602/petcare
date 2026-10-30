@@ -10,7 +10,6 @@ test.beforeEach(({}, testInfo) => {
 });
 test.describe.configure({ mode: 'serial' });
 
-const DUMMY = 'http://localhost:4100';
 const scan = async (page: Page) =>
   (
     await new AxeBuilder({ page }).withTags(['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa']).analyze()
@@ -21,13 +20,6 @@ const FROM = plus(20);
 const TO = plus(28); // 8 nights
 const hydrated = (page: Page) =>
   page.waitForFunction(() => !document.querySelector('astro-island[ssr]'));
-const setPayments = (mode: string) =>
-  fetch(`${DUMMY}/_training/payments/failure-mode`, {
-    method: 'PUT',
-    headers: { 'content-type': 'application/json' },
-    body: JSON.stringify({ mode }),
-  });
-
 async function openBook(page: Page, from = FROM, to = TO) {
   await page.goto(`/book/rashid?from=${from}&to=${to}`, { waitUntil: 'networkidle' });
   await hydrated(page);
@@ -42,10 +34,6 @@ async function toReview(page: Page) {
   await page.getByTestId('step-next').click();
   await expect(page.getByTestId('review')).toBeVisible();
 }
-
-test.afterEach(async () => {
-  await setPayments('none');
-});
 
 test('Bibi books Rashid for 8 nights, sees the hold and the deadline, then cancels', async ({
   browser,
@@ -117,30 +105,6 @@ test('clinical requests are blocked and doubtful wording needs a confirmation', 
   await page.getByTestId('confirm-not-clinical').check();
   await page.getByTestId('step-next').click();
   await expect(page.getByTestId('review')).toBeVisible();
-  await owner.close();
-});
-
-test('a declined payment is explained and no booking is made; the inputs are still there afterwards', async ({
-  browser,
-  baseURL,
-}) => {
-  const owner = await contextAs(browser, 'bibi', { baseURL });
-  const page = await owner.newPage();
-  await openBook(page);
-  await toReview(page);
-  await setPayments('decline');
-  await page.getByTestId('submit-booking').click();
-  await expect(page.getByTestId('submit-error')).toHaveText(
-    'আপনার পেমেন্ট পদ্ধতি গ্রহণ করা হয়নি। অন্য পদ্ধতি চেষ্টা করুন।',
-  );
-  await expect(page).toHaveURL(/\/book\/rashid/);
-  await page.reload({ waitUntil: 'networkidle' });
-  await hydrated(page);
-  await expect(page.getByTestId('step')).toContainText('3');
-  await setPayments('down');
-  await page.getByTestId('submit-booking').click();
-  await expect(page.getByTestId('submit-error')).toContainText('কোনো টাকা কাটা হয়নি');
-  await setPayments('none');
   await owner.close();
 });
 

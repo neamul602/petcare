@@ -15,3 +15,8 @@ const app = await buildApp({
   otpSendLimitMax: OTP_SEND_LIMIT_MAX,
 });
 await app.listen({ port: API_PORT, host: '0.0.0.0' });
+
+// Requests the provider did not answer in time are closed and their holds released (TD-1).
+setInterval(() => {
+  app.processTimeouts?.().catch((error: unknown) => app.log.error(error));
+}, 60_000).unref();

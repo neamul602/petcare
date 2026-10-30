@@ -88,6 +88,7 @@ export function registerBookingRoutes(
     if (!row) return refuse(reply, 404, 'booking_not_found', 'No such booking');
     const b = row.booking;
     const payment = await payments.find(b.id);
+    const history = await transitionHistory(db, b.id);
     return {
       booking: {
         id: b.id,
@@ -109,8 +110,9 @@ export function registerBookingRoutes(
         declineReason: b.declineReason,
         instructions: b.instructions,
         canCancel: b.state === 'authorized',
+        timedOut: history.some((h) => h.trigger === 'confirmation_timeout'),
       },
-      history: await transitionHistory(db, b.id),
+      history,
     };
   });
 

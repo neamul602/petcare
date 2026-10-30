@@ -173,19 +173,19 @@ Intent `001-petcare-v1`: **76 stories** in 11 units (generated 2026-10-29T16:00:
 ### 004-owner-booking-page-waiting.md ✅ COMPLETED
 **BKG-04** Owner booking page: waiting · must · UJ-1
 
-### 005-provider-today-and-bookings.md ✅ GENERATED
+### 005-provider-today-and-bookings.md ✅ COMPLETED
 **BKG-05** Provider Today and Bookings · must · UJ-2
 
-### 006-provider-request-view.md ✅ GENERATED
+### 006-provider-request-view.md ✅ COMPLETED
 **BKG-06** Provider request view · must · UJ-1, UJ-2, UJ-4
 
-### 007-confirm-a-request.md ✅ GENERATED
+### 007-confirm-a-request.md ✅ COMPLETED
 **BKG-07** Confirm a request · must · UJ-1, UJ-2
 
-### 008-decline-with-a-reason.md ✅ GENERATED
+### 008-decline-with-a-reason.md ✅ COMPLETED
 **BKG-08** Decline with a reason · must · UJ-2
 
-### 009-confirmation-window-timeout.md ✅ GENERATED
+### 009-confirmation-window-timeout.md ✅ COMPLETED
 **BKG-09** Confirmation-window timeout · must · UJ-1
 
 ### 010-start-the-stay.md ✅ GENERATED

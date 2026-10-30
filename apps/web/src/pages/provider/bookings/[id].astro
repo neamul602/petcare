@@ -1,10 +1,84 @@
 ---
-import { t } from '@petcare/shared/i18n';
-import Placeholder from '@/components/Placeholder.astro';
+import { trainingDecisions } from '@petcare/shared/config';
+import { t, type MessageKey } from '@petcare/shared/i18n';
+import { formatDate, formatMoney } from '@petcare/shared/locale';
+import Badge from '@/components/kit/Badge.astro';
+import Button from '@/components/kit/Button.astro';
+import Card from '@/components/kit/Card.astro';
+import StatePill from '@/components/kit/StatePill.astro';
 import ProviderShell from '@/layouts/ProviderShell.astro';
+import { apiFetch } from '@/lib/api';
 import { getLocale } from '@/lib/locale';
+import { remaining } from '@/lib/time';
 const locale = getLocale(Astro.cookies);
+const L = (key: string, params?: Record<string, string | number>) => t(locale, key as MessageKey, params);
+const response = await apiFetch(`/provider/bookings/${Astro.params.id}`, { cookie: Astro.request.headers.get('cookie') }).catch(() => null);
+if (!response || response.status === 404) return Astro.rewrite('/404');
+if (!response.ok) return Astro.redirect('/provider/bookings');
+const { booking: b, careSummary: cs } = (await response.json()) as { booking: any; careSummary: any };
+const day = (d: string) => formatDate(new Date(`${d}T00:00:00+06:00`), locale);
+const error = Astro.url.searchParams.get('error');
+const plan = b.carePlan;
+const field = 'flex min-h-11 items-center gap-3';
 ---
 <ProviderShell titleKey="screen.providerBooking">
-  <Placeholder screenId="P3" title={t(locale, 'screen.providerBooking')} body={t(locale, 'placeholder.body')} />
+  <div class="space-y-5 py-4">
+    <div class="flex flex-wrap items-center gap-3">
+      <h1 class="mr-auto text-2xl font-semibold" data-testid="request-title">{L('request.title', { pet: b.pet.name })}</h1>
+      <StatePill state={b.pill} label={L(`booking.state.${b.state}`)} />
+    </div>
+    {error && <p role="alert" data-testid="request-error" class="rounded-md bg-destructive-soft px-4 py-3 text-sm text-destructive">{L(['capture_failed', 'expired', 'not_waiting'].includes(error) ? `request.error.${error}` : 'request.error.generic')}</p>}
+
+    <Card class="space-y-2">
+      <p data-testid="request-dates">{L('booking.dates', { from: day(b.startDate), to: day(b.endDate), n: b.nights })}</p>
+      <p data-testid="request-price">{L('request.price', { n: b.nights, price: formatMoney(b.pricePerNightPoisha), total: formatMoney(b.totalPoisha) })}</p>
+      {b.minutesLeft !== null && <p class="font-medium" data-testid="time-left">{b.canAct ? L('today.left', { time: remaining(locale, b.minutesLeft) }) : L('request.error.expired')}</p>}
+      {b.priorStaysWithYou > 0 && <Badge variant="verified">{L('request.prior', { n: b.priorStaysWithYou })}</Badge>}
+    </Card>
+
+    <Card class="space-y-2" data-testid="request-pet">
+      <h2 class="text-xl font-semibold">{b.pet.name}</h2>
+      <p>{L(`pets.species.${b.pet.species}`)} · {b.pet.breed} · {b.pet.weightKg} kg</p>
+      {cs?.flags.senior && <Badge>{L('pets.care.senior')}</Badge>}
+      {cs?.flags.extraAttention && <Badge>{L('pets.care.extraAttention')}</Badge>}
+    </Card>
+
+    <Card class="space-y-3" data-testid="request-care">
+      <h2 class="text-xl font-semibold">{L('request.care')}</h2>
+      <ul class="list-disc ps-5">
+        {plan.conditions.map((c: any) => <li>{c.name}{c.notes ? ` — ${c.notes}` : ''}</li>)}
+        {plan.medications.map((m: any) => <li>{m.name}, {m.dose}, {m.schedule.join(', ')}</li>)}
+        {plan.allergies.length > 0 && <li>{L('pets.care.allergies').replace(/ \(.*\)$/, '')}: {plan.allergies.join(', ')}</li>}
+        {plan.diet && <li>{L('pets.care.diet')}: {L(`pets.diet.${plan.diet.type}`)}</li>}
+        {plan.anxiety && <li>{L('pets.care.anxiety')}: {plan.anxiety.triggers} / {plan.anxiety.comfort}</li>}
+      </ul>
+      {plan.instructions && <p>{plan.instructions}</p>}
+      {b.instructions && <p><strong>{L('request.instructions')}:</strong> {b.instructions}</p>}
+    </Card>
+
+    {b.canAct && (
+      <div class="space-y-3" data-testid="request-actions">
+        <form method="post" action={`/provider/bookings/${b.id}/act`}>
+          <input type="hidden" name="intent" value="confirm" />
+          <Button type="submit" size="lg" class="w-full" data-testid="confirm-request">{L('request.confirm')}</Button>
+        </form>
+        <details class="rounded-lg border border-border bg-card p-4" data-testid="decline-sheet">
+          <summary class="flex min-h-11 cursor-pointer items-center font-medium">{L('request.decline')}</summary>
+          <form method="post" action={`/provider/bookings/${b.id}/act`} class="mt-3 space-y-2">
+            <input type="hidden" name="intent" value="decline" />
+            <fieldset class="space-y-1">
+              <legend class="font-medium">{L('request.decline.title')}</legend>
+              {trainingDecisions.declineReasons.map((reason, i) => (
+                <label class={field}><input type="radio" name="reason" value={reason} required={i === 0} data-testid={`reason-${reason}`} class="h-5 w-5 accent-primary" /><span>{L(`decline.${reason}`)}</span></label>
+              ))}
+            </fieldset>
+            <Button type="submit" variant="outline" data-testid="decline-submit">{L('request.decline.send')}</Button>
+          </form>
+        </details>
+      </div>
+    )}
+    {!b.canAct && b.state === 'authorized' && <p data-testid="request-closed">{L('request.closed')}</p>}
+    {b.state === 'captured' && <p>{L('request.confirmed')}</p>}
+    {b.state === 'declined' && <p>{L('request.declined')}</p>}
+  </div>
 </ProviderShell>

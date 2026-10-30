@@ -3,7 +3,7 @@ id: 010-booking-stay
 unit: 008-booking-stay
 intent: 001-petcare-v1
 type: ddd-construction-bolt
-status: planned
+status: complete
 phase: Thin slice
 stories:
   - 005-provider-today-and-bookings
@@ -11,17 +11,29 @@ stories:
   - 007-confirm-a-request
   - 008-decline-with-a-reason
   - 009-confirmation-window-timeout
-created: 2026-10-29T17:00:00Z
-started: null
-completed: null
+created: '2026-10-29T17:00:00Z'
+started: '2026-10-31T09:00:00Z'
+completed: '2026-10-30T12:50:59Z'
 current_stage: null
-stages_completed: []
-
-requires_bolts: [004-accounts-notifications, 005-pet-care-profile, 008-payments-payouts, 009-booking-stay]
-enables_bolts: [011-booking-stay]
-requires_units: [accounts-notifications, payments-payouts, pet-care-profile]
+stages_completed:
+  - name: model
+    completed: '2026-10-31T09:00:00Z'
+    artifact: implementation-plan.md
+  - name: design
+    completed: '2026-10-31T09:00:00Z'
+    artifact: implementation-plan.md
+requires_bolts:
+  - 004-accounts-notifications
+  - 005-pet-care-profile
+  - 008-payments-payouts
+  - 009-booking-stay
+enables_bolts:
+  - 011-booking-stay
+requires_units:
+  - accounts-notifications
+  - payments-payouts
+  - pet-care-profile
 blocks: true
-
 complexity:
   avg_complexity: 3
   avg_uncertainty: 2

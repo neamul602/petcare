@@ -13,16 +13,26 @@ import { registerAuthRoutes } from './auth/routes.ts';
 import { createSessionStore } from './auth/sessions.ts';
 import { loadBusinessRules } from './config.ts';
 import type { Database } from './db/client.ts';
-import { denyAllPetAccess, type PetAccessPolicy } from './pets/care-summary.ts';
+import type { PetAccessPolicy } from './pets/care-summary.ts';
 import type { PhotoPort } from './pets/photo-port.ts';
 import { createPaymentService } from './payments/payment-service.ts';
 import type { PaymentPort } from './payments/port.ts';
 import { registerPaymentRoutes } from './payments/routes.ts';
 import { registerPetRoutes } from './pets/routes.ts';
 import { createBookingService } from './bookings/booking-service.ts';
+import { bookingPetAccess } from './bookings/pet-access.ts';
+import { registerProviderBookingRoutes } from './bookings/provider-routes.ts';
+import { createProviderBookingService } from './bookings/provider-service.ts';
 import { registerBookingRoutes } from './bookings/routes.ts';
 import { registerCapacityRoutes } from './capacity/routes.ts';
 import { registerProviderRoutes } from './providers/routes.ts';
+
+declare module 'fastify' {
+  interface FastifyInstance {
+    /** Closes requests past their confirmation window; the server runs it every minute. */
+    processTimeouts?: () => Promise<{ closed: string[] }>;
+  }
+}
 
 export interface AppDeps {
   /** Without a database only /health is served (used by the simplest tests). */
@@ -97,13 +107,25 @@ export async function buildApp(deps: AppDeps = {}) {
         payments: paymentService,
         service: createBookingService({ db: deps.db, payments: paymentService, clock }),
       });
+      const providerBookings = createProviderBookingService({
+        db: deps.db,
+        payments: paymentService,
+        clock,
+      });
+      registerProviderBookingRoutes(app, {
+        db: deps.db,
+        authn,
+        service: providerBookings,
+        clock,
+      });
+      app.decorate('processTimeouts', providerBookings.processTimeouts);
     }
     if (deps.photos)
       registerPetRoutes(app, {
         db: deps.db,
         authn,
         photos: deps.photos,
-        petAccess: deps.petAccess ?? denyAllPetAccess,
+        petAccess: deps.petAccess ?? bookingPetAccess(deps.db),
       });
   }
 
