@@ -11,6 +11,7 @@ import type { PaymentMethod } from '@petcare/shared/payments';
 import { stayTotalPoisha } from '@petcare/shared/payments';
 import type { CarePlan } from '@petcare/shared/pets';
 import { checkWindow, dhakaToday, nightsBetween } from '../capacity/dates.ts';
+import { isPeakStay } from '../capacity/peak.ts';
 import { releaseNights, reserveNights } from '../capacity/nights.ts';
 import type { Database } from '../db/client.ts';
 import { bookings, pets, providers } from '../db/schema/index.ts';
@@ -123,6 +124,7 @@ export function createBookingService(deps: {
       return { ok: false, reason: 'payment_unavailable' };
     }
 
+    const peak = await isPeakStay(db, input.from, input.to);
     try {
       const now = clock.now();
       const [created] = await db
@@ -149,7 +151,11 @@ export function createBookingService(deps: {
           instructions: (input.instructions ?? '').trim(),
           state: 'authorized',
           confirmationDeadline: new Date(
-            now.getTime() + trainingDecisions.confirmationWindow.baseMinutes * 60_000,
+            now.getTime() +
+              (peak
+                ? trainingDecisions.confirmationWindow.peakMinutes
+                : trainingDecisions.confirmationWindow.baseMinutes) *
+                60_000,
           ),
           submissionKey: input.key,
         })

@@ -38,6 +38,8 @@ import { createAcuteService } from './acute/service.ts';
 import { registerAcuteRoutes } from './acute/routes.ts';
 import { createReviewService } from './reviews/service.ts';
 import { registerReviewRoutes } from './reviews/routes.ts';
+import { registerInsightsRoutes } from './bookings/insights.ts';
+import { registerPeakRoutes } from './capacity/peak.ts';
 import { registerCapacityRoutes } from './capacity/routes.ts';
 import { registerProviderRoutes } from './providers/routes.ts';
 
@@ -133,6 +135,8 @@ export async function buildApp(deps: AppDeps = {}) {
     app.decorate('acuteService', acuteService);
     registerReviewRoutes(app, { db: deps.db, authn, service: reviewService, photos: deps.photos });
     registerProviderRoutes(app, { db: deps.db, authn, reviews: reviewService });
+    registerInsightsRoutes(app, { db: deps.db, authn });
+    registerPeakRoutes(app, { db: deps.db, authn, clock });
     registerCapacityRoutes(app, { db: deps.db, authn, clock });
     const stay: StayService | undefined = deps.photos
       ? createStayService({ db: deps.db, photos: deps.photos, clock })

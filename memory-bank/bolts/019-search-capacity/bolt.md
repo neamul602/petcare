@@ -3,22 +3,24 @@ id: 019-search-capacity
 unit: 006-search-capacity
 intent: 001-petcare-v1
 type: ddd-construction-bolt
-status: planned
+status: complete
 phase: UJ-2
 stories:
   - 002-peak-window-capacity
   - 006-bookings-per-neighbourhood
-created: 2026-10-29T17:00:00Z
-started: null
-completed: null
+created: '2026-10-29T17:00:00Z'
+started: '2026-11-01T13:00:00Z'
+completed: '2026-10-30T14:23:24Z'
 current_stage: null
-stages_completed: []
-
-requires_bolts: [007-search-capacity]
+stages_completed:
+  - name: plan
+    completed: '2026-11-01T13:00:00Z'
+    artifact: implementation-plan.md
+requires_bolts:
+  - 007-search-capacity
 enables_bolts: []
 requires_units: []
 blocks: true
-
 complexity:
   avg_complexity: 2
   avg_uncertainty: 1

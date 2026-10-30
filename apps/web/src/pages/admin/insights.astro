@@ -1,8 +1,46 @@
 ---
-import { ta } from '@petcare/shared/i18n';
-import Placeholder from '@/components/Placeholder.astro';
+import { platformRules } from '@petcare/shared/config';
+import { t, ta } from '@petcare/shared/i18n';
+import Button from '@/components/kit/Button.astro';
+import Card from '@/components/kit/Card.astro';
 import AdminShell from '@/layouts/AdminShell.astro';
+import { apiFetch } from '@/lib/api';
+const cookie = Astro.request.headers.get('cookie');
+const insights = await apiFetch('/admin/insights/neighbourhoods', { cookie }).then((r) => (r.ok ? r.json() : null)).catch(() => null);
+const windows = await apiFetch('/peak-windows').then((r) => (r.ok ? r.json() : null)).catch(() => null);
+const months: Array<{ month: string; counts: Record<string, number> }> = insights?.months ?? [];
+const areas: string[] = insights?.neighbourhoods ?? [...platformRules.launchNeighbourhoods];
+const field = 'h-12 w-full rounded-md border border-border bg-input px-4 text-base';
 ---
 <AdminShell titleKey="screen.insights">
-  <Placeholder screenId="A7" title={ta('screen.insights')} body={ta('placeholder.body')} />
+  <div class="space-y-6 py-4">
+    <h1 class="text-2xl font-semibold">{ta('screen.insights')}</h1>
+    <section class="space-y-3" data-testid="neighbourhood-insights">
+      <h2 class="text-xl font-semibold">{ta('insights.neighbourhoods')}</h2>
+      {months.length === 0
+        ? <p class="text-muted-foreground">{ta('insights.empty')}</p>
+        : (
+          <div class="overflow-x-auto"><table class="w-full text-left">
+            <thead><tr><th scope="col" class="py-2 pe-4">{ta('insights.month')}</th>{areas.map((a) => <th scope="col" class="py-2 pe-4">{t('en', `neighbourhood.${a}` as 'neighbourhood.gulshan')}</th>)}</tr></thead>
+            <tbody>{months.map((m) => <tr class="border-t border-border"><th scope="row" class="py-2 pe-4 font-medium">{m.month}</th>{areas.map((a) => <td class="py-2 pe-4">{m.counts[a] ?? 0}</td>)}</tr>)}</tbody>
+          </table></div>
+        )}
+      <p class="text-sm text-muted-foreground">{ta('insights.expansion')}</p>
+    </section>
+    <section class="space-y-3" data-testid="peak-windows">
+      <h2 class="text-xl font-semibold">{ta('peak.title')}</h2>
+      {(windows?.windows ?? []).length === 0 && <p class="text-muted-foreground">{ta('peak.empty')}</p>}
+      <ul class="space-y-2">{(windows?.windows ?? []).map((w: any) => <li data-testid="peak-window">{w.name}: {w.startDate} → {w.endDate}</li>)}</ul>
+      <Card>
+        <form method="post" action="/admin/peak/create" class="space-y-3" data-testid="peak-form">
+          <div class="space-y-2"><label for="peak-name" class="block text-sm font-medium">{ta('peak.name')}</label><input id="peak-name" name="name" required minlength="2" class={field} /></div>
+          <div class="grid grid-cols-2 gap-3">
+            <div class="space-y-2"><label for="peak-start" class="block text-sm font-medium">{ta('peak.start')}</label><input id="peak-start" name="startDate" type="date" required class={field} /></div>
+            <div class="space-y-2"><label for="peak-end" class="block text-sm font-medium">{ta('peak.end')}</label><input id="peak-end" name="endDate" type="date" required class={field} /></div>
+          </div>
+          <Button type="submit" data-testid="peak-create">{ta('peak.create')}</Button>
+        </form>
+      </Card>
+    </section>
+  </div>
 </AdminShell>

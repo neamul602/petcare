@@ -3,12 +3,12 @@ id: 002-peak-window-capacity
 code: SRC-02
 unit: 006-search-capacity
 intent: 001-petcare-v1
-status: ready
+status: complete
 priority: must
 journeys: UJ-2
-created: 2026-10-29T16:00:00Z
+created: '2026-10-29T16:00:00Z'
 assigned_bolt: 019-search-capacity
-implemented: false
+implemented: true
 ---
 
 # Story SRC-02: Peak-window capacity

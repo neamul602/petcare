@@ -31,3 +31,13 @@ export const nightReservations = pgTable(
   },
   (t) => [primaryKey({ columns: [t.bookingId, t.date] })],
 );
+
+/** A named peak window (for example Eid), created by the admin. Dates are inclusive. */
+export const peakWindows = pgTable('peak_windows', {
+  id: text('id').primaryKey(),
+  name: text('name').notNull(),
+  startDate: date('start_date', { mode: 'string' }).notNull(),
+  endDate: date('end_date', { mode: 'string' }).notNull(),
+  createdBy: text('created_by').notNull(),
+  createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
+});

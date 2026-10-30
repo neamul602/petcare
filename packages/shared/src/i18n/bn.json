@@ -499,5 +499,13 @@
   "book.again.elapsed": "এ পর্যন্ত সময়: {time}",
   "book.again.unavailable": "{name} এখন পাওয়া যাচ্ছে না।",
   "book.again.alternatives": "অন্য প্রোভাইডার দেখুন",
-  "home.again.title": "{pet}-এর জন্য {name}-কে আবার বুক করুন"
+  "home.again.title": "{pet}-এর জন্য {name}-কে আবার বুক করুন",
+  "calendar.peak.title": "ব্যস্ত সময়: {name}",
+  "calendar.peak.body": "পুরো সময়ের জন্য এক ধাপে জায়গা বাড়ান। যে রাতগুলো পূর্ণ ছিল সেগুলো আবার খুলে যাবে।",
+  "calendar.peak.tierA": "টিয়ার এ প্রোভাইডাররা ব্যস্ত সময়ের থাকায় কম কমিশন ({rate} %) দেন।",
+  "calendar.peak.capacity": "প্রতি রাতে কয়টি পোষা প্রাণী নিতে পারবেন",
+  "calendar.peak.apply": "ব্যস্ত সময়ের জন্য বাড়ান",
+  "calendar.peak.mark": "ব্যস্ত সময়",
+  "calendar.peak.done": "হয়েছে। {n}টি রাত বদলানো হয়েছে।",
+  "calendar.peak.error": "কিছু রাতে আগেই এর চেয়ে বেশি পোষা প্রাণী বুক করা আছে।"
 }

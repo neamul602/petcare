@@ -1,12 +1,12 @@
 /** Provider calendar and capacity (SRC-01), public search and availability (SRC-04, SUP-04 availability strip). */
-import { eq } from 'drizzle-orm';
+import { and, eq, gte, lte } from 'drizzle-orm';
 import type { FastifyInstance, FastifyReply } from 'fastify';
 import { z } from 'zod';
 import type { Clock } from '@petcare/shared/clock';
 import { platformRules } from '@petcare/shared/config';
 import type { Authenticator } from '../auth/guards.ts';
 import type { Database } from '../db/client.ts';
-import { providers } from '../db/schema/index.ts';
+import { peakWindows, providers } from '../db/schema/index.ts';
 import { addDays, checkWindow, dhakaToday, isCalendarDate } from './dates.ts';
 import { MAX_CAPACITY, nightsFor, setCapacity } from './nights.ts';
 import { searchProviders } from './search.ts';
@@ -59,11 +59,24 @@ export function registerCapacityRoutes(
     const from = query.from && isCalendarDate(query.from) ? query.from : dhakaToday(clock);
     const days = Math.min(Math.max(Number(query.days) || 14, 1), 62);
     const nights = await nightsFor(db, mine.id, from, addDays(from, days));
+    const windows = await db
+      .select()
+      .from(peakWindows)
+      .where(and(lte(peakWindows.startDate, addDays(from, days)), gte(peakWindows.endDate, from)));
+    const isPeakNight = (d: string) => windows.some((w) => w.startDate <= d && d <= w.endDate);
     return {
       from,
+      tier: mine.tier,
+      peakWindows: windows.map((w) => ({
+        id: w.id,
+        name: w.name,
+        startDate: w.startDate,
+        endDate: w.endDate,
+      })),
       baseline: mine.capacitySmall,
       nights: nights.map((n) => ({
         ...n,
+        peak: isPeakNight(n.date),
         status: n.capacity === 0 ? 'closed' : n.free === 0 ? 'full' : 'available',
       })),
     };

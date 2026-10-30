@@ -3,12 +3,12 @@ id: 006-bookings-per-neighbourhood
 code: SRC-06
 unit: 006-search-capacity
 intent: 001-petcare-v1
-status: ready
+status: complete
 priority: should
 journeys: UJ-3
-created: 2026-10-29T16:00:00Z
+created: '2026-10-29T16:00:00Z'
 assigned_bolt: 019-search-capacity
-implemented: false
+implemented: true
 ---
 
 # Story SRC-06: Bookings per neighbourhood

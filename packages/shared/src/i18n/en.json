@@ -499,5 +499,13 @@
   "book.again.elapsed": "Time so far: {time}",
   "book.again.unavailable": "{name} is not available right now.",
   "book.again.alternatives": "See other providers",
-  "home.again.title": "Book {name} again for {pet}"
+  "home.again.title": "Book {name} again for {pet}",
+  "calendar.peak.title": "Peak window: {name}",
+  "calendar.peak.body": "Raise your room for the whole window in one step. Nights that were full open again.",
+  "calendar.peak.tierA": "Tier-A providers pay a lower commission ({rate} %) on stays in a peak window.",
+  "calendar.peak.capacity": "Pets you can take each night",
+  "calendar.peak.apply": "Expand for peak",
+  "calendar.peak.mark": "Peak",
+  "calendar.peak.done": "Done. {n} nights updated.",
+  "calendar.peak.error": "Some nights already have more pets booked than that."
 }

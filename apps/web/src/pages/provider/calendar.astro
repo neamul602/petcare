@@ -6,6 +6,7 @@ import Button from '@/components/kit/Button.astro';
 import Card from '@/components/kit/Card.astro';
 import EmptyState from '@/components/states/EmptyState.astro';
 import ProviderShell from '@/layouts/ProviderShell.astro';
+import { trainingDecisions } from '@petcare/shared/config';
 import { apiFetch } from '@/lib/api';
 import { addDays, todayInDhaka } from '@/lib/dates';
 import { getLocale } from '@/lib/locale';
@@ -15,9 +16,9 @@ const q = Astro.url.searchParams;
 const today = todayInDhaka();
 const from = /^\d{4}-\d{2}-\d{2}$/.test(q.get('from') ?? '') ? q.get('from')! : today;
 const response = await apiFetch(`/provider/calendar?from=${from}&days=14`, { cookie: Astro.request.headers.get('cookie') }).catch(() => null);
-const data = response?.ok ? ((await response.json()) as { baseline: number; nights: Array<{ date: string; capacity: number; booked: number; status: 'available' | 'full' | 'closed'; note: string }> }) : null;
+const data = response?.ok ? ((await response.json()) as { tier: 'A' | 'B'; peakWindows: Array<{ id: string; name: string }>; baseline: number; nights: Array<{ date: string; peak: boolean; capacity: number; booked: number; status: 'available' | 'full' | 'closed'; note: string }> }) : null;
 const error = q.get('error');
-const errorText = error === 'below' ? L('calendar.error.below', { dates: q.get('dates') ?? '' }) : error ? L('calendar.error.generic') : '';
+const errorText = error === 'peak' ? L('calendar.peak.error') : error === 'below' ? L('calendar.error.below', { dates: q.get('dates') ?? '' }) : error ? L('calendar.error.generic') : '';
 const field = 'h-12 w-full rounded-md border border-border bg-input px-4 text-base focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2';
 ---
 <ProviderShell titleKey="screen.calendar">
@@ -28,7 +29,21 @@ const field = 'h-12 w-full rounded-md border border-border bg-input px-4 text-ba
       <>
         <p class="text-muted-foreground">{L('calendar.baseline', { n: data.baseline })}</p>
         {q.get('saved') && <p role="status" data-testid="saved" class="rounded-md bg-primary-soft px-4 py-3 text-primary-soft-foreground">{L('calendar.saved')}</p>}
+        {q.get('peak') && <p role="status" data-testid="peak-done" class="rounded-md bg-primary-soft px-4 py-3 text-primary-soft-foreground">{L('calendar.peak.done', { n: q.get('peak')! })}</p>}
         {errorText && <p role="alert" data-testid="calendar-error" class="rounded-md bg-destructive-soft px-4 py-3 text-sm text-destructive">{errorText}</p>}
+        {data.peakWindows.map((w) => (
+          <Card class="space-y-3" data-testid="peak-prompt">
+            <h2 class="text-xl font-semibold">{L('calendar.peak.title', { name: w.name })}</h2>
+            <p>{L('calendar.peak.body')}</p>
+            {data.tier === 'A' && <p class="text-sm" data-testid="peak-tier-a">{L('calendar.peak.tierA', { rate: trainingDecisions.commissionBasisPoints.tierAPeak / 100 })}</p>}
+            <form method="post" action="/provider/calendar/expand" class="space-y-3">
+              <input type="hidden" name="from" value={from} /><input type="hidden" name="windowId" value={w.id} />
+              <label for={`peak-cap-${w.id}`} class="block text-sm font-medium">{L('calendar.peak.capacity')}</label>
+              <input id={`peak-cap-${w.id}`} name="capacity" type="number" min="0" max="20" required inputmode="numeric" class={field} data-testid="peak-capacity" />
+              <Button type="submit" data-testid="peak-expand">{L('calendar.peak.apply')}</Button>
+            </form>
+          </Card>
+        ))}
         <form method="post" action="/provider/calendar/save" class="space-y-4" data-testid="calendar-form">
           <input type="hidden" name="from" value={from} />
           <p>{L('calendar.set.pick')}</p>
@@ -41,6 +56,7 @@ const field = 'h-12 w-full rounded-md border border-border bg-input px-4 text-ba
                     <span class="block font-medium">{formatDate(new Date(`${night.date}T00:00:00+06:00`), locale)}</span>
                     <span class="block text-sm text-muted-foreground" data-testid={`info-${night.date}`}>{L('calendar.night.capacity', { n: night.capacity })} · {L('calendar.night.booked', { n: night.booked })}{night.note ? ` · ${L('calendar.note')}: ${night.note}` : ''}</span>
                   </span>
+                  {night.peak && <Badge variant="info">{L('calendar.peak.mark')}</Badge>}
                   <Badge variant={night.status === 'available' ? 'verified' : night.status === 'full' ? 'warning' : 'neutral'}>{L(`calendar.status.${night.status}`)}</Badge>
                 </label>
               </li>

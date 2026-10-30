@@ -73,5 +73,15 @@
   "providers.error.generic": "That did not work. Check the reason and try again.",
   "providers.error.profile_incomplete": "Add a price and capacity before approving.",
   "providers.error.invalid_transition": "That status change is not allowed.",
-  "providers.public": "Open public page"
+  "providers.public": "Open public page",
+  "insights.neighbourhoods": "Completed bookings per neighbourhood per month",
+  "insights.empty": "No completed bookings yet.",
+  "insights.month": "Month",
+  "insights.expansion": "Expanding to a new neighbourhood is an admin decision only. Nothing expands automatically.",
+  "peak.title": "Peak windows",
+  "peak.name": "Name (for example Eid)",
+  "peak.start": "First night",
+  "peak.end": "Last night",
+  "peak.create": "Add peak window",
+  "peak.empty": "No upcoming peak windows."
 }

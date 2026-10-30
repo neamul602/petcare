@@ -7,6 +7,7 @@ import type { Clock } from '@petcare/shared/clock';
 import { trainingDecisions } from '@petcare/shared/config';
 import type { CarePlan } from '@petcare/shared/pets';
 import { commissionBasisPoints } from '@petcare/shared/payments';
+import { isPeakStay } from '../capacity/peak.ts';
 import { releaseNights } from '../capacity/nights.ts';
 import type { Database } from '../db/client.ts';
 import { bookings, providers } from '../db/schema/index.ts';
@@ -15,9 +16,6 @@ import type { PaymentService } from '../payments/payment-service.ts';
 import { recordCareHistory } from '../pets/care-history.ts';
 import { exclusive } from './lock.ts';
 import { transitionBooking, type BookingRow } from './transitions.ts';
-
-/** Peak windows arrive with bolt 019; until then no stay is inside one. */
-const isPeakWindow = (): boolean => false;
 
 export type DeclineReason = (typeof trainingDecisions.declineReasons)[number];
 
@@ -61,7 +59,10 @@ export function createProviderBookingService(deps: {
         .select({ tier: providers.tier })
         .from(providers)
         .where(eq(providers.id, booking.providerId));
-      const rate = commissionBasisPoints(owner!.tier, isPeakWindow());
+      const rate = commissionBasisPoints(
+        owner!.tier,
+        await isPeakStay(db, booking.startDate, booking.endDate),
+      );
       const moved = await transitionBooking(db, clock, {
         bookingId,
         to: 'captured',
