@@ -3,12 +3,12 @@ id: 005-provider-profile-editor
 code: SUP-05
 unit: 005-provider-supply-vetting
 intent: 001-petcare-v1
-status: ready
+status: complete
 priority: should
 journeys: UJ-2
-created: 2026-10-29T16:00:00Z
+created: '2026-10-29T16:00:00Z'
 assigned_bolt: 021-provider-supply-vetting
-implemented: false
+implemented: true
 ---
 
 # Story SUP-05: Provider profile editor

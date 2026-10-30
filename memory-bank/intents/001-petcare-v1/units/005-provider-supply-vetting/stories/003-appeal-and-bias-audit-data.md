@@ -3,12 +3,12 @@ id: 003-appeal-and-bias-audit-data
 code: SUP-03
 unit: 005-provider-supply-vetting
 intent: 001-petcare-v1
-status: ready
+status: complete
 priority: should
 journeys: UJ-3
-created: 2026-10-29T16:00:00Z
+created: '2026-10-29T16:00:00Z'
 assigned_bolt: 021-provider-supply-vetting
-implemented: false
+implemented: true
 ---
 
 # Story SUP-03: Appeal and bias-audit data

@@ -1,10 +1,41 @@
 ---
-import { t } from '@petcare/shared/i18n';
-import Placeholder from '@/components/Placeholder.astro';
+import { CAPABILITIES } from '@petcare/shared/providers';
+import { t, type MessageKey } from '@petcare/shared/i18n';
+import Button from '@/components/kit/Button.astro';
+import Card from '@/components/kit/Card.astro';
 import ProviderShell from '@/layouts/ProviderShell.astro';
+import { apiFetch } from '@/lib/api';
 import { getLocale } from '@/lib/locale';
 const locale = getLocale(Astro.cookies);
+const L = (key: string, params?: Record<string, string | number>) => t(locale, key as MessageKey, params);
+const response = await apiFetch('/provider/profile', { cookie: Astro.request.headers.get('cookie') }).catch(() => null);
+const p = response?.ok ? ((await response.json()) as { profile: any }).profile : null;
+const field = 'h-12 w-full rounded-md border border-border bg-input px-4 text-base focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2';
+const area = 'min-h-24 w-full rounded-md border border-border bg-input p-4 text-base focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring';
 ---
 <ProviderShell titleKey="screen.profile">
-  <Placeholder screenId="P6" title={t(locale, 'screen.profile')} body={t(locale, 'placeholder.body')} />
+  <div class="space-y-5 py-4">
+    <h1 class="text-2xl font-semibold">{L('profile.title')}</h1>
+    {Astro.url.searchParams.has('saved') && <p role="status" data-testid="profile-saved" class="rounded-md bg-primary-soft px-4 py-3 text-primary-soft-foreground">{L('profile.saved')}</p>}
+    {Astro.url.searchParams.has('failed') && <p role="alert" data-testid="profile-error" class="rounded-md bg-destructive-soft px-4 py-3 text-destructive">{L('profile.error')}</p>}
+    {p && (
+      <Card class="space-y-4">
+        <p data-testid="completeness">{p.missing.length === 0 ? L('profile.complete') : L('profile.missing', { list: p.missing.map((m: string) => L(`profile.field.${m}`)).join(', ') })}</p>
+        <p class="text-sm text-muted-foreground">{L('profile.tierNote')}</p>
+        <form method="post" action="/provider/profile/save" class="space-y-4" data-testid="profile-form">
+          <div class="space-y-2"><label for="exp-en" class="block text-sm font-medium">{L('profile.experienceEn')}</label><textarea id="exp-en" name="experienceEn" maxlength="1000" class={area} data-testid="exp-en">{p.experience.en}</textarea></div>
+          <div class="space-y-2"><label for="exp-bn" class="block text-sm font-medium">{L('profile.experienceBn')}</label><textarea id="exp-bn" name="experienceBn" maxlength="1000" class={area} data-testid="exp-bn">{p.experience.bn}</textarea></div>
+          <div class="space-y-2"><label for="price" class="block text-sm font-medium">{L('profile.price')}</label><input id="price" name="priceTaka" type="number" min="100" max="100000" step="1" inputmode="numeric" required value={p.pricePerNightPoisha === null ? '' : String(p.pricePerNightPoisha / 100)} class={field} data-testid="profile-price" /></div>
+          <div class="space-y-2"><label for="capacity" class="block text-sm font-medium">{L('profile.capacity')}</label><input id="capacity" name="capacitySmall" type="number" min="0" max="20" required value={String(p.capacitySmall)} class={field} data-testid="profile-capacity" /></div>
+          <fieldset class="space-y-1"><legend class="text-sm font-medium">{L('profile.species')}</legend>
+            {['dog', 'cat'].map((s) => <label class="flex min-h-11 items-center gap-3"><input type="checkbox" name="species" value={s} checked={p.species.includes(s)} class="h-5 w-5 accent-primary" /><span>{L(`provider.species.${s}`)}</span></label>)}
+          </fieldset>
+          <fieldset class="space-y-1"><legend class="text-sm font-medium">{L('profile.capabilities')}</legend>
+            {CAPABILITIES.map((c) => <label class="flex min-h-11 items-center gap-3"><input type="checkbox" name="capabilities" value={c} checked={p.capabilities.includes(c)} class="h-5 w-5 accent-primary" /><span>{L(`capability.${c}`)}</span></label>)}
+          </fieldset>
+          <Button type="submit" data-testid="profile-save">{L('profile.save')}</Button>
+        </form>
+      </Card>
+    )}
+  </div>
 </ProviderShell>

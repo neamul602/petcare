@@ -10,8 +10,11 @@ const response = await apiFetch(`/admin/providers/${Astro.params.id}`, { cookie 
 if (!response || response.status === 404) return Astro.rewrite('/404');
 if (!response.ok) return Astro.redirect('/admin/providers');
 const { provider, history } = (await response.json()) as { provider: any; history: any[] };
+const vetRes = await apiFetch(`/admin/providers/${Astro.params.id}/vetting`, { cookie }).catch(() => null);
+const vet: any = vetRes?.ok ? await vetRes.json() : null;
+const missingList = (Astro.url.searchParams.get('missing') ?? '').split(',').filter(Boolean);
 const error = Astro.url.searchParams.get('error');
-const errorText = error === 'profile_incomplete' ? ta('providers.error.profile_incomplete') : error === 'invalid_transition' ? ta('providers.error.invalid_transition') : error ? ta('providers.error.generic') : '';
+const errorText = error === 'vetting_incomplete' ? ta('vetting.missing', { list: missingList.join(', ') }) : error === 'profile_incomplete' ? ta('providers.error.profile_incomplete') : error === 'invalid_transition' ? ta('providers.error.invalid_transition') : error ? ta('providers.error.generic') : '';
 const otherTier = provider.tier === 'A' ? 'B' : 'A';
 const field = 'min-h-12 w-full rounded-md border border-border bg-input px-4 text-base';
 ---
@@ -50,6 +53,51 @@ const field = 'min-h-12 w-full rounded-md border border-border bg-input px-4 tex
       </form>
     </Card>
 
+    {vet && (
+      <Card class="space-y-4" data-testid="vetting">
+        <h2 class="text-xl font-semibold">{ta('vetting.title')}</h2>
+        {Astro.url.searchParams.has('saved') && <p role="status" class="rounded-md bg-primary-soft px-4 py-3 text-primary-soft-foreground">{ta('vetting.saved')}</p>}
+        {vet.record.awaitingInfo && <p data-testid="awaiting-info" class="rounded-md bg-warning-soft px-4 py-3 text-warning">{ta('vetting.awaiting', { note: vet.record.infoRequest })}</p>}
+        <form method="post" action="/admin/providers/act" class="space-y-3" data-testid="vetting-form">
+          <input type="hidden" name="intent" value="vetting-save" /><input type="hidden" name="id" value={provider.id} />
+          <label class="flex min-h-11 items-center gap-3"><input type="checkbox" name="identityDone" checked={vet.record.identityDone} class="h-5 w-5 accent-primary" data-testid="vet-identity" /><span>{ta('vetting.identity')}</span></label>
+          <label class="flex min-h-11 items-center gap-3"><input type="checkbox" name="addressDone" checked={vet.record.addressDone} class="h-5 w-5 accent-primary" data-testid="vet-address" /><span>{ta('vetting.address')}</span></label>
+          <label class="flex min-h-11 items-center gap-3"><input type="checkbox" name="capabilityDone" checked={vet.record.capabilityDone} class="h-5 w-5 accent-primary" data-testid="vet-capability" /><span>{ta('vetting.capability')}</span></label>
+          <label for="vet-refs" class="block text-sm font-medium">{ta('vetting.references')}</label>
+          <input id="vet-refs" name="referencesNote" maxlength="500" value={vet.record.referencesNote} class={field} />
+          <label for="vet-outreach" class="block text-sm font-medium">{ta('vetting.outreach')}</label>
+          <input id="vet-outreach" name="outreachNote" maxlength="500" value={vet.record.outreachNote} class={field} data-testid="vet-outreach" />
+          <label for="vet-artifacts" class="block text-sm font-medium">{ta('vetting.artifacts')}</label>
+          <textarea id="vet-artifacts" name="artifacts" class="min-h-20 w-full rounded-md border border-border bg-input p-3 text-base">{vet.record.artifacts.join('\n')}</textarea>
+          <Button type="submit" data-testid="vet-save">{ta('vetting.save')}</Button>
+        </form>
+        <form method="post" action="/admin/providers/act" class="space-y-2">
+          <input type="hidden" name="intent" value="request-info" /><input type="hidden" name="id" value={provider.id} />
+          <label for="info-note" class="block text-sm font-medium">{ta('vetting.requestNote')}</label>
+          <input id="info-note" name="note" required minlength="3" class={field} data-testid="info-note" />
+          <Button type="submit" variant="secondary" data-testid="info-send">{ta('vetting.requestInfo')}</Button>
+        </form>
+      </Card>
+    )}
+    {vet && provider.status === 'removed' && (
+      <Card class="space-y-3" data-testid="appeals">
+        <h2 class="text-xl font-semibold">{ta('appeals.title')}</h2>
+        {vet.appeals.length === 0 && <p class="text-muted-foreground">{ta('appeals.none')}</p>}
+        <ul class="space-y-3">{vet.appeals.map((a: any) => (
+          <li class="space-y-2"><p>{a.note} · <strong>{a.outcome}</strong></p>
+            <form method="post" action="/admin/providers/act" class="flex gap-2"><input type="hidden" name="intent" value="appeal-outcome" /><input type="hidden" name="id" value={provider.id} /><input type="hidden" name="appealId" value={a.id} />
+              <label for={`out-${a.id}`} class="sr-only">{ta('appeals.outcome')}</label>
+              <select id={`out-${a.id}`} name="outcome" class="h-11 rounded-md border border-border bg-input px-3"><option value="upheld">upheld</option><option value="overturned">overturned</option></select>
+              <Button type="submit" variant="secondary" size="sm">{ta('appeals.outcome')}</Button></form></li>
+        ))}</ul>
+        <form method="post" action="/admin/providers/act" class="space-y-2" data-testid="appeal-form">
+          <input type="hidden" name="intent" value="appeal" /><input type="hidden" name="id" value={provider.id} />
+          <label for="appeal-note" class="block text-sm font-medium">{ta('appeals.note')}</label>
+          <input id="appeal-note" name="note" required minlength="3" class={field} data-testid="appeal-note" />
+          <Button type="submit" data-testid="appeal-send">{ta('appeals.add')}</Button>
+        </form>
+      </Card>
+    )}
     <Card class="space-y-3">
       <h2 class="text-xl font-semibold">{ta('providers.detail.history')}</h2>
       {history.length === 0 && <p class="text-muted-foreground">{ta('providers.detail.noHistory')}</p>}

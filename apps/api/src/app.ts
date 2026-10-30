@@ -41,6 +41,8 @@ import { registerReviewRoutes } from './reviews/routes.ts';
 import { registerInsightsRoutes } from './bookings/insights.ts';
 import { registerPeakRoutes } from './capacity/peak.ts';
 import { registerCapacityRoutes } from './capacity/routes.ts';
+import { registerProfileRoutes } from './providers/profile.ts';
+import { registerVettingRoutes } from './providers/vetting.ts';
 import { registerProviderRoutes } from './providers/routes.ts';
 
 declare module 'fastify' {
@@ -134,6 +136,8 @@ export async function buildApp(deps: AppDeps = {}) {
     registerAcuteRoutes(app, { authn, service: acuteService });
     app.decorate('acuteService', acuteService);
     registerReviewRoutes(app, { db: deps.db, authn, service: reviewService, photos: deps.photos });
+    registerVettingRoutes(app, { db: deps.db, authn });
+    registerProfileRoutes(app, { db: deps.db, authn });
     registerProviderRoutes(app, { db: deps.db, authn, reviews: reviewService });
     registerInsightsRoutes(app, { db: deps.db, authn });
     registerPeakRoutes(app, { db: deps.db, authn, clock });

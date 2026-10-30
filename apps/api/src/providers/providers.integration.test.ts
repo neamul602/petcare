@@ -105,6 +105,13 @@ describe('SUP-01 provider records, tiers and status', () => {
       call('POST', `/admin/providers/${p.id}/status`, 'admin', { to, reason });
     expect((await move('approved')).statusCode).toBe(409);
     expect((await move('vetting')).statusCode).toBe(200);
+    expect((await move('approved')).json().error.code).toBe('vetting_incomplete');
+    await call('PUT', `/admin/providers/${p.id}/vetting`, 'admin', {
+      identityDone: true,
+      addressDone: true,
+      capabilityDone: true,
+      outreachNote: 'Met in person',
+    });
     expect((await move('approved')).json().error.code).toBe('profile_incomplete');
     await pool.query(
       'UPDATE providers SET price_per_night_poisha = 150000, capacity_small = 2 WHERE id = $1',

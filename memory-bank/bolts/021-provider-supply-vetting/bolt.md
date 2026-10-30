@@ -3,23 +3,25 @@ id: 021-provider-supply-vetting
 unit: 005-provider-supply-vetting
 intent: 001-petcare-v1
 type: simple-construction-bolt
-status: planned
+status: complete
 phase: UJ-2
 stories:
   - 005-provider-profile-editor
   - 002-application-review-and-vetting
   - 003-appeal-and-bias-audit-data
-created: 2026-10-29T17:00:00Z
-started: null
-completed: null
+created: '2026-10-29T17:00:00Z'
+started: '2026-11-01T17:00:00Z'
+completed: '2026-10-30T14:43:28Z'
 current_stage: null
-stages_completed: []
-
-requires_bolts: [006-provider-supply-vetting]
+stages_completed:
+  - name: plan
+    completed: '2026-11-01T17:00:00Z'
+    artifact: implementation-plan.md
+requires_bolts:
+  - 006-provider-supply-vetting
 enables_bolts: []
 requires_units: []
 blocks: true
-
 complexity:
   avg_complexity: 2
   avg_uncertainty: 1

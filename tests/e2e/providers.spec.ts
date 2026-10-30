@@ -79,6 +79,17 @@ test.describe('admin provider records', () => {
     await page.locator('#to').selectOption('approved');
     await page.locator('#status-reason').fill('Visit went well');
     await page.getByTestId('status-submit').click();
+    await expect(page.getByTestId('action-error')).toContainText(
+      'Missing: identity, address, capability',
+    );
+    await page.getByTestId('vet-identity').check();
+    await page.getByTestId('vet-address').check();
+    await page.getByTestId('vet-capability').check();
+    await page.getByTestId('vet-outreach').fill('Introduced in person');
+    await page.getByTestId('vet-save').click();
+    await page.locator('#to').selectOption('approved');
+    await page.locator('#status-reason').fill('Visit went well');
+    await page.getByTestId('status-submit').click();
     await expect(page.getByTestId('action-error')).toHaveText(
       'Add a price and capacity before approving.',
     );

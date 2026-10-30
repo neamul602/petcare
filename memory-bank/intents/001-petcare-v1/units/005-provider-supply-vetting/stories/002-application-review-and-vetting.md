@@ -3,12 +3,12 @@ id: 002-application-review-and-vetting
 code: SUP-02
 unit: 005-provider-supply-vetting
 intent: 001-petcare-v1
-status: ready
+status: complete
 priority: must
 journeys: UJ-3
-created: 2026-10-29T16:00:00Z
+created: '2026-10-29T16:00:00Z'
 assigned_bolt: 021-provider-supply-vetting
-implemented: false
+implemented: true
 ---
 
 # Story SUP-02: Application review and vetting

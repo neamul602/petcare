@@ -9,9 +9,9 @@ export const POST: APIRoute = async ({ request }) => {
   const text = (name: string) => String(form.get(name) ?? '').trim();
   const cookie = request.headers.get('cookie');
   const id = text('id');
-  const send = (path: string, body: unknown) =>
+  const send = (path: string, body: unknown, method: 'POST' | 'PUT' = 'POST') =>
     apiFetch(path, {
-      method: 'POST',
+      method,
       cookie,
       headers: { 'content-type': 'application/json' },
       body: JSON.stringify(body),
@@ -19,10 +19,15 @@ export const POST: APIRoute = async ({ request }) => {
 
   const back = (location: string) => new Response(null, { status: 303, headers: { location } });
   const fail = async (response: Response | null, location: string) => {
-    const code =
-      ((await response?.json().catch(() => null)) as { error?: { code?: string } } | null)?.error
-        ?.code ?? 'generic';
-    return back(`${location}?error=${encodeURIComponent(code)}`);
+    const error = (
+      (await response?.json().catch(() => null)) as {
+        error?: { code?: string; missing?: string[] };
+      } | null
+    )?.error;
+    const missing = error?.missing?.length
+      ? `&missing=${encodeURIComponent(error.missing.join(','))}`
+      : '';
+    return back(`${location}?error=${encodeURIComponent(error?.code ?? 'generic')}${missing}`);
   };
 
   switch (text('intent')) {
@@ -53,6 +58,48 @@ export const POST: APIRoute = async ({ request }) => {
         tier: text('tier'),
         reason: text('reason'),
       });
+      return response?.ok
+        ? back(`/admin/providers/${id}`)
+        : fail(response, `/admin/providers/${id}`);
+    }
+    case 'vetting-save': {
+      const response = await send(
+        `/admin/providers/${id}/vetting`,
+        {
+          identityDone: form.get('identityDone') === 'on',
+          addressDone: form.get('addressDone') === 'on',
+          capabilityDone: form.get('capabilityDone') === 'on',
+          referencesNote: text('referencesNote'),
+          outreachNote: text('outreachNote'),
+          artifacts: text('artifacts')
+            .split('\n')
+            .map((l) => l.trim())
+            .filter(Boolean),
+        },
+        'PUT',
+      );
+      return response?.ok
+        ? back(`/admin/providers/${id}?saved=1`)
+        : fail(response, `/admin/providers/${id}`);
+    }
+    case 'request-info': {
+      const response = await send(`/admin/providers/${id}/request-info`, { note: text('note') });
+      return response?.ok
+        ? back(`/admin/providers/${id}`)
+        : fail(response, `/admin/providers/${id}`);
+    }
+    case 'appeal': {
+      const response = await send(`/admin/providers/${id}/appeals`, { note: text('note') });
+      return response?.ok
+        ? back(`/admin/providers/${id}`)
+        : fail(response, `/admin/providers/${id}`);
+    }
+    case 'appeal-outcome': {
+      const response = await send(
+        `/admin/appeals/${text('appealId')}`,
+        { outcome: text('outcome') },
+        'PUT',
+      );
       return response?.ok
         ? back(`/admin/providers/${id}`)
         : fail(response, `/admin/providers/${id}`);

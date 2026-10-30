@@ -101,16 +101,16 @@ Intent `001-petcare-v1`: **76 stories** in 11 units (generated 2026-10-29T16:00:
 ### 001-provider-records-tiers-and-status.md ✅ COMPLETED
 **SUP-01** Provider records, tiers and status · must · UJ-2, UJ-3
 
-### 002-application-review-and-vetting.md ✅ GENERATED
+### 002-application-review-and-vetting.md ✅ COMPLETED
 **SUP-02** Application review and vetting · must · UJ-3
 
-### 003-appeal-and-bias-audit-data.md ✅ GENERATED
+### 003-appeal-and-bias-audit-data.md ✅ COMPLETED
 **SUP-03** Appeal and bias-audit data · should · UJ-3
 
 ### 004-public-provider-page.md ✅ COMPLETED
 **SUP-04** Public provider page · must · UJ-1
 
-### 005-provider-profile-editor.md ✅ GENERATED
+### 005-provider-profile-editor.md ✅ COMPLETED
 **SUP-05** Provider profile editor · should · UJ-2
 
 ## 006-search-capacity

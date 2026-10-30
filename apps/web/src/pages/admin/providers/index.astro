@@ -15,10 +15,13 @@ const error = Astro.url.searchParams.get('error');
 let rows: Row[] = [];
 const areas = platformRules.launchNeighbourhoods.map((id) => ({ id, nameEn: t('en', `neighbourhood.${id}` as never) }));
 let failed = false;
+let decisions: Array<{ providerId: string; name: string; tier: string; neighbourhood: string; decision: string; reason: string }> = [];
 try {
   const response = await apiFetch(`/admin/providers${filter ? `?status=${encodeURIComponent(filter)}` : ''}`, { cookie });
   if (response.ok) rows = ((await response.json()) as { providers: Row[] }).providers;
   else failed = true;
+  const dec = await apiFetch('/admin/vetting/decisions', { cookie });
+  if (dec.ok) decisions = ((await dec.json()) as { decisions: typeof decisions }).decisions;
 } catch {
   failed = true;
 }
@@ -50,6 +53,11 @@ const field = 'h-12 w-full rounded-md border border-border bg-input px-4 text-ba
         </li>
       ))}
     </ul>
+    <section class="space-y-3" data-testid="decisions">
+      <h2 class="text-xl font-semibold">{ta('decisions.title')}</h2>
+      {decisions.length === 0 && <p class="text-muted-foreground">{ta('decisions.none')}</p>}
+      <ul class="space-y-2">{decisions.map((d) => <li data-testid="decision">{d.name} · {d.tier} · {d.neighbourhood} · <strong>{d.decision}</strong> — {d.reason}</li>)}</ul>
+    </section>
     <details class="rounded-lg border border-border bg-card p-5">
       <summary class="min-h-11 cursor-pointer text-lg font-semibold">{ta('providers.new')}</summary>
       <form method="post" action="/admin/providers/act" class="mt-4 space-y-4" data-testid="create-provider">

@@ -145,6 +145,14 @@ export function registerProviderRoutes(
     if (result.ok) return { provider: summary(result.provider) };
     if (result.code === 'not_found')
       return refuse(reply, 404, 'provider_not_found', 'No such provider');
+    if (result.code === 'vetting_incomplete')
+      return reply.code(409).send({
+        error: {
+          code: 'vetting_incomplete',
+          message: 'Complete the vetting checks first',
+          missing: result.missing,
+        },
+      });
     if (result.code === 'profile_incomplete')
       return refuse(reply, 409, 'profile_incomplete', 'Add a price and capacity before approving');
     return refuse(reply, 409, 'invalid_transition', 'That status change is not allowed');

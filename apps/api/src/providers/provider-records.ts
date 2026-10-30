@@ -9,7 +9,7 @@ import {
 } from '@petcare/shared/providers';
 import { recordAdminAction } from '../auth/audit.ts';
 import type { Database } from '../db/client.ts';
-import { providers, providerStatusEvents } from '../db/schema/index.ts';
+import { providers, providerStatusEvents, vettingRecords } from '../db/schema/index.ts';
 
 export type ProviderRow = typeof providers.$inferSelect;
 
@@ -32,9 +32,32 @@ export const slugFor = (name: string, id: string) =>
       .replace(/^-|-$/g, '') || 'provider'
   }-${id.slice(-6)}`;
 
+/** What still stops an approval: identity, address and capability proven, and a recorded outreach for Tier-A. */
+export async function vettingGaps(db: Database, provider: ProviderRow): Promise<string[]> {
+  const [record] = await db
+    .select()
+    .from(vettingRecords)
+    .where(eq(vettingRecords.providerId, provider.id));
+  const gaps: string[] = [];
+  if (!record?.identityDone) gaps.push('identity');
+  if (!record?.addressDone) gaps.push('address');
+  if (!record?.capabilityDone) gaps.push('capability');
+  if (provider.tier === 'A' && !record?.outreachNote.trim()) gaps.push('outreach');
+  return gaps;
+}
+
 export type MoveResult =
   | { ok: true; provider: ProviderRow }
-  | { ok: false; code: 'not_found' | 'invalid_transition' | 'profile_incomplete' | 'same_tier' };
+  | {
+      ok: false;
+      code:
+        | 'not_found'
+        | 'invalid_transition'
+        | 'profile_incomplete'
+        | 'vetting_incomplete'
+        | 'same_tier';
+      missing?: string[];
+    };
 
 export async function moveStatus(
   db: Database,
@@ -47,6 +70,8 @@ export async function moveStatus(
   if (!row) return { ok: false, code: 'not_found' };
   if (!canMoveStatus(row.status, to)) return { ok: false, code: 'invalid_transition' };
   if (to === 'approved' && row.status === 'vetting') {
+    const missing = await vettingGaps(db, row);
+    if (missing.length > 0) return { ok: false, code: 'vetting_incomplete', missing };
     const complete = row.pricePerNightPoisha !== null && row.capacitySmall > 0;
     if (!complete) return { ok: false, code: 'profile_incomplete' };
   }

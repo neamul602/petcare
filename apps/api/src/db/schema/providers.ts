@@ -41,3 +41,33 @@ export const providerStatusEvents = pgTable('provider_status_events', {
   adminId: text('admin_id').notNull(),
   createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
 });
+
+/** What the admin checks before approving. Private: never read by any owner or public endpoint. */
+export const vettingRecords = pgTable('vetting_records', {
+  providerId: text('provider_id')
+    .primaryKey()
+    .references(() => providers.id),
+  identityDone: boolean('identity_done').notNull().default(false),
+  addressDone: boolean('address_done').notNull().default(false),
+  capabilityDone: boolean('capability_done').notNull().default(false),
+  referencesNote: text('references_note').notNull().default(''),
+  outreachNote: text('outreach_note').notNull().default(''),
+  artifacts: text('artifacts').array().notNull().default([]),
+  awaitingInfo: boolean('awaiting_info').notNull().default(false),
+  infoRequest: text('info_request').notNull().default(''),
+  updatedAt: timestamp('updated_at', { withTimezone: true }).notNull().defaultNow(),
+});
+
+/** An appeal of a declined provider and its outcome (SUP-03). */
+export const vettingAppeals = pgTable('vetting_appeals', {
+  id: text('id').primaryKey(),
+  providerId: text('provider_id')
+    .notNull()
+    .references(() => providers.id),
+  note: text('note').notNull(),
+  outcome: text('outcome', { enum: ['pending', 'upheld', 'overturned'] })
+    .notNull()
+    .default('pending'),
+  recordedBy: text('recorded_by').notNull(),
+  createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
+});
