@@ -8,4 +8,10 @@ export { payments, payoutBatches, payouts } from './payments.ts';
 export { bookAgainTimers, bookingFlags, bookings } from './bookings.ts';
 export { dailyUpdates, updatePhotos } from './stay.ts';
 export { reports, reviews } from './reviews.ts';
-export { acuteEvents } from './acute.ts';
+export {
+  acuteEvents,
+  acuteMessages,
+  acutePostMortems,
+  acuteSteps,
+  acuteTemplates,
+} from './acute.ts';

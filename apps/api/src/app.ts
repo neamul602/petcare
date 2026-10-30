@@ -35,6 +35,7 @@ import { registerBookingRoutes } from './bookings/routes.ts';
 import { createStayService, type StayService } from './stay/stay-service.ts';
 import { registerStayRoutes } from './stay/routes.ts';
 import { createAcuteService } from './acute/service.ts';
+import { registerRunbookRoutes } from './acute/runbook.ts';
 import { registerAcuteRoutes } from './acute/routes.ts';
 import { registerReviewAdminRoutes } from './reviews/admin.ts';
 import { createReviewService } from './reviews/service.ts';
@@ -135,6 +136,7 @@ export async function buildApp(deps: AppDeps = {}) {
       payouts: () => app.payoutService,
     });
     registerAcuteRoutes(app, { authn, service: acuteService });
+    registerRunbookRoutes(app, { db: deps.db, authn, clock });
     app.decorate('acuteService', acuteService);
     registerReviewAdminRoutes(app, {
       db: deps.db,

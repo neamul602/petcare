@@ -3,12 +3,12 @@ id: 003-runbook-coordination
 code: ACU-03
 unit: 010-acute-event-response
 intent: 001-petcare-v1
-status: ready
+status: complete
 priority: must
 journeys: UJ-3
-created: 2026-10-29T16:00:00Z
+created: '2026-10-29T16:00:00Z'
 assigned_bolt: 023-acute-event-response
-implemented: false
+implemented: true
 ---
 
 # Story ACU-03: Runbook coordination

@@ -243,10 +243,10 @@ Intent `001-petcare-v1`: **76 stories** in 11 units (generated 2026-10-29T16:00:
 ### 002-acute-event-effects-and-owner-notice.md ✅ COMPLETED
 **ACU-02** Acute-event effects and owner notice · must · UJ-1, UJ-3
 
-### 003-runbook-coordination.md ✅ GENERATED
+### 003-runbook-coordination.md ✅ COMPLETED
 **ACU-03** Runbook coordination · must · UJ-3
 
-### 004-close-with-a-post-mortem.md ✅ GENERATED
+### 004-close-with-a-post-mortem.md ✅ COMPLETED
 **ACU-04** Close with a post-mortem · must · UJ-3
 
 ## 011-admin-operations

@@ -10,6 +10,7 @@ import type { Clock } from '@petcare/shared/clock';
 import { trainingDecisions } from '@petcare/shared/config';
 import {
   acuteEvents,
+  acuteMessages,
   bookingFlags,
   bookings,
   providers,
@@ -165,7 +166,14 @@ export function registerBookingRoutes(
           ['completed', 'disputed', 'resolved', 'refunded'].includes(b.state),
         report: report ? { category: report.category, status: report.status } : null,
         acuteEvent: acute
-          ? { type: acute.type, severity: acute.severity, at: acute.triggeredAt }
+          ? {
+              type: acute.type,
+              severity: acute.severity,
+              at: acute.triggeredAt,
+              messages: (
+                await db.select().from(acuteMessages).where(eq(acuteMessages.eventId, acute.id))
+              ).map((m) => ({ language: m.language, text: m.text, sentAt: m.sentAt })),
+            }
           : null,
         canReport:
           ((b.state === 'in_stay' && !!acute) || b.state === 'completed') &&

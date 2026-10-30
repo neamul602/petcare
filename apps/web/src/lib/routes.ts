@@ -28,7 +28,7 @@ export const SCREEN_ROUTES: ScreenRoute[] = [
   { id: 'P-settings', role: 'provider', path: '/provider/settings' },
   { id: 'A-sign-in', role: 'admin', path: '/admin/sign-in' },
   { id: 'A1', role: 'admin', path: '/admin' },
-  { id: 'A2', role: 'admin', path: '/admin/acute/sample-event' },
+  { id: 'A2', role: 'admin', path: '/admin/acute' },
   { id: 'A3', role: 'admin', path: '/admin/reports' },
   { id: 'A4', role: 'admin', path: '/admin/providers' },
   { id: 'A5', role: 'admin', path: '/admin/reviews' },

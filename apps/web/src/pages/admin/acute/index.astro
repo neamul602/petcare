@@ -1,0 +1,41 @@
+---
+import { ta } from '@petcare/shared/i18n';
+import Button from '@/components/kit/Button.astro';
+import Card from '@/components/kit/Card.astro';
+import AdminShell from '@/layouts/AdminShell.astro';
+import { apiFetch } from '@/lib/api';
+const cookie = Astro.request.headers.get('cookie');
+const get = (path: string) => apiFetch(path, { cookie }).then((r) => (r.ok ? r.json() : null)).catch(() => null);
+const [events, reminders, pms, templates] = await Promise.all([get('/admin/acute-events'), get('/admin/acute-events-reminders'), get('/admin/post-mortems'), get('/admin/acute-templates')]);
+const list: any[] = events?.events ?? [];
+const field = 'min-h-24 w-full rounded-md border border-border bg-input p-3 text-base';
+---
+<AdminShell titleKey="screen.acute">
+  <div class="space-y-6 py-4">
+    <h1 class="text-2xl font-semibold">{ta('acute.list.title')}</h1>
+    {(reminders?.reminders ?? []).length > 0 && (
+      <section role="note" data-testid="pm-reminders" class="space-y-1 rounded-md bg-warning-soft px-4 py-3 text-warning"><h2 class="font-semibold">{ta('acute.reminders')}</h2>
+        <ul>{reminders.reminders.map((r: any) => <li><a class="underline" href={`/admin/acute/${r.eventId}`}>{r.eventId}</a></li>)}</ul></section>
+    )}
+    {list.length === 0 && <p class="text-muted-foreground">{ta('acute.list.none')}</p>}
+    {list.map((e) => (
+      <a href={`/admin/acute/${e.id}`} data-testid="acute-row" class="block rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring">
+        <Card class="space-y-1"><p class="font-semibold">{e.type} · {e.severity} · {e.status === 'open' ? ta('acute.list.open') : ta('acute.list.resolved')}</p><p>{e.observation}</p></Card>
+      </a>
+    ))}
+    <section class="space-y-3" data-testid="post-mortems"><h2 class="text-xl font-semibold">{ta('acute.postMortems')}</h2>
+      {(pms?.postMortems ?? []).length === 0 && <p class="text-muted-foreground">{ta('acute.postMortems.none')}</p>}
+      {(pms?.postMortems ?? []).map((p: any) => <Card class="space-y-1"><p class="font-semibold">{p.type} · {p.severity}</p><p>{p.lessons}</p></Card>)}
+    </section>
+    {templates && (
+      <section class="space-y-3" data-testid="templates"><h2 class="text-xl font-semibold">{ta('acute.templates')}</h2><p class="text-sm text-muted-foreground">{ta('acute.templates.hint')}</p>
+        {(['bn', 'en'] as const).map((l) => (
+          <form method="post" action="/admin/acute/template" class="space-y-2"><input type="hidden" name="language" value={l} />
+            <label for={`tpl-${l}`} class="block text-sm font-medium">{l === 'bn' ? 'বাংলা' : 'English'}</label>
+            <textarea id={`tpl-${l}`} name="text" required minlength="3" class={field} data-testid={`template-${l}`}>{templates.templates[l]}</textarea>
+            <Button type="submit" variant="secondary" data-testid={`template-save-${l}`}>{ta('acute.templates.save')}</Button></form>
+        ))}
+      </section>
+    )}
+  </div>
+</AdminShell>

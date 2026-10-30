@@ -3,22 +3,26 @@ id: 023-acute-event-response
 unit: 010-acute-event-response
 intent: 001-petcare-v1
 type: ddd-construction-bolt
-status: planned
+status: complete
 phase: UJ-3
 stories:
   - 003-runbook-coordination
   - 004-close-with-a-post-mortem
-created: 2026-10-29T17:00:00Z
-started: null
-completed: null
+created: '2026-10-29T17:00:00Z'
+started: '2026-11-01T22:00:00Z'
+completed: '2026-10-30T15:48:07Z'
 current_stage: null
-stages_completed: []
-
-requires_bolts: [004-accounts-notifications, 015-acute-event-response]
+stages_completed:
+  - name: plan
+    completed: '2026-11-01T22:00:00Z'
+    artifact: implementation-plan.md
+requires_bolts:
+  - 004-accounts-notifications
+  - 015-acute-event-response
 enables_bolts: []
-requires_units: [accounts-notifications]
+requires_units:
+  - accounts-notifications
 blocks: true
-
 complexity:
   avg_complexity: 3
   avg_uncertainty: 2

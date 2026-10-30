@@ -1,8 +1,60 @@
 ---
-import { ta } from '@petcare/shared/i18n';
-import Placeholder from '@/components/Placeholder.astro';
+import { ta, type AdminMessageKey } from '@petcare/shared/i18n';
+import Button from '@/components/kit/Button.astro';
+import Card from '@/components/kit/Card.astro';
 import AdminShell from '@/layouts/AdminShell.astro';
+import { apiFetch } from '@/lib/api';
+const response = await apiFetch(`/admin/acute-events/${Astro.params.id}`, { cookie: Astro.request.headers.get('cookie') }).catch(() => null);
+if (!response || response.status === 404) return Astro.rewrite('/404');
+if (!response.ok) return Astro.redirect('/admin');
+const v: any = await response.json();
+const A = (key: string, params?: Record<string, string | number>) => ta(key as AdminMessageKey, params);
+const mins = (s: number | null) => (s === null ? A('acute.event.noEntry') : `${Math.floor(s / 60)}m ${s % 60}s`);
+const field = 'min-h-24 w-full rounded-md border border-border bg-input p-3 text-base';
+const pmFields = ['timelineAccuracy', 'roles', 'ownerCommunication', 'directoryUse', 'gaps', 'lessons'];
 ---
 <AdminShell titleKey="screen.acute">
-  <Placeholder screenId="A2" title={ta('screen.acute')} body={ta('placeholder.body')} />
+  <div class="space-y-5 py-4">
+    <h1 class="text-2xl font-semibold" data-testid="event-title">{v.event.type} · {v.event.severity} · {v.booking?.pet?.name}</h1>
+    {Astro.url.searchParams.has('error') && <p role="alert" class="rounded-md bg-destructive-soft px-4 py-3 text-destructive">{A('acute.error')}</p>}
+    <Card class="space-y-1"><p>{v.event.observation}</p><p data-testid="timers" class="font-medium">{A('acute.event.timers', { elapsed: mins(v.timers.elapsedSeconds), first: mins(v.timers.secondsToFirstAdminEntry) })}</p></Card>
+
+    <Card class="space-y-3" data-testid="runbook"><h2 class="text-xl font-semibold">{A('acute.runbook')}</h2>
+      <ol class="space-y-3">{v.steps.map((s: any) => (
+        <li class="space-y-2" data-testid={`step-${s.step}`}>
+          <p class="font-medium">{A(`acute.step.${s.step}`)} · <span data-testid={`status-${s.step}`}>{A(`acute.status.${s.status}`)}</span>{s.note ? ` — ${s.note}` : ''}</p>
+          {s.status === 'pending' && s.step !== 'owner_notification' && s.step !== 'post_mortem' && (
+            <form method="post" action={`/admin/acute/${v.event.id}/act`} class="flex flex-wrap items-end gap-2">
+              <input type="hidden" name="intent" value="step" /><input type="hidden" name="step" value={s.step} />
+              <div class="space-y-1"><label for={`note-${s.step}`} class="block text-sm">{A('acute.note')}</label><input id={`note-${s.step}`} name="note" class="h-11 rounded-md border border-border bg-input px-3" /></div>
+              <Button type="submit" size="sm" name="status" value="done" data-testid={`done-${s.step}`}>{A('acute.markDone')}</Button>
+              <Button type="submit" size="sm" variant="outline" name="status" value="skipped" data-testid={`skip-${s.step}`}>{A('acute.skip')}</Button>
+            </form>
+          )}
+        </li>
+      ))}</ol>
+    </Card>
+
+    <Card class="space-y-3" data-testid="owner-messages"><h2 class="text-xl font-semibold">{A('acute.messages')}</h2>
+      <ul>{v.messages.map((m: any) => <li>[{m.language}] {m.text}</li>)}</ul>
+      <form method="post" action={`/admin/acute/${v.event.id}/act`} class="flex flex-wrap gap-2"><input type="hidden" name="intent" value="message" />
+        <Button type="submit" name="language" value="bn" data-testid="send-bn">{A('acute.sendBn')}</Button>
+        <Button type="submit" name="language" value="en" variant="secondary" data-testid="send-en">{A('acute.sendEn')}</Button></form>
+    </Card>
+
+    <Card class="space-y-1" data-testid="vet"><h2 class="text-xl font-semibold">{A('acute.vet')}</h2>
+      <ul>{v.vetClinics.map((c: any) => <li><a class="underline" href={`tel:${c.phone}`}>{c.name} · {c.phone}</a> · {c.hours}</li>)}</ul></Card>
+
+    {v.event.status === 'open' && (
+      <form method="post" action={`/admin/acute/${v.event.id}/act`}><input type="hidden" name="intent" value="resolve" /><Button type="submit" data-testid="resolve-event">{A('acute.resolve')}</Button></form>
+    )}
+    {v.event.status === 'resolved' && !v.postMortem && (
+      <Card class="space-y-3" data-testid="pm-form"><h2 class="text-xl font-semibold">{A('acute.postMortem')}</h2>
+        <form method="post" action={`/admin/acute/${v.event.id}/act`} class="space-y-3"><input type="hidden" name="intent" value="post-mortem" />
+          {pmFields.map((f) => <div class="space-y-1"><label for={`pm-${f}`} class="block text-sm font-medium">{A(`acute.pm.${f}`)}</label><textarea id={`pm-${f}`} name={f} required minlength="3" class={field} data-testid={`pm-${f}`}></textarea></div>)}
+          <Button type="submit" data-testid="pm-save">{A('acute.pm.save')}</Button></form>
+      </Card>
+    )}
+    {v.postMortem && <Card data-testid="pm-done"><h2 class="text-xl font-semibold">{A('acute.postMortem')}</h2><p>{v.postMortem.lessons}</p></Card>}
+  </div>
 </AdminShell>

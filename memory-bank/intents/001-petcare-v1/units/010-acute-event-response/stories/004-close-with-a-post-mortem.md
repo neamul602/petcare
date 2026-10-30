@@ -3,12 +3,12 @@ id: 004-close-with-a-post-mortem
 code: ACU-04
 unit: 010-acute-event-response
 intent: 001-petcare-v1
-status: ready
+status: complete
 priority: must
 journeys: UJ-3
-created: 2026-10-29T16:00:00Z
+created: '2026-10-29T16:00:00Z'
 assigned_bolt: 023-acute-event-response
-implemented: false
+implemented: true
 ---
 
 # Story ACU-04: Close with a post-mortem
