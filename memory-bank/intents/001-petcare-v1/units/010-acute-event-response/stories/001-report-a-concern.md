@@ -3,12 +3,12 @@ id: 001-report-a-concern
 code: ACU-01
 unit: 010-acute-event-response
 intent: 001-petcare-v1
-status: ready
+status: complete
 priority: must
 journeys: UJ-1
-created: 2026-10-29T16:00:00Z
+created: '2026-10-29T16:00:00Z'
 assigned_bolt: 015-acute-event-response
-implemented: false
+implemented: true
 ---
 
 # Story ACU-01: Report a concern

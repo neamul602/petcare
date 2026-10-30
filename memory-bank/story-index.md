@@ -237,10 +237,10 @@ Intent `001-petcare-v1`: **76 stories** in 11 units (generated 2026-10-29T16:00:
 
 ## 010-acute-event-response
 
-### 001-report-a-concern.md ✅ GENERATED
+### 001-report-a-concern.md ✅ COMPLETED
 **ACU-01** Report a concern · must · UJ-1
 
-### 002-acute-event-effects-and-owner-notice.md ✅ GENERATED
+### 002-acute-event-effects-and-owner-notice.md ✅ COMPLETED
 **ACU-02** Acute-event effects and owner notice · must · UJ-1, UJ-3
 
 ### 003-runbook-coordination.md ✅ GENERATED

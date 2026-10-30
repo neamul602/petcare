@@ -31,6 +31,8 @@ import { createProviderBookingService } from './bookings/provider-service.ts';
 import { registerBookingRoutes } from './bookings/routes.ts';
 import { createStayService, type StayService } from './stay/stay-service.ts';
 import { registerStayRoutes } from './stay/routes.ts';
+import { createAcuteService } from './acute/service.ts';
+import { registerAcuteRoutes } from './acute/routes.ts';
 import { createReviewService } from './reviews/service.ts';
 import { registerReviewRoutes } from './reviews/routes.ts';
 import { registerCapacityRoutes } from './capacity/routes.ts';
@@ -39,6 +41,7 @@ import { registerProviderRoutes } from './providers/routes.ts';
 declare module 'fastify' {
   interface FastifyInstance {
     /** For other units (completion queues the payout, reports freeze it). */
+    acuteService?: import('./acute/service.ts').AcuteService;
     payoutService?: import('./payouts/payout-service.ts').PayoutService;
     /** Closes requests past their confirmation window; the server runs it every minute. */
     processTimeouts?: () => Promise<{ closed: string[] }>;
@@ -117,6 +120,13 @@ export async function buildApp(deps: AppDeps = {}) {
       clock,
       payouts: () => app.payoutService,
     });
+    const acuteService = createAcuteService({
+      db: deps.db,
+      clock,
+      payouts: () => app.payoutService,
+    });
+    registerAcuteRoutes(app, { authn, service: acuteService });
+    app.decorate('acuteService', acuteService);
     registerReviewRoutes(app, { db: deps.db, authn, service: reviewService, photos: deps.photos });
     registerProviderRoutes(app, { db: deps.db, authn, reviews: reviewService });
     registerCapacityRoutes(app, { db: deps.db, authn, clock });

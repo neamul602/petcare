@@ -47,6 +47,12 @@ const pending = Astro.url.searchParams.get('pending') === '1';
       </Card>
     )}
     {b.state === 'captured' && <Card><p>{L('booking.captured.body', { name, amount })}</p></Card>}
+    {b.acuteEvent && (
+      <div role="status" data-testid="acute-banner" class="space-y-1 rounded-lg bg-accent p-5 text-accent-foreground">
+        <p class="text-lg font-semibold">{L('acute.banner.title', { pet: b.pet.name })}</p>
+        <p>{L('acute.banner.body', { name, type: L(`acute.type.${b.acuteEvent.type}`), severity: L(`acute.severity.${b.acuteEvent.severity}`), time: when(b.acuteEvent.at) })}</p>
+      </div>
+    )}
     {b.state === 'in_stay' && <Card><p>{L('stay.inStay.body', { name, pet: b.pet.name })}</p></Card>}
     {b.canConfirmCompletion && (
       <Card class="space-y-3" data-testid="confirm-completion-card">

@@ -465,5 +465,20 @@
   "report.cat.facility-or-cleanliness": "Facility or cleanliness",
   "report.cat.safety-concern": "A safety concern",
   "report.cat.other": "Something else",
-  "review.selectPhoto": "Select this photo"
+  "review.selectPhoto": "Select this photo",
+  "acute.report": "Report a concern",
+  "acute.type": "What happened?",
+  "acute.type.illness": "Illness",
+  "acute.type.injury": "Injury",
+  "acute.type.death": "Death",
+  "acute.severity": "How serious is it?",
+  "acute.severity.minor": "Minor",
+  "acute.severity.serious": "Serious",
+  "acute.severity.critical": "Critical",
+  "acute.observation": "What did you see?",
+  "acute.send": "Send to PetCare now",
+  "acute.help": "PetCare is alerted straight away. The vet clinics near this stay are listed on this page; tap to call.",
+  "acute.sent": "Reported at {time}. PetCare has been alerted and the owner can see it. Call a vet below if the pet needs help now.",
+  "acute.banner.title": "Something happened with {pet}",
+  "acute.banner.body": "{name} reported a concern ({type}, {severity}) at {time}. PetCare has been alerted and is looking into it. Vet clinics are listed below."
 }

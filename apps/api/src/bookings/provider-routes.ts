@@ -7,7 +7,7 @@ import { trainingDecisions } from '@petcare/shared/config';
 import type { Authenticator } from '../auth/guards.ts';
 import { dhakaToday } from '../capacity/dates.ts';
 import type { Database } from '../db/client.ts';
-import { bookings, providers } from '../db/schema/index.ts';
+import { acuteEvents, bookings, providers } from '../db/schema/index.ts';
 import { buildCareSummary } from '../pets/care-summary.ts';
 import type { Clock } from '@petcare/shared/clock';
 import type { ProviderBookingService } from './provider-service.ts';
@@ -54,6 +54,11 @@ export function registerProviderBookingRoutes(
           )
         : null,
   });
+
+  const acuteOf = async (bookingId: string) => {
+    const [e] = await db.select().from(acuteEvents).where(eq(acuteEvents.bookingId, bookingId));
+    return e ? { type: e.type, severity: e.severity, at: e.triggeredAt } : null;
+  };
 
   async function listFor(userId: string) {
     const p = await mine(userId);
@@ -137,6 +142,8 @@ export function registerProviderBookingRoutes(
         completionRequested: booking.completionRequestedAt !== null,
         canCancel: booking.state === 'captured',
         canFlagNoShow: booking.state === 'captured' && booking.startDate <= dhakaToday(clock),
+        canReportConcern: booking.state === 'in_stay',
+        acuteEvent: stay ? await acuteOf(booking.id) : null,
         canStart: booking.state === 'captured' && booking.startDate <= dhakaToday(clock),
         reminderDue: stay && booking.state === 'in_stay' ? await stay.reminderDue(id) : false,
         canAct:

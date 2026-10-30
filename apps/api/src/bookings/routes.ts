@@ -8,7 +8,14 @@ import type { Authenticator } from '../auth/guards.ts';
 import type { Database } from '../db/client.ts';
 import type { Clock } from '@petcare/shared/clock';
 import { trainingDecisions } from '@petcare/shared/config';
-import { bookingFlags, bookings, providers, reports, reviews } from '../db/schema/index.ts';
+import {
+  acuteEvents,
+  bookingFlags,
+  bookings,
+  providers,
+  reports,
+  reviews,
+} from '../db/schema/index.ts';
 import type { PaymentService } from '../payments/payment-service.ts';
 import type { BookingService, SubmitResult } from './booking-service.ts';
 import type { StayService } from '../stay/stay-service.ts';
@@ -99,6 +106,7 @@ export function registerBookingRoutes(
     const b = row.booking;
     const payment = await payments.find(b.id);
     const history = await transitionHistory(db, b.id);
+    const [acute] = await db.select().from(acuteEvents).where(eq(acuteEvents.bookingId, b.id));
     const [review] = await db.select().from(reviews).where(eq(reviews.bookingId, b.id));
     const [report] = await db.select().from(reports).where(eq(reports.bookingId, b.id));
     const reportClosesAt = b.completedAt
@@ -145,11 +153,14 @@ export function registerBookingRoutes(
           !!b.completedAt &&
           ['completed', 'disputed', 'resolved', 'refunded'].includes(b.state),
         report: report ? { category: report.category, status: report.status } : null,
+        acuteEvent: acute
+          ? { type: acute.type, severity: acute.severity, at: acute.triggeredAt }
+          : null,
         canReport:
-          b.state === 'completed' &&
+          ((b.state === 'in_stay' && !!acute) || b.state === 'completed') &&
           !report &&
-          !!reportClosesAt &&
-          clock.now().getTime() <= reportClosesAt.getTime(),
+          (b.state === 'in_stay' ||
+            (!!reportClosesAt && clock.now().getTime() <= reportClosesAt.getTime())),
         reportClosesAt,
         timedOut: history.some((h) => h.trigger === 'confirmation_timeout'),
       },

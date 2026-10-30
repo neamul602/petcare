@@ -4,7 +4,14 @@ import { and, desc, eq, inArray } from 'drizzle-orm';
 import type { Clock } from '@petcare/shared/clock';
 import { trainingDecisions } from '@petcare/shared/config';
 import type { Database } from '../db/client.ts';
-import { bookings, dailyUpdates, reports, reviews, updatePhotos } from '../db/schema/index.ts';
+import {
+  acuteEvents,
+  bookings,
+  dailyUpdates,
+  reports,
+  reviews,
+  updatePhotos,
+} from '../db/schema/index.ts';
 import { exclusive } from '../bookings/lock.ts';
 import { transitionBooking } from '../bookings/transitions.ts';
 import type { PayoutService } from '../payouts/payout-service.ts';
@@ -105,12 +112,21 @@ export function createReviewService(deps: {
       const b = (await ownerBooking(ownerId, bookingId))!;
       const [already] = await db.select().from(reports).where(eq(reports.bookingId, bookingId));
       if (already) return { ok: false, reason: 'already_reported' };
-      if (b.state !== 'completed' || !b.completedAt) return { ok: false, reason: 'not_completed' };
-      const closesAt = new Date(
-        b.completedAt.getTime() + trainingDecisions.disputeWindowMinutes * 60_000,
-      );
-      if (clock.now().getTime() > closesAt.getTime())
-        return { ok: false, reason: 'window_closed', closedAt: closesAt };
+      const [acute] = await db
+        .select()
+        .from(acuteEvents)
+        .where(eq(acuteEvents.bookingId, bookingId));
+      // After an acute event the dispute window is open straight away, even before the stay ends.
+      const early = b.state === 'in_stay' && !!acute;
+      if (!early && (b.state !== 'completed' || !b.completedAt))
+        return { ok: false, reason: 'not_completed' };
+      if (!early) {
+        const closesAt = new Date(
+          b.completedAt!.getTime() + trainingDecisions.disputeWindowMinutes * 60_000,
+        );
+        if (clock.now().getTime() > closesAt.getTime())
+          return { ok: false, reason: 'window_closed', closedAt: closesAt };
+      }
       if (input.photoIds.length > MAX_REPORT_PHOTOS)
         return { ok: false, reason: 'too_many_photos' };
       if (!(await stayPhotosOk(bookingId, input.photoIds)))
@@ -120,7 +136,7 @@ export function createReviewService(deps: {
         to: 'disputed',
         trigger: 'owner_reported',
         actor: `owner:${ownerId}`,
-        expectedFrom: 'completed',
+        expectedFrom: early ? 'in_stay' : 'completed',
       });
       if (!moved.ok) return { ok: false, reason: 'not_completed' };
       const id = `rep_${randomUUID()}`;

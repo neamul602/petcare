@@ -46,7 +46,11 @@ export const bookings = pgTable(
 );
 
 export type FlagKind =
-  'owner_cancellation_request' | 'provider_cancellation' | 'owner_no_show' | 'missed_start';
+  | 'owner_cancellation_request'
+  | 'provider_cancellation'
+  | 'owner_no_show'
+  | 'missed_start'
+  | 'acute_event';
 
 /** An item for the admin queue: something after confirmation that a person must decide (TD-6). */
 export const bookingFlags = pgTable('booking_flags', {

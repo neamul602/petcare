@@ -3,22 +3,30 @@ id: 015-acute-event-response
 unit: 010-acute-event-response
 intent: 001-petcare-v1
 type: ddd-construction-bolt
-status: planned
+status: complete
 phase: UJ-1 complete
 stories:
   - 001-report-a-concern
   - 002-acute-event-effects-and-owner-notice
-created: 2026-10-29T17:00:00Z
-started: null
-completed: null
+created: '2026-10-29T17:00:00Z'
+started: '2026-10-31T21:00:00Z'
+completed: '2026-10-30T13:47:01Z'
 current_stage: null
-stages_completed: []
-
-requires_bolts: [004-accounts-notifications, 011-booking-stay, 012-payments-payouts]
-enables_bolts: [023-acute-event-response]
-requires_units: [accounts-notifications, booking-stay, payments-payouts]
+stages_completed:
+  - name: plan
+    completed: '2026-10-31T21:00:00Z'
+    artifact: implementation-plan.md
+requires_bolts:
+  - 004-accounts-notifications
+  - 011-booking-stay
+  - 012-payments-payouts
+enables_bolts:
+  - 023-acute-event-response
+requires_units:
+  - accounts-notifications
+  - booking-stay
+  - payments-payouts
 blocks: true
-
 complexity:
   avg_complexity: 3
   avg_uncertainty: 2

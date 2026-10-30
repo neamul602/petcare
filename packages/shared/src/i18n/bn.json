@@ -465,5 +465,20 @@
   "report.cat.facility-or-cleanliness": "জায়গা বা পরিচ্ছন্নতা",
   "report.cat.safety-concern": "নিরাপত্তা নিয়ে উদ্বেগ",
   "report.cat.other": "অন্য কিছু",
-  "review.selectPhoto": "এই ছবিটি বেছে নিন"
+  "review.selectPhoto": "এই ছবিটি বেছে নিন",
+  "acute.report": "উদ্বেগের কথা জানান",
+  "acute.type": "কী হয়েছে?",
+  "acute.type.illness": "অসুস্থতা",
+  "acute.type.injury": "আঘাত",
+  "acute.type.death": "মৃত্যু",
+  "acute.severity": "কতটা গুরুতর?",
+  "acute.severity.minor": "সামান্য",
+  "acute.severity.serious": "গুরুতর",
+  "acute.severity.critical": "সংকটজনক",
+  "acute.observation": "আপনি কী দেখেছেন?",
+  "acute.send": "এখনই PetCare-কে পাঠান",
+  "acute.help": "PetCare সঙ্গে সঙ্গে জানতে পারবে। এই থাকার কাছের পশু চিকিৎসকদের তালিকা এই পাতায় আছে; ফোন করতে চাপুন।",
+  "acute.sent": "{time}-এ জানানো হয়েছে। PetCare-কে সতর্ক করা হয়েছে এবং মালিক এটি দেখতে পাচ্ছেন। এখনই সাহায্য লাগলে নিচে থেকে পশু চিকিৎসককে ফোন করুন।",
+  "acute.banner.title": "{pet}-এর সঙ্গে কিছু ঘটেছে",
+  "acute.banner.body": "{name} একটি উদ্বেগের কথা জানিয়েছেন ({type}, {severity}) {time}-এ। PetCare সতর্ক হয়েছে এবং বিষয়টি দেখছে। নিচে পশু চিকিৎসকদের তালিকা আছে।"
 }

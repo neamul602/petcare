@@ -21,3 +21,4 @@ Rules while deferred: do not build the feature; if a story needs a small honest 
 | 2026-10-30 | Replanned the bolts: ACC-03 (notification port) out of bolt 004; ACC-04 (inbox) out of bolt 016; BKG-13 (booking chat) out of bolt 011 | Stories marked `deferred`, no longer assigned to a bolt. Other stories that mention notifications (BKG-09 timeout notice, BKG-12 18:00 reminder, ACU-02 owner notice) keep only their non-notification behaviour and show the state on the booking page. |
 - BKG-07, BKG-08, BKG-09 (bolt 010): the owner notification when a request is confirmed, declined or times out. The owner sees the new state on the booking page instead.
 - BKG-12 (bolt 011): the 18:00 reminder is a banner on Today and the booking page, not a notification. BKG-18: the chat section is not built.
+- ACU-02 (bolt 015): the SMS-style owner notification for an acute event; the in-app banner is the notice. ACU-01: offline queueing of a concern report.
