@@ -22,3 +22,4 @@ Rules while deferred: do not build the feature; if a story needs a small honest 
 - BKG-07, BKG-08, BKG-09 (bolt 010): the owner notification when a request is confirmed, declined or times out. The owner sees the new state on the booking page instead.
 - BKG-12 (bolt 011): the 18:00 reminder is a banner on Today and the booking page, not a notification. BKG-18: the chat section is not built.
 - ACU-02 (bolt 015): the SMS-style owner notification for an acute event; the in-app banner is the notice. ACU-01: offline queueing of a concern report.
+- ACC-05 (bolt 016): notification choices on the settings page and the rule that acute-event messages cannot be turned off.

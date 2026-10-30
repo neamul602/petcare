@@ -3,21 +3,25 @@ id: 016-accounts-notifications
 unit: 003-accounts-notifications
 intent: 001-petcare-v1
 type: simple-construction-bolt
-status: planned
+status: complete
 phase: UJ-1 complete
 stories:
   - 005-settings
-created: 2026-10-29T17:00:00Z
-started: null
-completed: null
+created: '2026-10-29T17:00:00Z'
+started: '2026-10-31T22:30:00Z'
+completed: '2026-10-30T13:51:27Z'
 current_stage: null
-stages_completed: []
-
-requires_bolts: [003-platform-foundation, 004-accounts-notifications]
+stages_completed:
+  - name: plan
+    completed: '2026-10-31T22:30:00Z'
+    artifact: implementation-plan.md
+requires_bolts:
+  - 003-platform-foundation
+  - 004-accounts-notifications
 enables_bolts: []
-requires_units: [platform-foundation]
+requires_units:
+  - platform-foundation
 blocks: true
-
 complexity:
   avg_complexity: 1
   avg_uncertainty: 1

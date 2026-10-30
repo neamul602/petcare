@@ -480,5 +480,14 @@
   "acute.help": "PetCare is alerted straight away. The vet clinics near this stay are listed on this page; tap to call.",
   "acute.sent": "Reported at {time}. PetCare has been alerted and the owner can see it. Call a vet below if the pet needs help now.",
   "acute.banner.title": "Something happened with {pet}",
-  "acute.banner.body": "{name} reported a concern ({type}, {severity}) at {time}. PetCare has been alerted and is looking into it. Vet clinics are listed below."
+  "acute.banner.body": "{name} reported a concern ({type}, {severity}) at {time}. PetCare has been alerted and is looking into it. Vet clinics are listed below.",
+  "settings.name": "Your name",
+  "settings.language": "Language",
+  "settings.phone": "Verified phone number",
+  "settings.phoneHint": "Your number was verified when you signed in. It cannot be changed here.",
+  "settings.save": "Save",
+  "settings.saved": "Saved.",
+  "settings.error": "We could not save that. Check your name and try again.",
+  "settings.language.bn": "বাংলা (Bangla)",
+  "settings.language.en": "English"
 }

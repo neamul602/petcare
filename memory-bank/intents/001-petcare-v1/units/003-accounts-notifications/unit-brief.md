@@ -4,9 +4,9 @@ intent: 001-petcare-v1
 unit_type: vertical-slice (API + screens)
 default_bolt_type: simple-construction-bolt
 phase: inception
-status: ready
-created: 2026-10-29T14:30:00Z
-updated: 2026-10-29T14:30:00Z
+status: complete
+created: '2026-10-29T14:30:00Z'
+updated: '2026-10-29T14:30:00Z'
 ---
 
 # Unit Brief: Accounts & Notifications

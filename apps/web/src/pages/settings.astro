@@ -1,13 +1,18 @@
 ---
 import { t } from '@petcare/shared/i18n';
 import AccountCard from '@/components/AccountCard.astro';
-import Placeholder from '@/components/Placeholder.astro';
+import SettingsForm from '@/components/SettingsForm.astro';
 import OwnerShell from '@/layouts/OwnerShell.astro';
 import { getLocale } from '@/lib/locale';
+import { loadSettings } from '@/lib/settings';
 const locale = getLocale(Astro.cookies);
 const user = Astro.locals.user;
+const settings = await loadSettings(Astro.request.headers.get('cookie'));
 ---
 <OwnerShell titleKey="screen.settings">
-  <Placeholder screenId="O10" title={t(locale, 'screen.settings')} body={t(locale, 'placeholder.body')} />
-  {user && <div class="pt-4"><AccountCard name={user.name} locale={locale} action="/sign-out" /></div>}
+  <div class="space-y-5 py-4">
+    <h1 class="text-2xl font-semibold">{t(locale, 'screen.settings')}</h1>
+    {settings && <SettingsForm locale={locale} action="/settings/save" name={settings.name} phone={settings.phone} language={settings.language} saved={Astro.url.searchParams.has('saved')} failed={Astro.url.searchParams.has('failed')} />}
+    {user && <AccountCard name={user.name} locale={locale} action="/sign-out" />}
+  </div>
 </OwnerShell>

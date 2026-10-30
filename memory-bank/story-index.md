@@ -70,7 +70,7 @@ Intent `001-petcare-v1`: **76 stories** in 11 units (generated 2026-10-29T16:00:
 ### 004-inbox.md ✅ GENERATED
 **ACC-04** Inbox · should · UJ-1
 
-### 005-settings.md ✅ GENERATED
+### 005-settings.md ✅ COMPLETED
 **ACC-05** Settings · should · none
 
 ## 004-pet-care-profile

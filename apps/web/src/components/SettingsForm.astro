@@ -1,0 +1,21 @@
+---
+/** Name and language, with the verified phone read-only (ACC-05). Used by the owner and provider settings pages. */
+import { t, type Locale, type MessageKey } from '@petcare/shared/i18n';
+import Button from './kit/Button.astro';
+import Card from './kit/Card.astro';
+interface Props { locale: Locale; action: string; name: string; phone: string; language: Locale; saved?: boolean; failed?: boolean }
+const { locale, action, name, phone, language, saved = false, failed = false } = Astro.props;
+const L = (key: string) => t(locale, key as MessageKey);
+const field = 'h-12 w-full rounded-md border border-border bg-input px-4 text-base focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2';
+---
+<Card class="space-y-4" data-testid="settings-form">
+  {saved && <p role="status" data-testid="settings-saved" class="rounded-md bg-primary-soft px-4 py-3 text-primary-soft-foreground">{L('settings.saved')}</p>}
+  {failed && <p role="alert" data-testid="settings-error" class="rounded-md bg-destructive-soft px-4 py-3 text-destructive">{L('settings.error')}</p>}
+  <form method="post" action={action} class="space-y-4">
+    <div class="space-y-2"><label for="s-name" class="block text-sm font-medium">{L('settings.name')}</label><input id="s-name" name="name" required maxlength="60" value={name} class={field} data-testid="settings-name" /></div>
+    <div class="space-y-2"><label for="s-language" class="block text-sm font-medium">{L('settings.language')}</label>
+      <select id="s-language" name="language" class={field} data-testid="settings-language"><option value="bn" selected={language === 'bn'}>{L('settings.language.bn')}</option><option value="en" selected={language === 'en'}>{L('settings.language.en')}</option></select></div>
+    <div class="space-y-2"><label for="s-phone" class="block text-sm font-medium">{L('settings.phone')}</label><input id="s-phone" value={phone} readonly class={`${field} bg-muted`} data-testid="settings-phone" /><p class="text-sm text-muted-foreground">{L('settings.phoneHint')}</p></div>
+    <Button type="submit" data-testid="settings-save">{L('settings.save')}</Button>
+  </form>
+</Card>

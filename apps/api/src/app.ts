@@ -9,6 +9,7 @@ import { registerAdminRoutes } from './auth/admin-routes.ts';
 import { createAuthenticator } from './auth/guards.ts';
 import type { OtpPort } from './auth/ports.ts';
 import { RateLimiter } from './auth/rate-limit.ts';
+import { registerSettingsRoutes } from './auth/settings-routes.ts';
 import { registerAuthRoutes } from './auth/routes.ts';
 import { createSessionStore } from './auth/sessions.ts';
 import { loadBusinessRules } from './config.ts';
@@ -114,6 +115,7 @@ export async function buildApp(deps: AppDeps = {}) {
     const limiter = new RateLimiter(clock, max, windowMinutes * 60_000);
     const authDeps = { db: deps.db, otp: deps.otp, clock, store, limiter, authn };
     registerAuthRoutes(app, authDeps);
+    registerSettingsRoutes(app, { db: deps.db, authn });
     await registerAdminRoutes(app, authDeps);
     const reviewService = createReviewService({
       db: deps.db,

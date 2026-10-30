@@ -37,3 +37,5 @@ last_updated: 2026-10-30T07:00:00Z
 | 2026-10-30T07:00:00Z | 004-accounts-notifications | started | Stage 1: plan (approved under the owner's standing instruction) |
 | 2026-10-30T07:00:00Z | 004-accounts-notifications | stage-complete | plan → implement |
 | 2026-10-30T13:00:00Z | 004-accounts-notifications | completed | 3 stages done; 437 tests passed; stories ACC-01, ACC-02 complete |
+| 2026-10-31T22:30:00Z | 016-accounts-notifications | started | plan approved under the standing instruction |
+| 2026-10-31T23:10:00Z | 016-accounts-notifications | bolt-complete | ACC-05; 625 tests pass |
