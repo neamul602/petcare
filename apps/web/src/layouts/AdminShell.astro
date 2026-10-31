@@ -27,7 +27,7 @@ const items = [
 <BaseLayout title={`${ta(titleKey)} · ${ta('app.name')}`} lang="en" skipLabel={ta('a11y.skipToContent')} offlineMessage={ta('banner.offline')}>
   <div data-shell="admin" class="min-h-dvh md:flex">
     {!bare && (
-      <aside class="hidden w-60 shrink-0 border-r border-border bg-card md:block">
+      <aside class="hidden w-60 shrink-0 border-r border-border bg-card shadow-sm md:block">
         <div class="px-5 py-4 font-serif text-xl font-semibold text-primary">{ta('app.name')}</div>
         <nav aria-label={ta('a11y.adminNav')} data-testid="admin-sidebar">
           <ul class="space-y-2 px-3">

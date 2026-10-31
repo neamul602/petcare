@@ -1,6 +1,7 @@
 ---
 import { t } from '@petcare/shared/i18n';
 import SearchForm from '@/components/SearchForm.astro';
+import Avatar from '@/components/kit/Avatar.astro';
 import Button from '@/components/kit/Button.astro';
 import Card from '@/components/kit/Card.astro';
 import OwnerShell from '@/layouts/OwnerShell.astro';
@@ -8,34 +9,74 @@ import { apiFetch } from '@/lib/api';
 import { getLocale } from '@/lib/locale';
 const locale = getLocale(Astro.cookies);
 const isOwner = Astro.locals.user?.role === 'owner';
+const cookie = Astro.request.headers.get('cookie');
 let latest: any = null;
+let pets: Array<{ id: string; name: string; breed: string; photo: string | null }> = [];
 if (isOwner) {
-  const list = await apiFetch('/owner/bookings', { cookie: Astro.request.headers.get('cookie') }).then((r) => (r.ok ? r.json() : null)).catch(() => null);
+  const list = await apiFetch('/owner/bookings', { cookie }).then((r) => (r.ok ? r.json() : null)).catch(() => null);
   latest = (list?.past ?? []).find((b: any) => b.canBookAgain) ?? null;
+  const mine = await apiFetch('/owner/pets', { cookie }).then((r) => (r.ok ? r.json() : null)).catch(() => null);
+  pets = mine?.pets ?? [];
 }
+const why = ['vetted', 'care', 'safe'] as const;
 ---
 <OwnerShell titleKey="screen.home">
-  <div class="space-y-6 py-4">
-    <section class="space-y-3">
-      <h1 class="font-serif text-3xl font-semibold leading-tight">{t(locale, 'home.promise.title')}</h1>
-      <p class="text-lg text-muted-foreground">{t(locale, 'home.promise.body')}</p>
+  <div class="space-y-10 py-2">
+    <section class="hero-band grid items-center gap-8 rounded-2xl border border-border p-6 md:grid-cols-2 md:p-10">
+      <div class="space-y-4">
+        <h1 class="text-3xl font-semibold leading-tight md:text-4xl">{t(locale, 'home.promise.title')}</h1>
+        <p class="text-lg text-muted-foreground">{t(locale, 'home.promise.body')}</p>
+        {!isOwner && <Button href="/search" size="lg" data-testid="find-care">{t(locale, 'home.cta')}</Button>}
+      </div>
+      {isOwner
+        ? <Card variant="elevated"><SearchForm locale={locale} /></Card>
+        : (
+          <Card variant="elevated" class="space-y-4">
+            {why.map((k) => (
+              <div class="flex gap-4"><span aria-hidden="true" class="mt-1 flex h-9 w-9 flex-none items-center justify-center rounded-full bg-primary-soft font-semibold text-primary-soft-foreground">✓</span>
+                <div><p class="font-semibold">{t(locale, `home.why.${k}` as 'home.why.vetted')}</p><p class="text-muted-foreground">{t(locale, `home.why.${k}.body` as 'home.why.vetted.body')}</p></div></div>
+            ))}
+          </Card>
+        )}
     </section>
+
     {latest && (
-      <Card class="space-y-3" data-testid="home-book-again">
-        <p class="font-semibold">{t(locale, 'home.again.title', { name: latest.provider.name[locale], pet: latest.pet.name })}</p>
+      <Card class="flex flex-wrap items-center gap-4" data-testid="home-book-again">
+        <Avatar name={latest.provider.name[locale]} size="md" />
+        <p class="mr-auto text-lg font-semibold">{t(locale, 'home.again.title', { name: latest.provider.name[locale], pet: latest.pet.name })}</p>
         <form method="post" action={`/bookings/${latest.id}/act`}><input type="hidden" name="intent" value="book-again" /><Button type="submit" data-testid="home-book-again-button">{t(locale, 'booking.again')}</Button></form>
       </Card>
     )}
-    {isOwner
-      ? <Card><SearchForm locale={locale} /></Card>
-      : <Button href="/search" size="lg" class="w-full" data-testid="find-care">{t(locale, 'home.cta')}</Button>}
-    <section class="space-y-3">
-      <h2 class="text-xl font-semibold">{t(locale, 'home.how.title')}</h2>
-      <ol class="space-y-3">
+
+    {isOwner && (
+      <section class="space-y-3" data-testid="home-pets">
+        <div class="flex items-center justify-between"><h2 class="text-2xl font-semibold">{t(locale, 'home.pets.title')}</h2><Button href="/pets/new" variant="outline" size="sm">{t(locale, 'home.pets.add')}</Button></div>
+        <ul class="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          {pets.map((pet) => (
+            <li><a href={`/pets/${pet.id}`} class="link-card block rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"><Card class="flex items-center gap-4 !p-4"><Avatar name={pet.name} src={pet.photo} size="md" /><span><span class="block text-lg font-semibold">{pet.name}</span><span class="block text-sm text-muted-foreground">{pet.breed}</span></span></Card></a></li>
+          ))}
+        </ul>
+      </section>
+    )}
+
+    <section class="space-y-4">
+      <h2 class="text-2xl font-semibold">{t(locale, 'home.how.title')}</h2>
+      <ol class="grid gap-4 md:grid-cols-3">
         {(['home.how.1', 'home.how.2', 'home.how.3'] as const).map((key, i) => (
-          <li class="flex items-start gap-3"><span aria-hidden="true" class="flex h-8 w-8 flex-none items-center justify-center rounded-full bg-primary-soft font-semibold text-primary-soft-foreground">{i + 1}</span><span class="pt-1">{t(locale, key)}</span></li>
+          <li><Card class="flex h-full items-start gap-4"><span aria-hidden="true" class="flex h-10 w-10 flex-none items-center justify-center rounded-full bg-primary font-serif text-lg font-semibold text-primary-foreground">{i + 1}</span><span class="pt-1 text-lg">{t(locale, key)}</span></Card></li>
         ))}
       </ol>
     </section>
+
+    {isOwner && (
+      <section class="space-y-4">
+        <h2 class="text-2xl font-semibold">{t(locale, 'home.why.title')}</h2>
+        <div class="grid gap-4 md:grid-cols-3">
+          {why.map((k) => (
+            <Card variant="muted" class="space-y-1"><p class="text-lg font-semibold">{t(locale, `home.why.${k}` as 'home.why.vetted')}</p><p class="text-muted-foreground">{t(locale, `home.why.${k}.body` as 'home.why.vetted.body')}</p></Card>
+          ))}
+        </div>
+      </section>
+    )}
   </div>
 </OwnerShell>

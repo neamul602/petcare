@@ -15,12 +15,16 @@ const field = 'h-12 w-full rounded-md border border-border bg-input px-4 text-ba
 ---
 <AdminShell titleKey="screen.insights">
   <div class="space-y-6 py-4">
-    <h1 class="text-2xl font-semibold">{ta('screen.insights')}</h1>
+    <h1 class="text-3xl font-semibold">{ta('screen.insights')}</h1>
     {ceiling && (
       <section class="space-y-2" data-testid="ceiling"><h2 class="text-xl font-semibold">{ta('ceiling.title')}</h2>
         {ceiling.message && <p role="note" data-testid="ceiling-message" class="rounded-md bg-warning-soft px-4 py-3 text-warning">{ceiling.message}</p>}
-        <p>{ta('ceiling.providers', { value: ceiling.activeProviders.value, limit: ceiling.activeProviders.limit, percent: ceiling.activeProviders.percent })}</p>
-        <p>{ta('ceiling.bookings', { value: ceiling.completedBookings30Days.value, limit: ceiling.completedBookings30Days.limit, percent: ceiling.completedBookings30Days.percent })}</p>
+        {[['ceiling.providers', ceiling.activeProviders], ['ceiling.bookings', ceiling.completedBookings30Days]].map(([key, v]: any) => (
+          <div class="space-y-1">
+            <p>{ta(key, { value: v.value, limit: v.limit, percent: v.percent })}</p>
+            <div class="h-3 w-full overflow-hidden rounded-full bg-muted" role="presentation"><div class={`h-full rounded-full ${v.percent >= 100 ? 'bg-destructive' : v.percent >= 80 ? 'bg-warning' : 'bg-primary'}`} style={`width:${Math.min(v.percent, 100)}%`}></div></div>
+          </div>
+        ))}
       </section>
     )}
     <section class="space-y-3" data-testid="neighbourhood-insights">

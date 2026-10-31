@@ -2,6 +2,7 @@
 /** One booking in a provider list: pet, dates, state pill, and time left for a waiting request. */
 import { t, type Locale, type MessageKey } from '@petcare/shared/i18n';
 import { formatDate } from '@petcare/shared/locale';
+import Avatar from '../kit/Avatar.astro';
 import Card from '../kit/Card.astro';
 import StatePill from '../kit/StatePill.astro';
 import { remaining } from '@/lib/time';
@@ -12,13 +13,13 @@ interface Props {
 const { locale, booking: b } = Astro.props;
 const day = (d: string) => formatDate(new Date(`${d}T00:00:00+06:00`), locale);
 ---
-<a href={`/provider/bookings/${b.id}`} data-testid="booking-card" class="block rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2">
-  <Card class="space-y-2">
+<a href={`/provider/bookings/${b.id}`} data-testid="booking-card" class="link-card block h-full rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2">
+  <Card class="flex h-full items-start gap-4 !p-5"><Avatar name={b.pet.name ?? '?'} size="md" /><div class="min-w-0 flex-1 space-y-2">
     <div class="flex flex-wrap items-center gap-3">
       <span class="mr-auto text-lg font-semibold">{b.pet.name}</span>
       <StatePill state={b.pill} label={t(locale, `booking.state.${b.state}` as MessageKey)} />
     </div>
     <p class="text-muted-foreground">{t(locale, 'booking.dates', { from: day(b.startDate), to: day(b.endDate), n: b.nights })}</p>
     {b.minutesLeft !== null && <p data-testid="time-left" class="font-medium">{t(locale, 'today.left', { time: remaining(locale, b.minutesLeft) })}</p>}
-  </Card>
+  </div></Card>
 </a>

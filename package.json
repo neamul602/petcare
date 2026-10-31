@@ -27,7 +27,8 @@
     "test:e2e": "playwright test",
     "verify": "npm run lint && npm run typecheck && npm run checks && npm run test",
     "start:web": "node apps/web/dist/server/entry.mjs",
-    "seed": "npm run seed -w @petcare/api --"
+    "seed": "npm run seed -w @petcare/api --",
+    "seed:demo": "npm run seed:demo -w @petcare/api"
   },
   "devDependencies": {
     "@axe-core/playwright": "^4.14.0",

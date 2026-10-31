@@ -23,16 +23,16 @@ const tabs = [
 ---
 <BaseLayout title={`${t(locale, titleKey)} · ${t(locale, 'app.name')}`} lang={locale} skipLabel={t(locale, 'a11y.skipToContent')} offlineMessage={t(locale, 'banner.offline')}>
   <div data-shell="provider">
-    <header class="sticky top-0 z-20 border-b border-border bg-background/95 backdrop-blur">
-      <div class="mx-auto flex max-w-5xl items-center gap-2 px-3 py-2 sm:gap-3 sm:px-6">
-        <a href="/provider" class="mr-auto inline-flex min-h-11 items-center font-serif text-xl font-semibold text-primary">{t(locale, 'app.name')}</a>
+    <header class="sticky top-0 z-20 border-b border-border bg-background/90 shadow-sm backdrop-blur">
+      <div class="mx-auto flex max-w-6xl items-center gap-2 px-3 py-2 sm:gap-3 sm:px-6">
+        <a href="/provider" class="mr-auto inline-flex min-h-11 items-center gap-2 font-serif text-2xl font-semibold text-primary">{t(locale, 'app.name')}</a>
         <TopNav tabs={tabs} current={current} label={t(locale, 'a11y.mainNav')} />
         <LanguageToggle locale={locale} current={current} />
         <a href="/provider/inbox" class="inline-flex min-h-11 items-center rounded-md px-2 text-sm font-medium hover:bg-muted sm:px-3">{t(locale, 'nav.inbox')}</a>
         <a href="/provider/settings" class="inline-flex min-h-11 items-center rounded-md px-2 text-sm font-medium hover:bg-muted sm:px-3">{t(locale, 'nav.settings')}</a>
       </div>
     </header>
-    <main id="main" class="mx-auto max-w-5xl px-4 py-6 pb-24 sm:px-6 md:pb-6">
+    <main id="main" class="mx-auto max-w-6xl px-4 py-6 pb-24 sm:px-6 md:pb-6">
       <slot />
     </main>
     <TabBar tabs={tabs} current={current} label={t(locale, 'a11y.mainNav')} />

@@ -551,5 +551,14 @@
   "record.medication": "Pets on medication",
   "record.anxious": "Anxious pets",
   "record.extraAttention": "Pets needing extra attention",
-  "record.empty": "Your care record grows with each completed and reviewed stay."
+  "record.empty": "Your care record grows with each completed and reviewed stay.",
+  "home.why.title": "Why owners choose PetCare",
+  "home.why.vetted": "Every provider is vetted",
+  "home.why.vetted.body": "Identity, address and home checked by our team before anyone is shown to you.",
+  "home.why.care": "Care that fits your pet",
+  "home.why.care.body": "A structured care plan, medicine times and daily photo updates, not a guess.",
+  "home.why.safe": "You pay only when they confirm",
+  "home.why.safe.body": "Your payment is held, never taken, until the provider says yes.",
+  "home.pets.title": "Your pets",
+  "home.pets.add": "Add a pet"
 }

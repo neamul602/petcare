@@ -74,6 +74,10 @@
     line-height: 1.5;
     overflow-x: hidden;
   }
+  h1 {
+    font-family: var(--font-serif);
+    letter-spacing: -0.01em;
+  }
   :focus-visible {
     outline: 2px solid var(--color-ring);
     outline-offset: 2px;
@@ -85,5 +89,28 @@
       animation-duration: 0.01ms !important;
       transition-duration: 0.01ms !important;
     }
+  }
+}
+
+@layer components {
+  /* Cards that are links lift a little on hover so they read as clickable. */
+  .link-card {
+    transition:
+      transform 150ms ease,
+      box-shadow 150ms ease;
+  }
+  .link-card:hover {
+    transform: translateY(-2px);
+  }
+  .link-card:hover > * {
+    box-shadow: var(--shadow-lg);
+  }
+  /* Soft green band behind page heroes. */
+  .hero-band {
+    background: linear-gradient(120deg, var(--color-primary-soft) 0%, var(--color-background) 70%);
+  }
+  .nav-pill[aria-current='page'] {
+    background: var(--color-primary-soft);
+    color: var(--color-primary-soft-foreground);
   }
 }

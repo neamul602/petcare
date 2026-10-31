@@ -20,12 +20,12 @@ const reason = (code: string | null) => {
 ---
 <ProviderShell titleKey="screen.earnings">
   <div class="space-y-6 py-4">
-    <h1 class="text-2xl font-semibold">{L('screen.earnings')}</h1>
+    <h1 class="text-3xl font-semibold">{L('screen.earnings')}</h1>
     {weeks.length === 0 && <EmptyState title={L('earnings.empty.title')} body={L('earnings.empty.body')} />}
     {weeks.map((w) => (
       <section class="space-y-3" data-testid="earnings-week">
         <h2 class="text-xl font-semibold">{L('earnings.week', { date: formatDate(new Date(`${w.week}T00:00:00+06:00`), locale) })}</h2>
-        {w.lines.map((l) => (
+        <div class="grid gap-4 lg:grid-cols-2">{w.lines.map((l) => (
           <Card class="space-y-2" data-testid="earnings-line">
             <div class="flex flex-wrap items-center gap-3"><span class="mr-auto font-semibold">{l.pet} · {formatDate(new Date(`${l.startDate}T00:00:00+06:00`), locale)}</span><StatePill state={pill(l.status)} label={L(`earnings.status.${l.status}`)} /></div>
             <p>{L('earnings.gross')}: {formatMoney(l.grossPoisha)}</p>
@@ -33,7 +33,7 @@ const reason = (code: string | null) => {
             <p class="font-semibold" data-testid="earnings-net">{L('earnings.net')}: {formatMoney(l.netPoisha)}</p>
             {l.status === 'frozen' && l.freezeReason && <p data-testid="earnings-reason" class="text-sm">{L('earnings.frozenReason', { reason: reason(l.freezeReason) })}</p>}
           </Card>
-        ))}
+        ))}</div>
       </section>
     ))}
   </div>

@@ -2,6 +2,7 @@
 import { trainingDecisions } from '@petcare/shared/config';
 import { t, type MessageKey } from '@petcare/shared/i18n';
 import { formatDate, formatMoney, formatTime } from '@petcare/shared/locale';
+import Avatar from '@/components/kit/Avatar.astro';
 import Button from '@/components/kit/Button.astro';
 import Card from '@/components/kit/Card.astro';
 import StatePill from '@/components/kit/StatePill.astro';
@@ -26,16 +27,17 @@ const amount = formatMoney(b.totalPoisha);
 const pending = Astro.url.searchParams.get('pending') === '1';
 ---
 <OwnerShell titleKey="screen.booking">
-  <div class="space-y-5 py-4">
-    <div class="flex flex-wrap items-center gap-3">
-      <h1 class="mr-auto text-2xl font-semibold" data-testid="booking-title">{b.state === 'authorized' ? L('booking.waiting', { name }) : name}</h1>
+  <div class="py-2">
+    <section class="hero-band flex flex-wrap items-center gap-5 rounded-2xl border border-border p-6 md:p-8">
+      <Avatar name={name} size="lg" />
+      <div class="mr-auto min-w-0 space-y-1">
+        <h1 class="text-3xl font-semibold" data-testid="booking-title">{b.state === 'authorized' ? L('booking.waiting', { name }) : name}</h1>
+        <p class="text-lg text-muted-foreground">{b.pet.name} · <span data-testid="booking-dates">{L('booking.dates', { from: day(b.startDate), to: day(b.endDate), n: b.nights })}</span></p>
+      </div>
       <StatePill state={b.pill} label={L(`booking.state.${b.state}`)} />
-    </div>
-    <Card class="space-y-2">
-      <p data-testid="booking-dates">{L('booking.dates', { from: day(b.startDate), to: day(b.endDate), n: b.nights })}</p>
-      <p>{b.pet.name}</p>
-      <p class="text-lg font-semibold" data-testid="booking-total">{amount}</p>
-    </Card>
+    </section>
+    <div class="mt-6 gap-8 lg:grid lg:grid-cols-[1fr_20rem]">
+    <div class="space-y-5">
 
     {b.state === 'authorized' && (
       <Card class="space-y-3" data-testid="waiting">
@@ -156,5 +158,14 @@ const pending = Astro.url.searchParams.get('pending') === '1';
       <h2 class="text-xl font-semibold">{L('booking.history')}</h2>
       <ul class="space-y-1 text-muted-foreground" data-testid="history">{history.map((h) => <li>{L('booking.history.entry', { time: when(h.at), state: L(`booking.state.${h.to}`) })}</li>)}</ul>
     </section>
+    </div>
+    <aside class="mt-6 lg:mt-0">
+      <Card variant="elevated" class="space-y-3 lg:sticky lg:top-24">
+        <p class="text-sm font-medium text-muted-foreground">{b.pet.name} · {name}</p>
+        <p class="font-serif text-4xl font-semibold text-primary" data-testid="booking-total">{amount}</p>
+        <p class="text-muted-foreground">{L('request.price', { n: b.nights, price: formatMoney(b.pricePerNightPoisha), total: amount })}</p>
+      </Card>
+    </aside>
+    </div>
   </div>
 </OwnerShell>

@@ -12,18 +12,18 @@ const empty = data.requests.length === 0 && data.inStay.length === 0 && data.sta
 ---
 <ProviderShell titleKey="screen.today">
   <div class="space-y-6 py-4">
-    <h1 class="text-2xl font-semibold">{t(locale, 'screen.today')}</h1>
+    <h1 class="text-3xl font-semibold">{t(locale, 'screen.today')}</h1>
     {empty && <EmptyState title={t(locale, 'today.empty.title')} body={t(locale, 'today.empty.body')} />}
     {data.requests.length > 0 && (
       <section class="space-y-3" data-testid="today-requests">
         <h2 class="text-xl font-semibold">{t(locale, 'today.requests')}</h2>
-        {data.requests.map((b) => <BookingCard locale={locale} booking={b} />)}
+        <div class="grid gap-4 lg:grid-cols-2">{data.requests.map((b) => <BookingCard locale={locale} booking={b} />)}</div>
       </section>
     )}
     {data.startToday.length > 0 && (
       <section class="space-y-3" data-testid="today-start">
         <h2 class="text-xl font-semibold">{t(locale, 'stay.startToday')}</h2>
-        {data.startToday.map((b) => <BookingCard locale={locale} booking={b} />)}
+        <div class="grid gap-4 lg:grid-cols-2">{data.startToday.map((b) => <BookingCard locale={locale} booking={b} />)}</div>
       </section>
     )}
     {data.inStay.length > 0 && (

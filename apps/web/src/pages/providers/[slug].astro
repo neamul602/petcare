@@ -1,6 +1,7 @@
 ---
 import { t, type MessageKey } from '@petcare/shared/i18n';
 import { formatMoney } from '@petcare/shared/locale';
+import Avatar from '@/components/kit/Avatar.astro';
 import Badge from '@/components/kit/Badge.astro';
 import Button from '@/components/kit/Button.astro';
 import Card from '@/components/kit/Card.astro';
@@ -28,56 +29,65 @@ const bookHref = `/book/${provider.slug}${from && to ? `?from=${from}&to=${to}` 
 const L = (key: string, params?: Record<string, string | number>) => t(locale, key as MessageKey, params);
 ---
 <OwnerShell titleKey="screen.provider">
-  <div class="space-y-5 py-4 pb-28">
-    <div class="flex flex-wrap items-center gap-3">
-      <h1 class="mr-auto text-2xl font-semibold" data-testid="provider-title">{name}</h1>
-      {provider.tier === 'A' && <Badge variant="tier-a" label={L('provider.badge.tierA.label')}>{L('provider.badge.tierA')}</Badge>}
-    </div>
-    <p class="text-lg">
-      <span data-testid="provider-price">{provider.pricePerNightPoisha === null ? L('provider.priceMissing') : L('provider.price', { price: formatMoney(provider.pricePerNightPoisha) })}</span>
-      · {provider.area[locale]}
-    </p>
-    {busy && (
-      <Card class="space-y-1" data-testid="availability">
-        <h2 class="text-xl font-semibold">{L('provider.availability')}</h2>
-        <p>{busy.length === 0 ? L('provider.availability.all') : L('provider.availability.some', { dates: busy.join(', ') })}</p>
+  <div class="gap-8 py-2 lg:grid lg:grid-cols-[1fr_22rem]">
+    <div class="space-y-6">
+      <section class="hero-band flex flex-wrap items-center gap-6 rounded-2xl border border-border p-6 md:p-8">
+        <Avatar name={name} size="xl" />
+        <div class="min-w-0 space-y-2">
+          <h1 class="text-3xl font-semibold md:text-4xl" data-testid="provider-title">{name}</h1>
+          <p class="text-lg text-muted-foreground">{provider.area[locale]} · {provider.species.map((s: string) => L(`provider.species.${s}`)).join(', ')}</p>
+          {provider.tier === 'A' && <Badge variant="tier-a" label={L('provider.badge.tierA.label')}>{L('provider.badge.tierA')}</Badge>}
+        </div>
+      </section>
+
+      <Card class="space-y-3">
+        <h2 class="text-xl font-semibold">{L('provider.experience')}</h2>
+        <p class="text-lg leading-relaxed">{provider.experience[locale]}</p>
+        <p class="text-muted-foreground">{L('provider.capacity', { n: provider.capacity.smallPets })}</p>
       </Card>
-    )}
-    <Card class="space-y-3">
-      <h2 class="text-xl font-semibold">{L('provider.experience')}</h2>
-      <p>{provider.experience[locale]}</p>
-      <p>{L('provider.species')}: {provider.species.map((s: string) => L(`provider.species.${s}`)).join(', ')}</p>
-      <p>{L('provider.capacity', { n: provider.capacity.smallPets })}</p>
-    </Card>
-    {provider.capabilities.length > 0 && (
-      <Card class="space-y-2">
-        <h2 class="text-xl font-semibold">{L('provider.capabilities')}</h2>
-        <ul class="list-disc ps-5">{provider.capabilities.map((c: string) => <li>{L(`capability.${c}`)}</li>)}</ul>
-      </Card>
-    )}
-    <Card class="space-y-2">
-      <h2 class="text-xl font-semibold">{L('provider.photos')}</h2>
-      {provider.photos.length === 0 && <p class="text-muted-foreground">{L('provider.photos.none')}</p>}
-    </Card>
-    {reviewList.length === 0
-      ? <p data-testid="provider-new" class="rounded-md bg-muted px-4 py-3">{L('provider.new')}</p>
-      : (
-        <Card class="space-y-3" data-testid="reviews">
-          <h2 class="text-xl font-semibold">{L('provider.reviews')}</h2>
-          <p class="font-medium" data-testid="review-summary">{L('provider.reviews.summary', { avg: agg.average, count: agg.count })} · {L('provider.reviews.photosShare', { pct: agg.withPhotosPercent })}</p>
-          <ul class="space-y-3">
-            {reviewList.map((r) => (
-              <li class="space-y-2 border-t border-border pt-3" data-testid="review">
-                <p><strong>{r.rating}/5</strong> · <span class="text-sm text-muted-foreground">{L('review.verified')}</span></p>
-                {r.text && <p>{r.text}</p>}
-                {r.photos.length > 0 && <ul class="grid grid-cols-3 gap-2">{r.photos.map((src: string) => <li><img src={src} alt="" loading="lazy" class="aspect-square w-full rounded-md object-cover" /></li>)}</ul>}
-              </li>
-            ))}
-          </ul>
+
+      {provider.capabilities.length > 0 && (
+        <Card class="space-y-3">
+          <h2 class="text-xl font-semibold">{L('provider.capabilities')}</h2>
+          <ul class="flex flex-wrap gap-2">{provider.capabilities.map((c: string) => <li class="rounded-full bg-primary-soft px-4 py-2 text-primary-soft-foreground">✓ {L(`capability.${c}`)}</li>)}</ul>
         </Card>
       )}
-  </div>
-  <div class="fixed inset-x-0 bottom-16 z-10 border-t border-border bg-background/95 px-4 py-3 backdrop-blur md:bottom-0">
-    <div class="mx-auto max-w-5xl"><Button href={bookHref} class="w-full" data-testid="book-button">{L('provider.book', { name })}</Button></div>
+
+      <Card class="space-y-2">
+        <h2 class="text-xl font-semibold">{L('provider.photos')}</h2>
+        {provider.photos.length === 0 && <p class="text-muted-foreground">{L('provider.photos.none')}</p>}
+      </Card>
+
+      {reviewList.length === 0
+        ? <p data-testid="provider-new" class="rounded-lg bg-muted px-5 py-4">{L('provider.new')}</p>
+        : (
+          <Card class="space-y-4" data-testid="reviews">
+            <h2 class="text-xl font-semibold">{L('provider.reviews')}</h2>
+            <p class="font-medium" data-testid="review-summary">{L('provider.reviews.summary', { avg: agg.average, count: agg.count })} · {L('provider.reviews.photosShare', { pct: agg.withPhotosPercent })}</p>
+            <ul class="space-y-4">
+              {reviewList.map((r) => (
+                <li class="space-y-2 border-t border-border pt-4" data-testid="review">
+                  <p class="flex items-center gap-3"><span class="text-lg tracking-widest text-warning" aria-hidden="true">{'★'.repeat(r.rating)}{'☆'.repeat(5 - r.rating)}</span><strong>{r.rating}/5</strong> <span class="rounded-full bg-primary-soft px-3 py-1 text-sm text-primary-soft-foreground">{L('review.verified')}</span></p>
+                  {r.text && <p class="leading-relaxed">{r.text}</p>}
+                  {r.photos.length > 0 && <ul class="grid grid-cols-3 gap-3 sm:grid-cols-4">{r.photos.map((src: string) => <li><img src={src} alt="" loading="lazy" class="aspect-square w-full rounded-lg object-cover" /></li>)}</ul>}
+                </li>
+              ))}
+            </ul>
+          </Card>
+        )}
+    </div>
+
+    <aside class="mt-6 lg:mt-0">
+      <Card variant="elevated" class="space-y-4 lg:sticky lg:top-24">
+        <p class="font-serif text-3xl font-semibold text-primary" data-testid="provider-price">{provider.pricePerNightPoisha === null ? L('provider.priceMissing') : L('provider.price', { price: formatMoney(provider.pricePerNightPoisha) })}</p>
+        {busy && (
+          <div class="space-y-1 rounded-md bg-muted p-4" data-testid="availability">
+            <h2 class="font-semibold">{L('provider.availability')}</h2>
+            <p>{busy.length === 0 ? L('provider.availability.all') : L('provider.availability.some', { dates: busy.join(', ') })}</p>
+          </div>
+        )}
+        <Button href={bookHref} size="lg" class="w-full" data-testid="book-button">{L('provider.book', { name })}</Button>
+      </Card>
+    </aside>
   </div>
 </OwnerShell>

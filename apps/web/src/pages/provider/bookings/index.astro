@@ -13,12 +13,12 @@ const empty = groups.every((g) => data[g].length === 0);
 ---
 <ProviderShell titleKey="screen.providerBookings">
   <div class="space-y-6 py-4">
-    <h1 class="text-2xl font-semibold">{t(locale, 'screen.providerBookings')}</h1>
+    <h1 class="text-3xl font-semibold">{t(locale, 'screen.providerBookings')}</h1>
     {empty && <EmptyState title={t(locale, 'pbookings.empty')} />}
     {groups.map((g) => data[g].length > 0 && (
       <section class="space-y-3" data-testid={`group-${g}`}>
         <h2 class="text-xl font-semibold">{t(locale, `pbookings.${g}` as MessageKey)}</h2>
-        {data[g].map((b) => <BookingCard locale={locale} booking={b} />)}
+        <div class="grid gap-4 lg:grid-cols-2">{data[g].map((b) => <BookingCard locale={locale} booking={b} />)}</div>
       </section>
     ))}
   </div>

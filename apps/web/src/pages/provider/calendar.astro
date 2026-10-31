@@ -23,7 +23,7 @@ const field = 'h-12 w-full rounded-md border border-border bg-input px-4 text-ba
 ---
 <ProviderShell titleKey="screen.calendar">
   <div class="space-y-5 py-4">
-    <h1 class="text-2xl font-semibold">{L('screen.calendar')}</h1>
+    <h1 class="text-3xl font-semibold">{L('screen.calendar')}</h1>
     {!data && <EmptyState title={L('calendar.noRecord')} />}
     {data && (
       <>
@@ -47,10 +47,10 @@ const field = 'h-12 w-full rounded-md border border-border bg-input px-4 text-ba
         <form method="post" action="/provider/calendar/save" class="space-y-4" data-testid="calendar-form">
           <input type="hidden" name="from" value={from} />
           <p>{L('calendar.set.pick')}</p>
-          <ul class="space-y-2">
+          <ul class="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
             {data.nights.map((night) => (
               <li>
-                <label class="flex min-h-14 items-start gap-3 rounded-lg border border-border bg-card px-4 py-3">
+                <label class="flex h-full min-h-14 items-start gap-3 rounded-lg border border-border bg-card px-4 py-3 shadow-sm hover:border-primary">
                   <input type="checkbox" name="dates" value={night.date} data-testid={`night-${night.date}`} class="mt-1 h-5 w-5 accent-primary" />
                   <span class="flex-1">
                     <span class="block font-medium">{formatDate(new Date(`${night.date}T00:00:00+06:00`), locale)}</span>

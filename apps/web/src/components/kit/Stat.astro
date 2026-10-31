@@ -1,0 +1,19 @@
+---
+/** A number tile for dashboards: label, value and an optional hint or link. */
+interface Props {
+  label: string;
+  value: string | number;
+  hint?: string;
+  href?: string;
+  tone?: 'default' | 'warning' | 'danger' | 'good';
+  [key: string]: unknown;
+}
+const { label, value, hint, href, tone = 'default', ...rest } = Astro.props;
+const tones = { default: 'text-foreground', warning: 'text-warning', danger: 'text-destructive', good: 'text-primary' };
+const Tag = href ? 'a' : 'div';
+---
+<Tag href={href} class={`block rounded-lg border border-border bg-card p-5 shadow-md ${href ? 'link-card focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring' : ''}`} {...rest}>
+  <p class="text-sm font-medium text-muted-foreground">{label}</p>
+  <p class={`mt-1 font-serif text-4xl font-semibold ${tones[tone]}`}>{value}</p>
+  {hint && <p class="mt-1 text-sm text-muted-foreground">{hint}</p>}
+</Tag>

@@ -1,6 +1,7 @@
 ---
 import { t } from '@petcare/shared/i18n';
 import { formatDate, formatMoney } from '@petcare/shared/locale';
+import Avatar from '@/components/kit/Avatar.astro';
 import Button from '@/components/kit/Button.astro';
 import Card from '@/components/kit/Card.astro';
 import StatePill from '@/components/kit/StatePill.astro';
@@ -16,27 +17,35 @@ const groups = [['upcoming', data.upcoming], ['past', data.past]] as const;
 ---
 <OwnerShell titleKey="screen.bookings">
   <div class="space-y-6 py-4">
-    <h1 class="text-2xl font-semibold">{t(locale, 'screen.bookings')}</h1>
+    <h1 class="text-3xl font-semibold">{t(locale, 'screen.bookings')}</h1>
     {data.upcoming.length === 0 && data.past.length === 0 && (
       <EmptyState title={t(locale, 'bookings.empty.title')} body={t(locale, 'bookings.empty.body')} actionLabel={t(locale, 'home.cta')} actionHref="/search" />
     )}
     {groups.map(([key, list]) => list.length > 0 && (
       <section class="space-y-3" data-testid={`group-${key}`}>
         <h2 class="text-xl font-semibold">{t(locale, `bookings.${key}` as 'bookings.upcoming')}</h2>
-        {list.map((b: any) => (
-          <Card class="space-y-2" data-testid="booking-row">
-            <a href={`/bookings/${b.id}`} class="block space-y-1 rounded focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring">
-              <span class="flex flex-wrap items-center gap-3"><span class="mr-auto text-lg font-semibold">{b.provider.name[locale]} · {b.pet.name}</span><StatePill state={b.pill} label={t(locale, `booking.state.${b.state}` as 'booking.state.authorized')} /></span>
-              <span class="block text-muted-foreground">{t(locale, 'booking.dates', { from: day(b.startDate), to: day(b.endDate), n: b.nights })} · {formatMoney(b.totalPoisha)}</span>
-            </a>
-            {b.canBookAgain && (
-              <form method="post" action={`/bookings/${b.id}/act`}>
-                <input type="hidden" name="intent" value="book-again" />
-                <Button type="submit" variant="secondary" data-testid="book-again">{t(locale, 'booking.again')}</Button>
-              </form>
-            )}
-          </Card>
-        ))}
+        <ul class="grid gap-4 lg:grid-cols-2">
+          {list.map((b: any) => (
+            <li>
+              <Card class="flex h-full flex-col gap-3 !p-5" data-testid="booking-row">
+                <a href={`/bookings/${b.id}`} class="flex items-center gap-4 rounded focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring">
+                  <Avatar name={b.provider.name[locale]} size="md" />
+                  <span class="min-w-0 flex-1">
+                    <span class="flex flex-wrap items-center gap-2"><span class="mr-auto text-lg font-semibold">{b.provider.name[locale]} · {b.pet.name}</span><StatePill state={b.pill} label={t(locale, `booking.state.${b.state}` as 'booking.state.authorized')} /></span>
+                    <span class="mt-1 block text-muted-foreground">{t(locale, 'booking.dates', { from: day(b.startDate), to: day(b.endDate), n: b.nights })}</span>
+                    <span class="mt-1 block font-serif text-xl font-semibold text-primary">{formatMoney(b.totalPoisha)}</span>
+                  </span>
+                </a>
+                {b.canBookAgain && (
+                  <form method="post" action={`/bookings/${b.id}/act`}>
+                    <input type="hidden" name="intent" value="book-again" />
+                    <Button type="submit" variant="secondary" data-testid="book-again">{t(locale, 'booking.again')}</Button>
+                  </form>
+                )}
+              </Card>
+            </li>
+          ))}
+        </ul>
       </section>
     ))}
   </div>

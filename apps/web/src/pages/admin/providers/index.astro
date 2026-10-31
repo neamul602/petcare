@@ -2,6 +2,7 @@
 import { platformRules } from '@petcare/shared/config';
 import { t, ta } from '@petcare/shared/i18n';
 import Badge from '@/components/kit/Badge.astro';
+import Avatar from '@/components/kit/Avatar.astro';
 import Button from '@/components/kit/Button.astro';
 import Card from '@/components/kit/Card.astro';
 import EmptyState from '@/components/states/EmptyState.astro';
@@ -33,7 +34,7 @@ const field = 'h-12 w-full rounded-md border border-border bg-input px-4 text-ba
 ---
 <AdminShell titleKey="screen.providers">
   <div class="space-y-5 py-4">
-    <h1 class="text-2xl font-semibold">{ta('screen.providers')}</h1>
+    <h1 class="text-3xl font-semibold">{ta('screen.providers')}</h1>
     {error && <p role="alert" class="rounded-md bg-destructive-soft px-4 py-3 text-sm text-destructive">{ta('providers.error.generic')}</p>}
     <nav aria-label={ta('providers.col.status')} class="flex flex-wrap gap-2">
       <a href="/admin/providers" class={`inline-flex min-h-11 items-center rounded-md px-4 ${filter === '' ? 'bg-primary text-primary-foreground' : 'bg-muted'}`}>{ta('providers.filter.all')}</a>
@@ -44,15 +45,16 @@ const field = 'h-12 w-full rounded-md border border-border bg-input px-4 text-ba
     {failed && <ErrorState variant="server" locale="en" admin />}
     {!failed && rows.length === 0 && <EmptyState title={ta('providers.empty')} />}
     <form method="post" action="/admin/providers/evaluate"><Button type="submit" variant="secondary" data-testid="evaluate-now">{ta('health.evaluate')}</Button></form>
-    <ul class="space-y-3">
+    <ul class="grid gap-3 lg:grid-cols-2">
       {rows.map((row) => (
         <li>
-          <a href={`/admin/providers/${row.id}`} data-testid="provider-row" class="block rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2">
-            <Card class="flex flex-wrap items-center gap-3">
+          <a href={`/admin/providers/${row.id}`} data-testid="provider-row" class="link-card block h-full rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2">
+            <Card class="flex h-full flex-wrap items-center gap-3 !p-5">
+              <Avatar name={row.name.en} size="sm" />
               <span class="mr-auto text-lg font-semibold">{row.name.en}</span>
               <Badge variant={row.tier === 'A' ? 'tier-a' : 'neutral'}>{ta('providers.col.tier')} {row.tier}</Badge>
               <Badge variant={row.status === 'approved' ? 'verified' : row.status === 'suspended' || row.status === 'removed' ? 'warning' : 'info'}>{ta(`providers.status.${row.status}` as never)}</Badge>
-            {(health[row.id]?.flags ?? []).length > 0 && <p class="mt-2 text-sm" data-testid="provider-flags">{health[row.id]!.flags.map((f) => ta(`health.flag.${f}` as 'health.flag.low_confirmation')).join(' · ')}{health[row.id]!.signals > 0 ? ' ⚑' : ''}</p>}
+            {(health[row.id]?.flags ?? []).length > 0 && <p class="w-full text-sm text-warning" data-testid="provider-flags">{health[row.id]!.flags.map((f) => ta(`health.flag.${f}` as 'health.flag.low_confirmation')).join(' · ')}{health[row.id]!.signals > 0 ? ' ⚑' : ''}</p>}
             </Card>
           </a>
         </li>

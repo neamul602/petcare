@@ -245,5 +245,9 @@
   "health.signalId": "Report or review id (not needed for feedback)",
   "health.signalNote": "What was said",
   "health.signalSave": "Tag signal",
-  "health.noAuto": "Flags never suspend a provider on their own. Context numbers are not targets."
+  "health.noAuto": "Flags never suspend a provider on their own. Context numbers are not targets.",
+  "queue.stat.open": "Open items",
+  "queue.stat.acute": "Acute events",
+  "queue.stat.vet": "Providers to vet",
+  "queue.stat.reviews": "Recent reviews"
 }

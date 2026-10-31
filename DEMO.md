@@ -39,3 +39,15 @@ The Dummy services have an inspection page for each service: `http://localhost:4
 ## Time
 
 The running servers use the real clock, so the 24 hour confirmation window, the 72 hour dispute window and the weekly Sunday payout batch cannot be waited out live. They are proven with an injectable clock in the tests (`apps/api/src/**/*.integration.test.ts`). To demonstrate a stay that has "already happened", change the booking's dates in the database as `tests/e2e/journey.spec.ts` does, and use the admin "Run batch now" button for payouts.
+
+## Demo with data in every section
+
+```bash
+npm run db:up
+npm run seed        # base data
+npm run dev         # API, Dummy services and web
+npm run seed:demo   # in another terminal: owners, providers, stays, reviews, payouts, admin queue
+```
+
+Sign in as Bibi (01712000001), Rashid (01712000002), Nadia (01712000011), Imran (01712000012) or the admin.
+Do not run `npx playwright test` while this stack is up: it would reuse the dev servers. Stop them first, then run `npm run seed && npm run dev && npm run seed:demo` again afterwards.

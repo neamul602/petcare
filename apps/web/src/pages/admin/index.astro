@@ -1,26 +1,30 @@
 ---
 import { ta, type AdminMessageKey } from '@petcare/shared/i18n';
 import Card from '@/components/kit/Card.astro';
+import Stat from '@/components/kit/Stat.astro';
 import EmptyState from '@/components/states/EmptyState.astro';
 import AdminShell from '@/layouts/AdminShell.astro';
 import { apiFetch } from '@/lib/api';
 const response = await apiFetch('/admin/queue', { cookie: Astro.request.headers.get('cookie') }).catch(() => null);
 const q: any = response?.ok ? await response.json() : { items: [], counts: { providersToVet: { value: 0, href: '/admin/providers' }, reviewsToModerate: { value: 0, href: '/admin/reviews' } }, postMortemReminders: [], ceilingBanner: null };
+const chip = (kind: string) => (kind === 'acute' ? 'bg-accent text-accent-foreground' : kind === 'report' ? 'bg-destructive-soft text-destructive' : kind === 'awaiting_confirmation' ? 'bg-info-soft text-info' : kind === 'in_stay' ? 'bg-primary-soft text-primary-soft-foreground' : 'bg-warning-soft text-warning');
 const A = (key: string, params?: Record<string, string | number>) => ta(key as AdminMessageKey, params);
 ---
 <AdminShell titleKey="screen.queue">
   <div class="space-y-5 py-4">
-    <h1 class="text-2xl font-semibold">{A('queue.title')}</h1>
+    <h1 class="text-3xl font-semibold">{A('queue.title')}</h1>
     {q.ceilingBanner && <p role="note" data-testid="ceiling-banner" class="rounded-md bg-warning-soft px-4 py-3 text-warning">{q.ceilingBanner.message}</p>}
     {q.postMortemReminders.map((r: any) => <p role="note" data-testid="pm-reminder" class="rounded-md bg-warning-soft px-4 py-3 text-warning"><a class="underline" href={r.href}>{A('queue.pmReminder')}</a></p>)}
-    <div class="flex flex-wrap gap-3" data-testid="counts">
-      <a href={q.counts.providersToVet.href} class="inline-flex min-h-11 items-center rounded-md border border-border bg-card px-4" data-testid="count-vet">{A('queue.toVet', { n: q.counts.providersToVet.value })}</a>
-      <a href={q.counts.reviewsToModerate.href} class="inline-flex min-h-11 items-center rounded-md border border-border bg-card px-4" data-testid="count-reviews">{A('queue.toModerate', { n: q.counts.reviewsToModerate.value })}</a>
+    <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-4" data-testid="counts">
+      <Stat label={A('queue.stat.open')} value={q.items.length} />
+      <Stat label={A('queue.stat.acute')} value={q.items.filter((i: any) => i.kind === 'acute').length} tone={q.items.some((i: any) => i.kind === 'acute') ? 'danger' : 'default'} />
+      <Stat label={A('queue.stat.vet')} value={q.counts.providersToVet.value} href={q.counts.providersToVet.href} tone="warning" data-testid="count-vet" />
+      <Stat label={A('queue.stat.reviews')} value={q.counts.reviewsToModerate.value} href={q.counts.reviewsToModerate.href} data-testid="count-reviews" />
     </div>
     {q.items.length === 0 && <EmptyState title={A('queue.empty')} />}
     <ul class="space-y-3">{q.items.map((i: any) => (
       <li><a href={i.href} data-testid="queue-row" data-kind={i.kind} class="block rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2">
-        <Card class="space-y-1"><p class="font-semibold">{A(`queue.kind.${i.kind}`)} · {i.title}</p><p class="text-muted-foreground">{i.detail}</p>{i.flags.length > 0 && <p class="text-sm">{i.flags.join(', ')}</p>}</Card>
+        <Card class="flex flex-wrap items-center gap-4 !p-5"><span class={`w-full shrink-0 sm:w-52 rounded-full px-3 py-1 text-center text-sm font-medium ${chip(i.kind)}`}>{A(`queue.kind.${i.kind}`)}</span><div class="min-w-0 flex-1"><p class="font-semibold">{i.title}</p><p class="text-muted-foreground">{i.detail}</p></div>{i.flags.length > 0 && <p class="text-sm text-warning">{i.flags.join(', ')}</p>}<span aria-hidden="true" class="text-xl text-muted-foreground">→</span></Card>
       </a></li>
     ))}</ul>
   </div>
