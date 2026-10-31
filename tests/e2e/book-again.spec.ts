@@ -95,18 +95,21 @@ test('Book again for a provider who can no longer be booked says so and offers o
     data: { bookingId: rows[0].id },
   });
   const { timerId } = (await started.json()) as { timerId: string };
-  await client.query("UPDATE providers SET status = 'suspended' WHERE id = 'kamrul'");
-  await client.query("UPDATE bookings SET provider_id = 'kamrul' WHERE id = $1", [rows[0].id]);
+  // A provider of its own, so no other spec's provider is touched while the suite runs in parallel.
+  await client.query(
+    "INSERT INTO providers (id, slug, name_en, name_bn, tier, status, neighbourhood_id, species) VALUES ('e2e-gone', 'e2e-gone', 'E2E Gone', 'গেছে', 'B', 'suspended', 'gulshan', ARRAY['dog'])",
+  );
+  await client.query("UPDATE bookings SET provider_id = 'e2e-gone' WHERE id = $1", [rows[0].id]);
   const page = await owner.newPage();
-  await page.goto(`/book/kamrul?again=${timerId}`);
+  await page.goto(`/book/e2e-gone?again=${timerId}`);
   await expect(page.getByTestId('provider-unavailable')).toBeVisible();
   await expect(page.getByTestId('provider-unavailable').getByRole('link')).toHaveAttribute(
     'href',
     '/search',
   );
   expect(await scan(page)).toEqual([]);
-  await client.query("UPDATE providers SET status = 'approved' WHERE id = 'kamrul'");
   await client.query("UPDATE bookings SET provider_id = 'rashid' WHERE id = $1", [rows[0].id]);
+  await client.query("DELETE FROM providers WHERE id = 'e2e-gone'");
   await client.end();
   await owner.close();
 });

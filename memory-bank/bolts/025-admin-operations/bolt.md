@@ -3,22 +3,30 @@ id: 025-admin-operations
 unit: 011-admin-operations
 intent: 001-petcare-v1
 type: simple-construction-bolt
-status: planned
+status: complete
 phase: UJ-3
 stories:
   - 004-provider-health-and-utilization
   - 005-defection-signals
-created: 2026-10-29T17:00:00Z
-started: null
-completed: null
+created: '2026-10-29T17:00:00Z'
+started: '2026-11-02T13:00:00Z'
+completed: '2026-10-31T16:26:57Z'
 current_stage: null
-stages_completed: []
-
-requires_bolts: [004-accounts-notifications, 006-provider-supply-vetting, 022-reviews-disputes, 024-admin-operations]
+stages_completed:
+  - name: plan
+    completed: '2026-11-02T13:00:00Z'
+    artifact: implementation-plan.md
+requires_bolts:
+  - 004-accounts-notifications
+  - 006-provider-supply-vetting
+  - 022-reviews-disputes
+  - 024-admin-operations
 enables_bolts: []
-requires_units: [accounts-notifications, provider-supply-vetting, reviews-disputes]
+requires_units:
+  - accounts-notifications
+  - provider-supply-vetting
+  - reviews-disputes
 blocks: true
-
 complexity:
   avg_complexity: 2
   avg_uncertainty: 1

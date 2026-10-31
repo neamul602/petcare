@@ -260,8 +260,8 @@ Intent `001-petcare-v1`: **76 stories** in 11 units (generated 2026-10-29T16:00:
 ### 003-operating-ceiling.md ✅ COMPLETED
 **ADM-03** Operating ceiling · should · UJ-3
 
-### 004-provider-health-and-utilization.md ✅ GENERATED
+### 004-provider-health-and-utilization.md ✅ COMPLETED
 **ADM-04** Provider health and utilization · should · UJ-2, UJ-3
 
-### 005-defection-signals.md ✅ GENERATED
+### 005-defection-signals.md ✅ COMPLETED
 **ADM-05** Defection signals · should · UJ-4, UJ-3

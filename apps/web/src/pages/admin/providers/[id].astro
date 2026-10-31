@@ -10,6 +10,8 @@ const response = await apiFetch(`/admin/providers/${Astro.params.id}`, { cookie 
 if (!response || response.status === 404) return Astro.rewrite('/404');
 if (!response.ok) return Astro.redirect('/admin/providers');
 const { provider, history } = (await response.json()) as { provider: any; history: any[] };
+const healthRes = await apiFetch(`/admin/providers/${Astro.params.id}/health`, { cookie }).catch(() => null);
+const hv: any = healthRes?.ok ? await healthRes.json() : null;
 const vetRes = await apiFetch(`/admin/providers/${Astro.params.id}/vetting`, { cookie }).catch(() => null);
 const vet: any = vetRes?.ok ? await vetRes.json() : null;
 const missingList = (Astro.url.searchParams.get('missing') ?? '').split(',').filter(Boolean);
@@ -77,6 +79,29 @@ const field = 'min-h-12 w-full rounded-md border border-border bg-input px-4 tex
           <input id="info-note" name="note" required minlength="3" class={field} data-testid="info-note" />
           <Button type="submit" variant="secondary" data-testid="info-send">{ta('vetting.requestInfo')}</Button>
         </form>
+      </Card>
+    )}
+    {hv && (
+      <Card class="space-y-4" data-testid="health">
+        <h2 class="text-xl font-semibold">{ta('health.title')}</h2>
+        <p>{hv.health ? ta('health.utilization', { value: hv.health.utilizationPercent ?? 0 }) : ta('health.noData')}</p>
+        <p data-testid="health-flags">{hv.health && hv.health.flags.length > 0 ? hv.health.flags.map((f: string) => ta(`health.flag.${f}` as 'health.flag.low_confirmation')).join(' · ') : ta('health.none')}</p>
+        <p class="text-sm text-muted-foreground">{ta('health.noAuto')}</p>
+        <h3 class="font-semibold">{ta('health.outreach')}</h3>
+        <ul>{hv.outreach.length === 0 ? <li class="text-muted-foreground">{ta('health.outreachNone')}</li> : hv.outreach.map((o: any) => <li data-testid="outreach-entry">{o.flag}: {o.outreach} → {o.outcome}</li>)}</ul>
+        <form method="post" action="/admin/providers/act" class="space-y-2"><input type="hidden" name="intent" value="outreach" /><input type="hidden" name="id" value={provider.id} />
+          <label for="o-flag" class="block text-sm font-medium">{ta('health.outreachFlag')}</label><input id="o-flag" name="flag" required minlength="3" class={field} data-testid="o-flag" />
+          <label for="o-what" class="block text-sm font-medium">{ta('health.outreachWhat')}</label><input id="o-what" name="outreach" required minlength="3" class={field} data-testid="o-what" />
+          <label for="o-out" class="block text-sm font-medium">{ta('health.outreachOutcome')}</label><input id="o-out" name="outcome" required minlength="3" class={field} data-testid="o-out" />
+          <Button type="submit" variant="secondary" data-testid="o-save">{ta('health.outreachSave')}</Button></form>
+        <h3 class="font-semibold">{ta('health.signals')}</h3>
+        <ul>{hv.signals.length === 0 ? <li class="text-muted-foreground">{ta('health.signalNone')}</li> : hv.signals.map((x: any) => <li data-testid="signal-entry">{x.sourceType}{x.sourceId ? ` ${x.sourceId}` : ''}: {x.note}</li>)}</ul>
+        <form method="post" action="/admin/providers/act" class="space-y-2"><input type="hidden" name="intent" value="signal" /><input type="hidden" name="id" value={provider.id} />
+          <label for="s-type" class="block text-sm font-medium">{ta('health.signalType')}</label>
+          <select id="s-type" name="sourceType" class={field} data-testid="s-type"><option value="feedback">feedback</option><option value="report">report</option><option value="review">review</option></select>
+          <label for="s-id" class="block text-sm font-medium">{ta('health.signalId')}</label><input id="s-id" name="sourceId" class={field} />
+          <label for="s-note" class="block text-sm font-medium">{ta('health.signalNote')}</label><input id="s-note" name="note" class={field} data-testid="s-note" />
+          <Button type="submit" variant="secondary" data-testid="s-save">{ta('health.signalSave')}</Button></form>
       </Card>
     )}
     {vet && provider.status === 'removed' && (

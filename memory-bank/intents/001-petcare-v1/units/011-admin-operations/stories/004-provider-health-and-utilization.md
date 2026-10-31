@@ -3,12 +3,12 @@ id: 004-provider-health-and-utilization
 code: ADM-04
 unit: 011-admin-operations
 intent: 001-petcare-v1
-status: ready
+status: complete
 priority: should
 journeys: UJ-2, UJ-3
-created: 2026-10-29T16:00:00Z
+created: '2026-10-29T16:00:00Z'
 assigned_bolt: 025-admin-operations
-implemented: false
+implemented: true
 ---
 
 # Story ADM-04: Provider health and utilization

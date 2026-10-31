@@ -15,11 +15,14 @@ const error = Astro.url.searchParams.get('error');
 let rows: Row[] = [];
 const areas = platformRules.launchNeighbourhoods.map((id) => ({ id, nameEn: t('en', `neighbourhood.${id}` as never) }));
 let failed = false;
+let health: Record<string, { flags: string[]; signals: number }> = {};
 let decisions: Array<{ providerId: string; name: string; tier: string; neighbourhood: string; decision: string; reason: string }> = [];
 try {
   const response = await apiFetch(`/admin/providers${filter ? `?status=${encodeURIComponent(filter)}` : ''}`, { cookie });
   if (response.ok) rows = ((await response.json()) as { providers: Row[] }).providers;
   else failed = true;
+  const hl = await apiFetch('/admin/providers-health', { cookie });
+  if (hl.ok) health = Object.fromEntries(((await hl.json()) as { providers: Array<{ providerId: string; flags: string[]; signals: number }> }).providers.map((p) => [p.providerId, { flags: p.flags, signals: p.signals }]));
   const dec = await apiFetch('/admin/vetting/decisions', { cookie });
   if (dec.ok) decisions = ((await dec.json()) as { decisions: typeof decisions }).decisions;
 } catch {
@@ -40,6 +43,7 @@ const field = 'h-12 w-full rounded-md border border-border bg-input px-4 text-ba
     </nav>
     {failed && <ErrorState variant="server" locale="en" admin />}
     {!failed && rows.length === 0 && <EmptyState title={ta('providers.empty')} />}
+    <form method="post" action="/admin/providers/evaluate"><Button type="submit" variant="secondary" data-testid="evaluate-now">{ta('health.evaluate')}</Button></form>
     <ul class="space-y-3">
       {rows.map((row) => (
         <li>
@@ -48,6 +52,7 @@ const field = 'h-12 w-full rounded-md border border-border bg-input px-4 text-ba
               <span class="mr-auto text-lg font-semibold">{row.name.en}</span>
               <Badge variant={row.tier === 'A' ? 'tier-a' : 'neutral'}>{ta('providers.col.tier')} {row.tier}</Badge>
               <Badge variant={row.status === 'approved' ? 'verified' : row.status === 'suspended' || row.status === 'removed' ? 'warning' : 'info'}>{ta(`providers.status.${row.status}` as never)}</Badge>
+            {(health[row.id]?.flags ?? []).length > 0 && <p class="mt-2 text-sm" data-testid="provider-flags">{health[row.id]!.flags.map((f) => ta(`health.flag.${f}` as 'health.flag.low_confirmation')).join(' · ')}{health[row.id]!.signals > 0 ? ' ⚑' : ''}</p>}
             </Card>
           </a>
         </li>

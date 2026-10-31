@@ -2,7 +2,14 @@ export { adminUsers, sessions, signupTokens, users } from './auth.ts';
 export { eventLog } from './event-log.ts';
 export { careHistory, petPhotos, pets } from './pets.ts';
 export { neighbourhoods, vetClinics } from './reference-data.ts';
-export { providers, providerStatusEvents, vettingAppeals, vettingRecords } from './providers.ts';
+export {
+  defectionSignals,
+  providerOutreach,
+  providers,
+  providerStatusEvents,
+  vettingAppeals,
+  vettingRecords,
+} from './providers.ts';
 export { nightCapacity, nightReservations, peakWindows } from './capacity.ts';
 export { payments, payoutBatches, payouts } from './payments.ts';
 export { bookAgainTimers, bookingFlags, bookings } from './bookings.ts';

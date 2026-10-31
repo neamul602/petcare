@@ -71,3 +71,29 @@ export const vettingAppeals = pgTable('vetting_appeals', {
   recordedBy: text('recorded_by').notNull(),
   createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
 });
+
+/** The admin's outreach to a flagged provider and what came of it (ADM-04). Nothing suspends automatically. */
+export const providerOutreach = pgTable('provider_outreach', {
+  id: text('id').primaryKey(),
+  providerId: text('provider_id')
+    .notNull()
+    .references(() => providers.id),
+  flag: text('flag').notNull(),
+  outreach: text('outreach').notNull(),
+  outcome: text('outcome').notNull(),
+  by: text('by').notNull(),
+  at: timestamp('at', { withTimezone: true }).notNull().defaultNow(),
+});
+
+/** A mention of off-platform contact, tagged by the admin against a provider with its source (ADM-05). */
+export const defectionSignals = pgTable('defection_signals', {
+  id: text('id').primaryKey(),
+  providerId: text('provider_id')
+    .notNull()
+    .references(() => providers.id),
+  sourceType: text('source_type', { enum: ['report', 'review', 'feedback'] }).notNull(),
+  sourceId: text('source_id'),
+  note: text('note').notNull().default(''),
+  by: text('by').notNull(),
+  at: timestamp('at', { withTimezone: true }).notNull().defaultNow(),
+});

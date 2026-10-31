@@ -104,6 +104,26 @@ export const POST: APIRoute = async ({ request }) => {
         ? back(`/admin/providers/${id}`)
         : fail(response, `/admin/providers/${id}`);
     }
+    case 'outreach': {
+      const response = await send(`/admin/providers/${id}/outreach`, {
+        flag: text('flag'),
+        outreach: text('outreach'),
+        outcome: text('outcome'),
+      });
+      return response?.ok
+        ? back(`/admin/providers/${id}`)
+        : fail(response, `/admin/providers/${id}`);
+    }
+    case 'signal': {
+      const response = await send(`/admin/providers/${id}/signals`, {
+        sourceType: text('sourceType'),
+        ...(text('sourceId') ? { sourceId: text('sourceId') } : {}),
+        note: text('note'),
+      });
+      return response?.ok
+        ? back(`/admin/providers/${id}`)
+        : fail(response, `/admin/providers/${id}`);
+    }
     default:
       return back('/admin/providers');
   }

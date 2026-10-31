@@ -10,6 +10,9 @@ const MONEY_SPECS = /payment-failures\.spec\.ts/;
 export default defineConfig({
   testDir: 'tests/e2e',
   fullyParallel: true,
+  // Several journeys create bookings, upload photos and load many pages; give them room when everything runs in parallel.
+  timeout: 60_000,
+  expect: { timeout: 10_000 },
   reporter: [['list'], ['html', { open: 'never' }]],
   use: { trace: 'retain-on-failure' },
   globalSetup: './tests/e2e/global-setup.ts',

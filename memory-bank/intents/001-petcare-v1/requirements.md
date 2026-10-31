@@ -1,9 +1,9 @@
 ---
 intent: 001-petcare-v1
 phase: inception
-status: approved
-created: 2026-10-28T18:10:00Z
-updated: 2026-10-29T15:00:00Z
+status: complete
+created: '2026-10-28T18:10:00Z'
+updated: '2026-10-29T15:00:00Z'
 ---
 
 # Requirements: PetCare v1

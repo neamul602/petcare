@@ -3,12 +3,12 @@ id: 005-defection-signals
 code: ADM-05
 unit: 011-admin-operations
 intent: 001-petcare-v1
-status: ready
+status: complete
 priority: should
 journeys: UJ-4, UJ-3
-created: 2026-10-29T16:00:00Z
+created: '2026-10-29T16:00:00Z'
 assigned_bolt: 025-admin-operations
-implemented: false
+implemented: true
 ---
 
 # Story ADM-05: Defection signals

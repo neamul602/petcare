@@ -158,6 +158,8 @@ export function createBookingService(deps: {
                 60_000,
           ),
           submissionKey: input.key,
+          createdAt: now,
+          updatedAt: now,
         })
         .returning();
       const actor = `owner:${input.ownerId}`;

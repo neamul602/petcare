@@ -3,6 +3,7 @@ import { and, asc, desc, eq, gte, inArray, like, sql } from 'drizzle-orm';
 import type { FastifyInstance, FastifyReply } from 'fastify';
 import type { Clock } from '@petcare/shared/clock';
 import { platformRules } from '@petcare/shared/config';
+import { computeHealth } from './health.ts';
 import type { Authenticator } from '../auth/guards.ts';
 import type { Database } from '../db/client.ts';
 import {
@@ -70,6 +71,7 @@ export function registerAdminQueueRoutes(
 
   app.get('/admin/queue', admin, async () => {
     const now = clock.now();
+    const health = new Map((await computeHealth(db, clock)).map((h) => [h.providerId, h.flags]));
     const items: Array<{
       group: number;
       kind: string;
@@ -143,7 +145,7 @@ export function registerAdminQueueRoutes(
         detail: `${b.startDate} → ${b.endDate}`,
         href: `/admin/bookings/${b.id}`,
         at: b.confirmationDeadline,
-        flags: [],
+        flags: health.get(b.providerId) ?? [],
       });
 
     for (const b of await db
@@ -159,7 +161,7 @@ export function registerAdminQueueRoutes(
         detail: `${b.startDate} → ${b.endDate}`,
         href: `/admin/bookings/${b.id}`,
         at: null,
-        flags: [],
+        flags: health.get(b.providerId) ?? [],
       });
 
     const [{ n: toVet = 0 } = { n: 0 }] = await db
