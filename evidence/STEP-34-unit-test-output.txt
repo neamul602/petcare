@@ -1,0 +1,73 @@
+
+> verify
+> npm run lint && npm run typecheck && npm run checks && npm run test
+
+
+> lint
+> eslint .
+
+
+> typecheck
+> npm run typecheck --workspaces --if-present
+
+
+> @petcare/shared@0.1.0 typecheck
+> tsc --noEmit -p tsconfig.json
+
+
+> @petcare/api@0.1.0 typecheck
+> tsc --noEmit -p tsconfig.json
+
+
+> @petcare/dummy-services@0.1.0 typecheck
+> tsc --noEmit -p tsconfig.json
+
+
+> @petcare/web@0.1.0 typecheck
+> astro check
+
+22:54:52 [@astrojs/node] Enabling sessions with filesystem storage
+22:54:52 [types] Generated 89ms
+22:54:52 [check] Getting diagnostics for Astro files in /home/bs00856/Documents/Projects/petcare/apps/web...
+Result (104 files): 
+- 0 errors
+- 0 warnings
+- 0 hints
+
+
+> checks
+> npm run check:i18n && npm run check:config && npm run check:web-ports && npm run check:contrast
+
+
+> check:i18n
+> node scripts/check-i18n.mjs
+
+i18n parity check passed: 553 keys in bn and en
+
+> check:config
+> node scripts/check-config-literals.mjs
+
+Config literal check passed: 6 training values found only in packages/shared/src/config/training-decisions.ts
+
+> check:web-ports
+> node scripts/check-no-dummy-in-web.mjs
+
+Dummy-in-web check passed
+
+> check:contrast
+> node scripts/check-contrast.mjs
+
+Contrast check passed: 18 pairs meet WCAG 2.1 AA
+
+> test
+> vitest run
+
+
+ RUN  v5.0.5 /home/bs00856/Documents/Projects/petcare
+
+
+ Test Files  38 passed (38)
+      Tests  439 passed (439)
+   Start at  22:55:01
+   Duration  22.43s (tests 80%, import 18%, transform 2%)
+

@@ -1,6 +1,6 @@
 # Global Story Index
 
-Intent `001-petcare-v1`: **76 stories** in 11 units (generated 2026-10-29T16:00:00Z). Status markers: no marker = planned, ✅ GENERATED = file created, ✅ COMPLETED = implemented.
+Intent `001-petcare-v1`: **76 stories** in 11 units (generated 2026-10-29T16:00:00Z). Status markers: no marker = planned, ✅ GENERATED = file created, ✅ COMPLETED = implemented, ⏸ DEFERRED = recorded in deferred-scope.md and not built.
 
 ## Coverage
 
@@ -64,10 +64,10 @@ Intent `001-petcare-v1`: **76 stories** in 11 units (generated 2026-10-29T16:00:
 ### 002-admin-sign-in-and-role-guards.md ✅ COMPLETED
 **ACC-02** Admin sign-in and role guards · must · UJ-3
 
-### 003-notification-port-and-delivery.md ✅ GENERATED
+### 003-notification-port-and-delivery.md ⏸ DEFERRED (see deferred-scope.md)
 **ACC-03** Notification port and delivery · must · all
 
-### 004-inbox.md ✅ GENERATED
+### 004-inbox.md ⏸ DEFERRED (see deferred-scope.md)
 **ACC-04** Inbox · should · UJ-1
 
 ### 005-settings.md ✅ COMPLETED
@@ -197,7 +197,7 @@ Intent `001-petcare-v1`: **76 stories** in 11 units (generated 2026-10-29T16:00:
 ### 012-daily-updates.md ✅ COMPLETED
 **BKG-12** Daily updates · must · UJ-1, UJ-2
 
-### 013-booking-chat.md ✅ GENERATED
+### 013-booking-chat.md ⏸ DEFERRED (see deferred-scope.md)
 **BKG-13** Booking chat · must · UJ-1
 
 ### 014-vet-clinic-directory.md ✅ COMPLETED

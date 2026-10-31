@@ -6,6 +6,8 @@ const E2E_DATABASE = 'postgres://petcare:petcare@localhost:5433/petcare_e2e';
 const PRODUCTION_SPECS = /(pwa|performance)\.spec\.ts/;
 // These switch the shared Dummy gateway into failure modes, so they run alone, after everything else.
 const MONEY_SPECS = /payment-failures\.spec\.ts/;
+// The final scenario (workbook Step 34): one recorded journey, run last on its own.
+const JOURNEY_SPECS = /journey\.spec\.ts/;
 
 export default defineConfig({
   testDir: 'tests/e2e',
@@ -57,7 +59,7 @@ export default defineConfig({
   projects: [
     {
       name: 'phone',
-      testIgnore: [PRODUCTION_SPECS, MONEY_SPECS],
+      testIgnore: [PRODUCTION_SPECS, MONEY_SPECS, JOURNEY_SPECS],
       use: {
         ...devices['Pixel 7'],
         browserName: 'chromium',
@@ -67,7 +69,7 @@ export default defineConfig({
     },
     {
       name: 'desktop',
-      testIgnore: [PRODUCTION_SPECS, MONEY_SPECS],
+      testIgnore: [PRODUCTION_SPECS, MONEY_SPECS, JOURNEY_SPECS],
       use: { browserName: 'chromium', viewport: { width: 1280, height: 800 }, baseURL: DEV },
     },
     {
@@ -79,6 +81,19 @@ export default defineConfig({
         browserName: 'chromium',
         viewport: { width: 390, height: 844 },
         baseURL: DEV,
+      },
+    },
+    {
+      name: 'journey',
+      testMatch: JOURNEY_SPECS,
+      dependencies: ['phone', 'desktop', 'production', 'money'],
+      timeout: 240_000,
+      use: {
+        ...devices['Pixel 7'],
+        browserName: 'chromium',
+        viewport: { width: 390, height: 844 },
+        baseURL: DEV,
+        video: { mode: 'on', size: { width: 390, height: 844 } },
       },
     },
     {

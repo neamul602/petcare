@@ -4,7 +4,7 @@ Owner decision, 2026-10-29: complex features are skipped for now even where the 
 
 | Deferred feature | Where it appears | What is skipped | Simplest stand-in until revisited |
 |---|---|---|---|
-| Live chat system | FR-44; story BKG-13; blueprint O6/P3 chat section | Real-time booking chat, delivery, read state, offline queue | Booking page shows a "Chat comes later" note; no messages stored |
+| Live chat system | FR-44; story BKG-13; blueprint O6/P3 chat section | Real-time booking chat, delivery, read state, offline queue | No chat section is shown on the booking pages; no messages are stored |
 | Notification system | DR-20; stories ACC-03, ACC-04, ACC-05 (preferences); reminders in BKG-12 (TD-11); owner timeout notice in BKG-09; owner notices in ACU-02 | Notification port with retry and failure tracking, inbox screens, reminder scheduler, notification preferences | State changes show on the booking page itself; no inbox, no scheduled reminders |
 | Real email / SMS / push | NFR-6 OTP, DR-20, C-9 | Any real delivery channel or provider | Dummy APIs only; sign-in OTP uses the Dummy OTP service |
 | Real OTP delivery | FR/NFR-6, story ACC-01 | A real SMS provider | Dummy OTP API (code visible in training inspection) |

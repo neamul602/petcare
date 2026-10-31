@@ -17,16 +17,17 @@ const scan = async (page: Page) =>
   ).violations.map((v) => v.id);
 const plus = (days: number) =>
   new Date(Date.now() + days * 86_400_000 + 6 * 3_600_000).toISOString().slice(0, 10);
-const ORDER = [
-  'acute',
-  'report',
-  'owner_cancellation_request',
-  'provider_cancellation',
-  'owner_no_show',
-  'missed_start',
-  'awaiting_confirmation',
-  'in_stay',
-];
+// The urgency groups: acute events, reports, other open items (any order inside), awaiting confirmation, in stay.
+const GROUP: Record<string, number> = {
+  acute: 0,
+  report: 1,
+  owner_cancellation_request: 2,
+  provider_cancellation: 2,
+  owner_no_show: 2,
+  missed_start: 2,
+  awaiting_confirmation: 3,
+  in_stay: 4,
+};
 
 test('the queue is sorted by urgency; a cancellation request opens in one tap and is decided; the audit log shows it', async ({
   browser,
@@ -59,7 +60,7 @@ test('the queue is sorted by urgency; a cancellation request opens in one tap an
   const kinds = await page
     .getByTestId('queue-row')
     .evaluateAll((rows) => rows.map((r) => r.getAttribute('data-kind')!));
-  const ranks = kinds.map((k) => ORDER.indexOf(k));
+  const ranks = kinds.map((k) => GROUP[k] ?? -1);
   expect(ranks).toEqual([...ranks].sort((a, b) => a - b));
   expect(ranks).not.toContain(-1);
   expect(await scan(page)).toEqual([]);

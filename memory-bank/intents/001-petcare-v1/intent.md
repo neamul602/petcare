@@ -1,10 +1,10 @@
 ---
 intent: 001-petcare-v1
-phase: inception
-status: approved
+phase: construction
+status: complete
 type: new-feature (green-field)
 created: 2026-10-28T18:10:00Z
-updated: 2026-10-29T15:00:00Z
+updated: 2026-11-02T15:10:00Z
 ---
 
 # Intent: PetCare v1

@@ -1,0 +1,8 @@
+  ✓  320 [production] › tests/e2e/performance.spec.ts:16:3 › /search loads under budget on slow 4G (6.6s)
+/sign-in: 227 KB transferred, interactive after 1729 ms (runs: 1772, 1729, 1717)
+  ✓  321 [production] › tests/e2e/performance.spec.ts:16:3 › /sign-in loads under budget on slow 4G (6.6s)
+  ✓  322 [money] › tests/e2e/payment-failures.spec.ts:49:1 › a declined payment is explained and no booking is made; the inputs are still there afterwards (3.2s)
+  ✓  323 [journey] › tests/e2e/journey.spec.ts:51:1 › Bibi and Rashid: from first visit to refund (11.7s)
+
+  61 skipped
+  262 passed (2.6m)
