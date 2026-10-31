@@ -3,12 +3,12 @@ id: 002-audit-log
 code: ADM-02
 unit: 011-admin-operations
 intent: 001-petcare-v1
-status: ready
+status: complete
 priority: must
 journeys: UJ-3
-created: 2026-10-29T16:00:00Z
+created: '2026-10-29T16:00:00Z'
 assigned_bolt: 024-admin-operations
-implemented: false
+implemented: true
 ---
 
 # Story ADM-02: Audit log

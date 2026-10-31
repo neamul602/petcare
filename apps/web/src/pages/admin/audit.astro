@@ -1,8 +1,28 @@
 ---
 import { ta } from '@petcare/shared/i18n';
-import Placeholder from '@/components/Placeholder.astro';
+import Button from '@/components/kit/Button.astro';
 import AdminShell from '@/layouts/AdminShell.astro';
+import { apiFetch } from '@/lib/api';
+const q = Astro.url.searchParams;
+const params = new URLSearchParams();
+if (q.get('action')) params.set('action', q.get('action')!);
+if (q.get('targetId')) params.set('targetId', q.get('targetId')!);
+const response = await apiFetch(`/admin/audit?${params}`, { cookie: Astro.request.headers.get('cookie') }).catch(() => null);
+const entries: any[] = response?.ok ? ((await response.json()) as { entries: any[] }).entries : [];
+const field = 'h-12 w-full rounded-md border border-border bg-input px-4 text-base';
 ---
 <AdminShell titleKey="screen.audit">
-  <Placeholder screenId="A8" title={ta('screen.audit')} body={ta('placeholder.body')} />
+  <div class="space-y-5 py-4">
+    <h1 class="text-2xl font-semibold">{ta('audit.title')}</h1>
+    <p class="text-sm text-muted-foreground">{ta('audit.note')}</p>
+    <form method="get" class="grid gap-3 sm:grid-cols-3" data-testid="audit-filter">
+      <div class="space-y-1"><label for="f-action" class="block text-sm font-medium">{ta('audit.action')}</label><input id="f-action" name="action" value={q.get('action') ?? ''} class={field} /></div>
+      <div class="space-y-1"><label for="f-target" class="block text-sm font-medium">{ta('audit.target')}</label><input id="f-target" name="targetId" value={q.get('targetId') ?? ''} class={field} /></div>
+      <div class="flex items-end"><Button type="submit">{ta('audit.filter')}</Button></div>
+    </form>
+    {entries.length === 0 && <p class="text-muted-foreground">{ta('audit.none')}</p>}
+    <ul class="space-y-2" data-testid="audit-entries">{entries.map((e) => (
+      <li class="rounded-md border border-border bg-card p-3" data-testid="audit-entry"><p class="font-medium">{e.action}{e.reasonCode ? ` · ${e.reasonCode}` : ''}</p><p class="text-sm text-muted-foreground">{e.actor} · {e.targetType} {e.targetId} · {e.at}</p></li>
+    ))}</ul>
+  </div>
 </AdminShell>

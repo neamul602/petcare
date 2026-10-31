@@ -1,8 +1,27 @@
 ---
-import { ta } from '@petcare/shared/i18n';
-import Placeholder from '@/components/Placeholder.astro';
+import { ta, type AdminMessageKey } from '@petcare/shared/i18n';
+import Card from '@/components/kit/Card.astro';
+import EmptyState from '@/components/states/EmptyState.astro';
 import AdminShell from '@/layouts/AdminShell.astro';
+import { apiFetch } from '@/lib/api';
+const response = await apiFetch('/admin/queue', { cookie: Astro.request.headers.get('cookie') }).catch(() => null);
+const q: any = response?.ok ? await response.json() : { items: [], counts: { providersToVet: { value: 0, href: '/admin/providers' }, reviewsToModerate: { value: 0, href: '/admin/reviews' } }, postMortemReminders: [], ceilingBanner: null };
+const A = (key: string, params?: Record<string, string | number>) => ta(key as AdminMessageKey, params);
 ---
 <AdminShell titleKey="screen.queue">
-  <Placeholder screenId="A1" title={ta('screen.queue')} body={ta('placeholder.body')} />
+  <div class="space-y-5 py-4">
+    <h1 class="text-2xl font-semibold">{A('queue.title')}</h1>
+    {q.ceilingBanner && <p role="note" data-testid="ceiling-banner" class="rounded-md bg-warning-soft px-4 py-3 text-warning">{q.ceilingBanner.message}</p>}
+    {q.postMortemReminders.map((r: any) => <p role="note" data-testid="pm-reminder" class="rounded-md bg-warning-soft px-4 py-3 text-warning"><a class="underline" href={r.href}>{A('queue.pmReminder')}</a></p>)}
+    <div class="flex flex-wrap gap-3" data-testid="counts">
+      <a href={q.counts.providersToVet.href} class="inline-flex min-h-11 items-center rounded-md border border-border bg-card px-4" data-testid="count-vet">{A('queue.toVet', { n: q.counts.providersToVet.value })}</a>
+      <a href={q.counts.reviewsToModerate.href} class="inline-flex min-h-11 items-center rounded-md border border-border bg-card px-4" data-testid="count-reviews">{A('queue.toModerate', { n: q.counts.reviewsToModerate.value })}</a>
+    </div>
+    {q.items.length === 0 && <EmptyState title={A('queue.empty')} />}
+    <ul class="space-y-3">{q.items.map((i: any) => (
+      <li><a href={i.href} data-testid="queue-row" data-kind={i.kind} class="block rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2">
+        <Card class="space-y-1"><p class="font-semibold">{A(`queue.kind.${i.kind}`)} · {i.title}</p><p class="text-muted-foreground">{i.detail}</p>{i.flags.length > 0 && <p class="text-sm">{i.flags.join(', ')}</p>}</Card>
+      </a></li>
+    ))}</ul>
+  </div>
 </AdminShell>

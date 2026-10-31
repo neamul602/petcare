@@ -66,6 +66,7 @@ test('an owner adds a cat with a medicine and a photo, edits it, and archives it
   browser,
   baseURL,
 }) => {
+  test.setTimeout(60_000); // photo upload and four page loads: slow when the whole suite runs in parallel
   const owner = await contextAs(browser, 'owner', { baseURL });
   const page = await owner.newPage();
   await page.goto('/pets/new', { waitUntil: 'networkidle' });

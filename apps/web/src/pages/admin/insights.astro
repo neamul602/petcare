@@ -6,6 +6,7 @@ import Card from '@/components/kit/Card.astro';
 import AdminShell from '@/layouts/AdminShell.astro';
 import { apiFetch } from '@/lib/api';
 const cookie = Astro.request.headers.get('cookie');
+const ceiling: any = await apiFetch('/admin/insights/ceiling', { cookie }).then((r) => (r.ok ? r.json() : null)).catch(() => null);
 const insights = await apiFetch('/admin/insights/neighbourhoods', { cookie }).then((r) => (r.ok ? r.json() : null)).catch(() => null);
 const windows = await apiFetch('/peak-windows').then((r) => (r.ok ? r.json() : null)).catch(() => null);
 const months: Array<{ month: string; counts: Record<string, number> }> = insights?.months ?? [];
@@ -15,6 +16,13 @@ const field = 'h-12 w-full rounded-md border border-border bg-input px-4 text-ba
 <AdminShell titleKey="screen.insights">
   <div class="space-y-6 py-4">
     <h1 class="text-2xl font-semibold">{ta('screen.insights')}</h1>
+    {ceiling && (
+      <section class="space-y-2" data-testid="ceiling"><h2 class="text-xl font-semibold">{ta('ceiling.title')}</h2>
+        {ceiling.message && <p role="note" data-testid="ceiling-message" class="rounded-md bg-warning-soft px-4 py-3 text-warning">{ceiling.message}</p>}
+        <p>{ta('ceiling.providers', { value: ceiling.activeProviders.value, limit: ceiling.activeProviders.limit, percent: ceiling.activeProviders.percent })}</p>
+        <p>{ta('ceiling.bookings', { value: ceiling.completedBookings30Days.value, limit: ceiling.completedBookings30Days.limit, percent: ceiling.completedBookings30Days.percent })}</p>
+      </section>
+    )}
     <section class="space-y-3" data-testid="neighbourhood-insights">
       <h2 class="text-xl font-semibold">{ta('insights.neighbourhoods')}</h2>
       {months.length === 0

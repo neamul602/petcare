@@ -251,13 +251,13 @@ Intent `001-petcare-v1`: **76 stories** in 11 units (generated 2026-10-29T16:00:
 
 ## 011-admin-operations
 
-### 001-urgency-queue.md ✅ GENERATED
+### 001-urgency-queue.md ✅ COMPLETED
 **ADM-01** Urgency queue · must · UJ-3
 
-### 002-audit-log.md ✅ GENERATED
+### 002-audit-log.md ✅ COMPLETED
 **ADM-02** Audit log · must · UJ-3
 
-### 003-operating-ceiling.md ✅ GENERATED
+### 003-operating-ceiling.md ✅ COMPLETED
 **ADM-03** Operating ceiling · should · UJ-3
 
 ### 004-provider-health-and-utilization.md ✅ GENERATED

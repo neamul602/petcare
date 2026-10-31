@@ -3,12 +3,12 @@ id: 003-operating-ceiling
 code: ADM-03
 unit: 011-admin-operations
 intent: 001-petcare-v1
-status: ready
+status: complete
 priority: should
 journeys: UJ-3
-created: 2026-10-29T16:00:00Z
+created: '2026-10-29T16:00:00Z'
 assigned_bolt: 024-admin-operations
-implemented: false
+implemented: true
 ---
 
 # Story ADM-03: Operating ceiling

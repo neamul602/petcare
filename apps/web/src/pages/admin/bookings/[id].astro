@@ -1,0 +1,54 @@
+---
+import { ta, type AdminMessageKey } from '@petcare/shared/i18n';
+import { formatMoney } from '@petcare/shared/locale';
+import Button from '@/components/kit/Button.astro';
+import Card from '@/components/kit/Card.astro';
+import AdminShell from '@/layouts/AdminShell.astro';
+import { apiFetch } from '@/lib/api';
+const response = await apiFetch(`/admin/bookings/${Astro.params.id}`, { cookie: Astro.request.headers.get('cookie') }).catch(() => null);
+if (!response || response.status === 404) return Astro.rewrite('/404');
+if (!response.ok) return Astro.redirect('/admin');
+const v: any = await response.json();
+const A = (key: string, params?: Record<string, string | number>) => ta(key as AdminMessageKey, params);
+const open = v.flags.filter((f: any) => f.status === 'open');
+const field = 'h-12 w-full rounded-md border border-border bg-input px-4 text-base';
+---
+<AdminShell titleKey="booking.title">
+  <div class="space-y-5 py-4">
+    <h1 class="text-2xl font-semibold" data-testid="booking-title">{v.booking.pet.name} · {v.booking.state}</h1>
+    {Astro.url.searchParams.has('error') && <p role="alert" class="rounded-md bg-destructive-soft px-4 py-3 text-destructive">{ta('providers.error.generic')}</p>}
+    <Card class="space-y-1"><p>{v.booking.startDate} → {v.booking.endDate} · {v.booking.nights} · {formatMoney(v.booking.totalPoisha)}</p><p>{v.booking.providerId} / {v.booking.ownerId}</p></Card>
+    <Card class="space-y-1" data-testid="money"><h2 class="text-xl font-semibold">{A('booking.money')}</h2>
+      <p>{v.payment ? `${v.payment.status} · ${formatMoney(v.payment.amountPoisha)}` : '—'}</p><p>{v.payout ? `${v.payout.status} · ${formatMoney(v.payout.netPoisha)}${v.payout.freezeReason ? ` · ${v.payout.freezeReason}` : ''}` : '—'}</p></Card>
+    <Card class="space-y-3" data-testid="open-items"><h2 class="text-xl font-semibold">{A('booking.items')}</h2>
+      {open.length === 0 && <p class="text-muted-foreground">{A('booking.noItems')}</p>}
+      <ul>{open.map((f: any) => <li data-testid="open-item">{f.kind} — {f.note}</li>)}</ul>
+      {open.some((f: any) => f.kind === 'owner_cancellation_request' || f.kind === 'provider_cancellation') && (
+        <form method="post" action={`/admin/bookings/${v.booking.id}/act`} class="space-y-2"><input type="hidden" name="intent" value="cancellation" />
+          <label for="c-decision" class="block text-sm font-medium">{A('booking.decision')}</label>
+          <select id="c-decision" name="decision" class={field} data-testid="cancel-decision"><option value="refund_full">refund_full</option><option value="refund_partial">refund_partial</option><option value="no_action">no_action</option></select>
+          <label for="c-amount" class="block text-sm font-medium">{A('booking.refundAmount')}</label><input id="c-amount" name="amountPoisha" type="number" min="1" class={field} />
+          <label for="c-note" class="block text-sm font-medium">{A('booking.note')}</label><input id="c-note" name="note" required minlength="3" class={field} data-testid="cancel-note" />
+          <Button type="submit" data-testid="cancel-apply">{A('booking.apply')}</Button></form>
+      )}
+      {open.some((f: any) => f.kind === 'owner_no_show') && (
+        <form method="post" action={`/admin/bookings/${v.booking.id}/act`} class="space-y-2"><input type="hidden" name="intent" value="no-show" />
+          <label for="n-decision" class="block text-sm font-medium">{A('booking.decision')}</label>
+          <select id="n-decision" name="decision" class={field} data-testid="noshow-decision"><option value="keep_funds">keep_funds</option><option value="refund">refund</option></select>
+          <label for="n-note" class="block text-sm font-medium">{A('booking.note')}</label><input id="n-note" name="rationale" required minlength="3" class={field} data-testid="noshow-note" />
+          <Button type="submit" data-testid="noshow-apply">{A('booking.apply')}</Button></form>
+      )}
+      {open.some((f: any) => f.kind === 'missed_start') && (
+        <form method="post" action={`/admin/bookings/${v.booking.id}/act`} class="space-y-2"><input type="hidden" name="intent" value="flag" /><input type="hidden" name="flagId" value={open.find((f: any) => f.kind === 'missed_start').id} />
+          <label for="m-note" class="block text-sm font-medium">{A('booking.note')}</label><input id="m-note" name="note" required minlength="3" class={field} data-testid="flag-note" />
+          <Button type="submit" data-testid="flag-apply">{A('booking.apply')}</Button></form>
+      )}
+    </Card>
+    {v.booking.state === 'in_stay' && (
+      <Card class="space-y-2"><form method="post" action={`/admin/bookings/${v.booking.id}/act`} class="space-y-2"><input type="hidden" name="intent" value="complete" />
+        <label for="done-reason" class="block text-sm font-medium">{A('booking.completeReason')}</label><input id="done-reason" name="reason" required minlength="3" class={field} data-testid="complete-reason" />
+        <Button type="submit" variant="secondary" data-testid="complete-apply">{A('booking.complete')}</Button></form></Card>
+    )}
+    <Card class="space-y-1"><h2 class="text-xl font-semibold">{A('booking.history')}</h2><ul>{v.history.map((h: any) => <li>{h.action} · {h.trigger} · {h.at}</li>)}</ul></Card>
+  </div>
+</AdminShell>
