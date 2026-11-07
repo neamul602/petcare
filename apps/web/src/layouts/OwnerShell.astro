@@ -29,6 +29,7 @@ const tabs = [
         {showTabs && <TopNav tabs={tabs} current={current} label={t(locale, 'a11y.mainNav')} />}
         <LanguageToggle locale={locale} current={current} />
         {showTabs && Astro.locals.user && <a href="/settings" class="inline-flex min-h-11 items-center rounded-md px-2 text-sm font-medium hover:bg-muted sm:px-3">{t(locale, 'nav.settings')}</a>}
+        {showTabs && !Astro.locals.user && <a href={`/sign-up?next=${encodeURIComponent(current)}`} data-testid="sign-up-link" class="inline-flex min-h-11 items-center rounded-md px-3 text-sm font-medium hover:bg-muted">Sign up</a>}
         {showTabs && !Astro.locals.user && <a href={`/sign-in?next=${encodeURIComponent(current)}`} data-testid="sign-in-link" class="inline-flex min-h-11 items-center rounded-md bg-primary px-3 text-sm font-medium text-primary-foreground hover:bg-primary/90">{t(locale, 'nav.signIn')}</a>}
       </div>
     </header>

@@ -38,7 +38,7 @@ export const onRequest = defineMiddleware(async (context, next) => {
   }
   const user = context.locals.user;
 
-  if (pathname === '/sign-in' && user)
+  if ((pathname === '/sign-in' || pathname === '/sign-up') && user)
     return context.redirect(user.role === 'provider' ? '/provider' : '/');
 
   if (isProviderArea) {

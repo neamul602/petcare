@@ -6,12 +6,15 @@ import { eq } from 'drizzle-orm';
 import type { FastifyReply, FastifyRequest } from 'fastify';
 import type { Database } from '../db/client.ts';
 import { adminUsers, users } from '../db/schema/index.ts';
+import { tokenFrom, verifyJwt } from './jwt.ts';
 import { ADMIN_COOKIE, USER_COOKIE, type SessionStore } from './sessions.ts';
 
 export type Role = 'owner' | 'provider' | 'admin';
 
 export interface CurrentUser {
   role: Role;
+  /** True for the first admin, who can also promote users. */
+  isSuperuser?: boolean;
   id: string;
   name: string;
   phone?: string;
@@ -31,21 +34,34 @@ const refusal = (code: string, message: string) => ({ error: { code, message } }
 export function createAuthenticator(db: Database, store: SessionStore) {
   async function loadAdmin(request: FastifyRequest): Promise<CurrentUser | null> {
     const session = await store.find('admin', request.cookies[ADMIN_COOKIE]);
-    if (!session) return null;
-    const [admin] = await db.select().from(adminUsers).where(eq(adminUsers.id, session.subjectId));
-    return admin ? { role: 'admin', id: admin.id, name: admin.name, email: admin.email } : null;
+    const jwt = verifyJwt(tokenFrom(request));
+    const adminId = session?.subjectId ?? (jwt?.kind === 'admin' ? jwt.sub : null);
+    if (!adminId) return null;
+    const [admin] = await db.select().from(adminUsers).where(eq(adminUsers.id, adminId));
+    return admin
+      ? {
+          role: 'admin',
+          id: admin.id,
+          name: admin.name,
+          email: admin.email,
+          isSuperuser: admin.isSuperuser,
+        }
+      : null;
   }
 
   async function loadUser(request: FastifyRequest): Promise<CurrentUser | null> {
     const session = await store.find('user', request.cookies[USER_COOKIE]);
-    if (!session) return null;
-    const [user] = await db.select().from(users).where(eq(users.id, session.subjectId));
+    const jwt = verifyJwt(tokenFrom(request));
+    const userId = session?.subjectId ?? (jwt?.kind === 'user' ? jwt.sub : null);
+    if (!userId) return null;
+    const [user] = await db.select().from(users).where(eq(users.id, userId));
     return user
       ? {
           role: user.role,
           id: user.id,
           name: user.name,
-          phone: user.phone,
+          phone: user.phone ?? undefined,
+          email: user.email ?? undefined,
           neighbourhood: user.neighbourhoodId,
           language: user.language,
         }

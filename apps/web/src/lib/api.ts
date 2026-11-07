@@ -20,7 +20,7 @@ export async function apiFetch(
 export async function currentPerson(cookieHeader: string | null, kind: 'user' | 'admin') {
   if (!cookieHeader) return null;
   const name = kind === 'admin' ? 'pc_admin_session' : 'pc_session';
-  if (!cookieHeader.includes(`${name}=`)) return null;
+  if (!cookieHeader.includes(`${name}=`) && !cookieHeader.includes('pc_token=')) return null;
   try {
     const response = await apiFetch(kind === 'admin' ? '/admin/auth/me' : '/auth/me', {
       cookie: cookieHeader,

@@ -54,6 +54,7 @@ test.beforeEach(async () => {
 test('a guest is sent to sign in and comes back to the page they wanted', async ({ page }) => {
   await page.goto('/bookings');
   await expect(page).toHaveURL(/\/sign-in\?next=%2Fbookings$/);
+  await page.goto('/sign-in/phone?next=%2Fbookings'); // the email form is the default; this test uses the phone code
   await expect(page.getByRole('heading', { level: 1 })).toHaveText('PetCare-এ সাইন ইন করুন');
   await sendCode(page, BIBI);
   await enterCode(page, '+8801712000001');
@@ -64,7 +65,7 @@ test('a guest is sent to sign in and comes back to the page they wanted', async 
 test('Bibi signs in, stays signed in after a reload, and signs out from Settings', async ({
   page,
 }) => {
-  await page.goto('/sign-in');
+  await page.goto('/sign-in/phone');
   await sendCode(page, '01712-000001');
   await expect(page.getByTestId('code-hint')).toContainText('+8801712000001');
   await enterCode(page, '+8801712000001');
@@ -82,7 +83,7 @@ test('Bibi signs in, stays signed in after a reload, and signs out from Settings
 });
 
 test('the sign-in cookie cannot be read by page scripts', async ({ page, context }) => {
-  await page.goto('/sign-in');
+  await page.goto('/sign-in/phone');
   await sendCode(page, BIBI);
   await enterCode(page, '+8801712000001');
   await expect(page).toHaveURL(/\/$/);
@@ -92,7 +93,7 @@ test('the sign-in cookie cannot be read by page scripts', async ({ page, context
 });
 
 test('a wrong code is explained in Bangla and the right code then works', async ({ page }) => {
-  await page.goto('/sign-in');
+  await page.goto('/sign-in/phone');
   await sendCode(page, BIBI);
   await expect(page.getByTestId('code-input')).toBeVisible();
   const real = await codeFor('+8801712000001');
@@ -110,7 +111,7 @@ test('a wrong code is explained in Bangla and the right code then works', async 
 test('the resend button counts down before it can be used and the page can switch to English', async ({
   page,
 }) => {
-  await page.goto('/sign-in');
+  await page.goto('/sign-in/phone');
   await page.getByTestId('language-toggle').click();
   await expect(page.getByRole('heading', { level: 1 })).toHaveText('Sign in to PetCare');
   await sendCode(page, '01712000010');
@@ -123,7 +124,7 @@ test('the resend button counts down before it can be used and the page can switc
 test('a new number gives a name and a neighbourhood once, then signs in as an owner', async ({
   page,
 }) => {
-  await page.goto('/sign-in');
+  await page.goto('/sign-in/phone');
   await sendCode(page, '01799000123');
   await enterCode(page, '+8801799000123');
   await expect(page.getByTestId('name-input')).toBeVisible();
@@ -145,7 +146,7 @@ test('when the code service is down sign-in says so and works again afterwards',
   page,
 }) => {
   await setOtpMode('down');
-  await page.goto('/sign-in');
+  await page.goto('/sign-in/phone');
   await sendCode(page, '01712000011');
   await expect(page.getByTestId('error-message')).toHaveText(
     'কোড পাঠানোর সেবা এখন পাওয়া যাচ্ছে না। কিছুক্ষণ পরে আবার চেষ্টা করুন।',
@@ -160,7 +161,7 @@ test('when the code service is down sign-in says so and works again afterwards',
 test("a provider lands on the provider home, and the two sides keep out of each other's areas", async ({
   page,
 }) => {
-  await page.goto('/sign-in');
+  await page.goto('/sign-in/phone');
   await sendCode(page, RASHID);
   await enterCode(page, '+8801712000002');
   await expect(page).toHaveURL(/\/provider$/);
@@ -173,7 +174,7 @@ test("a provider lands on the provider home, and the two sides keep out of each 
 });
 
 test('an owner cannot open provider pages', async ({ page }) => {
-  await page.goto('/sign-in');
+  await page.goto('/sign-in/phone');
   await sendCode(page, '01799000124');
   await enterCode(page, '+8801799000124');
   await page.getByTestId('name-input').fill('Owner Only');
@@ -214,7 +215,7 @@ test.describe('admin', () => {
   });
 
   test('an owner session does not open the admin console', async ({ page }) => {
-    await page.goto('/sign-in');
+    await page.goto('/sign-in/phone');
     await sendCode(page, BIBI);
     await enterCode(page, '+8801712000001');
     await expect(page).toHaveURL(/\/$/);

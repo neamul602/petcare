@@ -19,6 +19,7 @@ const items = [
   { href: '/admin/payouts', label: ta('nav.payouts') },
   { href: '/admin/insights', label: ta('nav.insights') },
   { href: '/admin/audit', label: ta('nav.audit') },
+  { href: '/admin/users', label: 'Users & admins' },
 ].map((item) => ({
   ...item,
   active: item.href === '/admin' ? current === '/admin' || current.startsWith('/admin/acute') || current.startsWith('/admin/reports') : current === item.href || current.startsWith(`${item.href}/`),

@@ -5,7 +5,9 @@ import { neighbourhoods } from './reference-data.ts';
 export const users = pgTable('users', {
   id: text('id').primaryKey(),
   role: text('role', { enum: ['owner', 'provider'] }).notNull(),
-  phone: text('phone').notNull().unique(),
+  phone: text('phone').unique(),
+  email: text('email').unique(),
+  passwordHash: text('password_hash'),
   name: text('name').notNull(),
   neighbourhoodId: text('neighbourhood_id').references(() => neighbourhoods.id),
   language: text('language', { enum: ['bn', 'en'] })
@@ -21,6 +23,8 @@ export const adminUsers = pgTable('admin_users', {
   name: text('name').notNull(),
   email: text('email').notNull().unique(),
   passwordHash: text('password_hash').notNull(),
+  /** The superuser is the first admin; superusers and admins can both promote users to admin. */
+  isSuperuser: boolean('is_superuser').notNull().default(false),
   isTrainingData: boolean('is_training_data').notNull().default(false),
   createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
 });

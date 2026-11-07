@@ -5,6 +5,7 @@ import Fastify from 'fastify';
 import { SystemClock, type Clock } from '@petcare/shared/clock';
 import { platformRules } from '@petcare/shared/config';
 import { ZodError } from 'zod';
+import { registerAccountRoutes } from './auth/account-routes.ts';
 import { registerAdminRoutes } from './auth/admin-routes.ts';
 import { createAuthenticator } from './auth/guards.ts';
 import type { OtpPort } from './auth/ports.ts';
@@ -127,6 +128,7 @@ export async function buildApp(deps: AppDeps = {}) {
     registerAuthRoutes(app, authDeps);
     registerSettingsRoutes(app, { db: deps.db, authn });
     await registerAdminRoutes(app, authDeps);
+    await registerAccountRoutes(app, authDeps);
     const reviewService = createReviewService({
       db: deps.db,
       clock,

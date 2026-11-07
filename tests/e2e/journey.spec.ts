@@ -85,7 +85,7 @@ test('Bibi and Rashid: from first visit to refund', async ({ browser }, testInfo
   const page = await owner.newPage();
   await page.goto('/');
   await expect(page.getByRole('heading', { level: 1 })).toContainText('বিশ্বস্ত ঘরোয়া যত্ন');
-  await page.goto('/sign-in');
+  await page.goto('/sign-in/phone');
   await hydrated(page);
   await page.getByTestId('phone-input').fill('01712000001');
   await page.getByTestId('send-code').click();

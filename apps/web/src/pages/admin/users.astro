@@ -1,0 +1,33 @@
+---
+import Card from '@/components/kit/Card.astro';
+import Button from '@/components/kit/Button.astro';
+import Avatar from '@/components/kit/Avatar.astro';
+import AdminShell from '@/layouts/AdminShell.astro';
+import { apiFetch } from '@/lib/api';
+
+export const prerender = false;
+const cookie = Astro.request.headers.get('cookie');
+let notice = '';
+if (Astro.request.method === 'POST') {
+  const form = await Astro.request.formData();
+  const response = await apiFetch(`/admin/users/${encodeURIComponent(String(form.get('id')))}/make-admin`, { method: 'POST', cookie }).catch(() => null);
+  notice = response?.ok ? 'Done: that user is now an admin. They sign in again to reach the admin area.' : ((await response?.json())?.error?.message ?? 'Could not make that user an admin');
+}
+const response = await apiFetch('/admin/users', { cookie }).catch(() => null);
+const people: Array<{ id: string; name: string; email: string | null; role: string; isAdmin: boolean }> = response?.ok ? (await response.json()).users : [];
+const badge: Record<string, string> = { superuser: 'bg-accent text-accent-foreground', admin: 'bg-primary-soft text-primary-soft-foreground', owner: 'bg-info-soft text-info', provider: 'bg-warning-soft text-warning' };
+---
+<AdminShell titleKey="screen.queue">
+  <div class="space-y-5 py-4">
+    <h1 class="text-3xl font-semibold">Users & admins</h1>
+    <p class="text-muted-foreground">The superuser and any admin can make another user an admin. Only people who signed up with an email can be promoted.</p>
+    {notice && <p role="status" data-testid="users-notice" class="rounded-md bg-primary-soft px-4 py-3 text-primary-soft-foreground">{notice}</p>}
+    <ul class="grid gap-3 lg:grid-cols-2">{people.map((p) => (
+      <li><Card class="flex items-center gap-3 !p-4" data-testid="user-row"><Avatar name={p.name} size="sm" />
+        <div class="mr-auto min-w-0"><p class="font-semibold">{p.name}</p><p class="truncate text-sm text-muted-foreground">{p.email ?? 'phone sign-in only'}</p></div>
+        <span class={`rounded-full px-3 py-1 text-sm font-medium ${badge[p.role] ?? ''}`}>{p.role}</span>
+        {!p.isAdmin && p.email && <form method="post"><input type="hidden" name="id" value={p.id} /><Button type="submit" size="sm" variant="outline" data-testid="make-admin">Make admin</Button></form>}
+      </Card></li>
+    ))}</ul>
+  </div>
+</AdminShell>

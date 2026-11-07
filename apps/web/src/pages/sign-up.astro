@@ -1,0 +1,61 @@
+---
+import { platformRules } from '@petcare/shared/config';
+import Card from '@/components/kit/Card.astro';
+import Button from '@/components/kit/Button.astro';
+import OwnerShell from '@/layouts/OwnerShell.astro';
+import { apiFetch, copyCookies } from '@/lib/api';
+
+export const prerender = false;
+const requested = Astro.url.searchParams.get('next') ?? '/';
+const next = requested.startsWith('/') && !requested.startsWith('//') ? requested : '/';
+let error = '';
+let role = 'owner';
+if (Astro.request.method === 'POST') {
+  const form = await Astro.request.formData();
+  role = String(form.get('role') ?? 'owner');
+  const response = await apiFetch('/auth/signup', {
+    method: 'POST',
+    headers: { 'content-type': 'application/json' },
+    body: JSON.stringify({
+      name: String(form.get('name') ?? ''),
+      email: String(form.get('email') ?? ''),
+      password: String(form.get('password') ?? ''),
+      role,
+      neighbourhood: String(form.get('neighbourhood') ?? ''),
+    }),
+  }).catch(() => null);
+  if (response?.ok) {
+    const { redirect } = (await response.json()) as { redirect: string };
+    const headers = new Headers({ location: role === "owner" ? next : redirect });
+    copyCookies(response, headers);
+    return new Response(null, { status: 303, headers });
+  }
+  const body = response ? await response.json() : null;
+  error = body?.error?.code === 'invalid_request' ? 'Check the form: the password needs at least 8 characters and the email must be valid' : (body?.error?.message ?? 'PetCare could not be reached');
+}
+const input = 'h-12 w-full rounded-md border border-border bg-input px-4 text-base focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring';
+const label = (id: string) => id.replace(/-/g, ' ').replace(/^./, (c) => c.toUpperCase());
+---
+<OwnerShell titleKey="signin.title" showTabs={false}>
+  <section class="mx-auto max-w-md pt-4">
+    <Card>
+      <h1 class="text-2xl font-semibold">Create your account</h1>
+      <p class="mt-1 text-muted-foreground">Choose how you will use PetCare. You can browse without an account; you need one to book.</p>
+      {error && <p role="alert" data-testid="signup-error" class="mt-4 rounded-md bg-destructive-soft px-4 py-3 text-destructive">{error}</p>}
+      <form method="post" class="mt-5 space-y-4">
+        <fieldset class="grid grid-cols-2 gap-3">
+          <legend class="mb-1 text-sm font-medium">I am a</legend>
+          <label class="link-card flex cursor-pointer flex-col rounded-lg border border-border p-4 has-[:checked]:border-primary has-[:checked]:bg-primary-soft"><input type="radio" name="role" value="owner" checked={role === 'owner'} data-testid="role-owner" class="sr-only" /><span class="font-semibold">Pet owner</span><span class="text-sm text-muted-foreground">Find and book care</span></label>
+          <label class="link-card flex cursor-pointer flex-col rounded-lg border border-border p-4 has-[:checked]:border-primary has-[:checked]:bg-primary-soft"><input type="radio" name="role" value="provider" checked={role === 'provider'} data-testid="role-provider" class="sr-only" /><span class="font-semibold">Care provider</span><span class="text-sm text-muted-foreground">Host pets at your home</span></label>
+        </fieldset>
+        <label class="block"><span class="mb-1 block text-sm font-medium">Full name</span><input class={input} name="name" required maxlength="80" data-testid="name" /></label>
+        <label class="block"><span class="mb-1 block text-sm font-medium">Email</span><input class={input} type="email" name="email" required autocomplete="email" data-testid="email" /></label>
+        <label class="block"><span class="mb-1 block text-sm font-medium">Password (8+ characters)</span><input class={input} type="password" name="password" required minlength="8" autocomplete="new-password" data-testid="password" /></label>
+        <label class="block"><span class="mb-1 block text-sm font-medium">Neighbourhood</span>
+          <select class={input} name="neighbourhood" required data-testid="neighbourhood">{platformRules.launchNeighbourhoods.map((id) => <option value={id}>{label(id)}</option>)}</select></label>
+        <Button type="submit" class="w-full" data-testid="signup-submit">Create account</Button>
+      </form>
+      <p class="mt-5 text-sm text-muted-foreground">Already have an account? <a class="font-medium text-primary underline" href={`/sign-in?next=${encodeURIComponent(next)}`}>Sign in</a></p>
+    </Card>
+  </section>
+</OwnerShell>

@@ -141,6 +141,13 @@
       "when": 1793461998739,
       "tag": "0019_health",
       "breakpoints": true
+    },
+    {
+      "idx": 20,
+      "version": "7",
+      "when": 1793462098739,
+      "tag": "0020_jwt_auth",
+      "breakpoints": true
     }
   ]
 }

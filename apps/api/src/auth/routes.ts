@@ -11,6 +11,7 @@ import { signupTokens, users } from '../db/schema/index.ts';
 import type { Authenticator } from './guards.ts';
 import { OtpUnavailableError, type OtpPort } from './ports.ts';
 import type { RateLimiter } from './rate-limit.ts';
+import { JWT_COOKIE } from './jwt.ts';
 import { hashToken, newToken, USER_COOKIE, type SessionStore } from './sessions.ts';
 
 export interface AuthDeps {
@@ -179,6 +180,7 @@ export function registerAuthRoutes(app: FastifyInstance, deps: AuthDeps) {
   app.post('/auth/sign-out', async (request, reply) => {
     await store.destroy(request.cookies[USER_COOKIE]);
     reply.clearCookie(USER_COOKIE, { path: '/' });
+    reply.clearCookie(JWT_COOKIE, { path: '/' });
     return { status: 'signed_out' };
   });
 

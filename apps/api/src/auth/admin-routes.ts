@@ -7,6 +7,7 @@ import { adminUsers } from '../db/schema/index.ts';
 import { appendLogEntry } from '../log/append.ts';
 import { recordAdminAction } from './audit.ts';
 import type { AuthDeps } from './routes.ts';
+import { JWT_COOKIE } from './jwt.ts';
 import { hashPassword, verifyPassword } from './passwords.ts';
 import { ADMIN_COOKIE } from './sessions.ts';
 
@@ -83,6 +84,7 @@ export async function registerAdminRoutes(app: FastifyInstance, deps: AuthDeps) 
       });
     await store.destroy(token);
     reply.clearCookie(ADMIN_COOKIE, { path: '/' });
+    reply.clearCookie(JWT_COOKIE, { path: '/' });
     return { status: 'signed_out' };
   });
 

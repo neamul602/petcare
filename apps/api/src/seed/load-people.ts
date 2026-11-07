@@ -34,7 +34,8 @@ export async function loadPeople(tx: Tx, seed: Seed, adminPassword: string) {
   ]);
   const passwordHash = await hashPassword(adminPassword);
   await tx.insert(adminUsers).values(
-    seed.people.admins.map((admin) => ({
+    seed.people.admins.map((admin, index) => ({
+      isSuperuser: index === 0,
       id: admin.id,
       name: admin.name,
       email: admin.email,
