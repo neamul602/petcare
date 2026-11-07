@@ -25,7 +25,7 @@ const tabs = [
   <div data-shell="provider">
     <header class="sticky top-0 z-20 border-b border-border bg-background/90 shadow-sm backdrop-blur">
       <div class="mx-auto flex max-w-6xl items-center gap-2 px-3 py-2 sm:gap-3 sm:px-6">
-        <a href="/provider" class="mr-auto inline-flex min-h-11 items-center gap-2 font-serif text-2xl font-semibold text-primary">{t(locale, 'app.name')}</a>
+        <a href="/provider" class="mr-auto inline-flex min-h-11 items-center gap-2 font-serif text-2xl font-semibold text-primary"><span aria-hidden="true" class="hidden h-9 w-9 items-center sm:flex justify-center rounded-xl bg-primary text-lg text-primary-foreground shadow-md">🐾</span>{t(locale, 'app.name')}</a>
         <TopNav tabs={tabs} current={current} label={t(locale, 'a11y.mainNav')} />
         <LanguageToggle locale={locale} current={current} />
         <a href="/provider/inbox" class="inline-flex min-h-11 items-center rounded-md px-2 text-sm font-medium hover:bg-muted sm:px-3">{t(locale, 'nav.inbox')}</a>

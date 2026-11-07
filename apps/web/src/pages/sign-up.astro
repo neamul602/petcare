@@ -2,6 +2,7 @@
 import { platformRules } from '@petcare/shared/config';
 import Card from '@/components/kit/Card.astro';
 import Button from '@/components/kit/Button.astro';
+import PetArt from '@/components/kit/PetArt.astro';
 import OwnerShell from '@/layouts/OwnerShell.astro';
 import { apiFetch, copyCookies } from '@/lib/api';
 
@@ -37,7 +38,12 @@ const input = 'h-12 w-full rounded-md border border-border bg-input px-4 text-ba
 const label = (id: string) => id.replace(/-/g, ' ').replace(/^./, (c) => c.toUpperCase());
 ---
 <OwnerShell titleKey="signin.title" showTabs={false}>
-  <section class="mx-auto max-w-md pt-4">
+  <section class="mx-auto grid max-w-5xl items-center gap-8 pt-4 md:grid-cols-2">
+    <aside class="hidden rounded-3xl bg-primary p-10 text-primary-foreground shadow-xl md:flex md:flex-col md:justify-center md:gap-6">
+      <PetArt class="mx-auto w-full max-w-sm" />
+      <p class="text-center font-serif text-2xl font-semibold">Trusted home care for your pet.</p>
+    </aside>
+
     <Card>
       <h1 class="text-2xl font-semibold">Create your account</h1>
       <p class="mt-1 text-muted-foreground">Choose how you will use PetCare. You can browse without an account; you need one to book.</p>

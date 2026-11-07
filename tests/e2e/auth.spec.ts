@@ -239,7 +239,7 @@ test.describe('sign-in steps are accessible', () => {
             .analyze()
         ).violations.map((v) => v.id);
       const raw = locale === 'bn' ? '01799000201' : '01799000202';
-      await page.goto('/sign-in', { waitUntil: 'networkidle' });
+      await page.goto('/sign-in/phone', { waitUntil: 'networkidle' });
       await sendCode(page, raw);
       await expect(page.getByTestId('code-input')).toBeVisible();
       expect(await scan()).toEqual([]);
