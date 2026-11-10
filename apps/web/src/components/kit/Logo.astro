@@ -1,0 +1,31 @@
+---
+/**
+ * PetCare logo. The "P" is the mark: a solid letter whose counter holds a coral dot. In the full logo it is also the
+ * first letter, so the wordmark is simply "etCare" set right against it. `mark` is the P alone (app icon, small spaces).
+ */
+interface Props {
+  variant?: 'full' | 'mark';
+  tone?: 'dark' | 'light';
+  size?: number;
+  class?: string;
+}
+const { variant = 'full', tone = 'dark', size = 34, class: extra = '' } = Astro.props;
+const ink = tone === 'light' ? '#faf8f5' : '#2f6049';
+const counter = tone === 'light' ? '#24503c' : '#faf8f5';
+---
+{variant === 'mark' ? (
+  <svg class={extra} width={size} height={size} viewBox="0 0 40 40" role="presentation" aria-hidden="true">
+    <path d="M8 5h13.5a10.25 10.25 0 0 1 0 20.5H15.5V35H8z" fill={ink} />
+    <circle cx="21.5" cy="15.25" r="4.6" fill={counter} />
+    <circle cx="21.5" cy="15.25" r="2.9" fill="#e0634a" />
+  </svg>
+) : (
+  <span class={`inline-flex items-baseline font-sans text-[1.6rem] leading-none tracking-tight ${tone === 'light' ? 'text-primary-foreground' : 'text-foreground'} ${extra}`}>
+    <svg viewBox="7 4 26 32" role="presentation" aria-hidden="true" class="h-[0.86em] w-auto shrink-0 -mr-[0.03em]">
+      <path d="M8 5h13.5a10.25 10.25 0 0 1 0 20.5H15.5V35H8z" fill={ink} />
+      <circle cx="21.5" cy="15.25" r="4.6" fill={counter} />
+      <circle cx="21.5" cy="15.25" r="2.9" fill="#e0634a" />
+    </svg>
+    <span class="font-bold">et</span><span class="font-medium">Care</span>
+  </span>
+)}

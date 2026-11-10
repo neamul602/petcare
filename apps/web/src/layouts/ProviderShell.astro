@@ -2,6 +2,7 @@
 /** Provider app shell: same structure as the owner shell with the provider tabs (blueprint §2). */
 import { t, type MessageKey } from '@petcare/shared/i18n';
 import LanguageToggle from '../components/shell/LanguageToggle.astro';
+import Logo from '../components/kit/Logo.astro';
 import TabBar from '../components/shell/TabBar.astro';
 import TopNav from '../components/shell/TopNav.astro';
 import { getLocale } from '../lib/locale';
@@ -23,9 +24,10 @@ const tabs = [
 ---
 <BaseLayout title={`${t(locale, titleKey)} · ${t(locale, 'app.name')}`} lang={locale} skipLabel={t(locale, 'a11y.skipToContent')} offlineMessage={t(locale, 'banner.offline')}>
   <div data-shell="provider">
-    <header class="sticky top-0 z-20 border-b border-border bg-background/90 shadow-sm backdrop-blur">
+    <header class="sticky top-0 z-20 border-b border-border bg-background">
       <div class="mx-auto flex max-w-6xl items-center gap-2 px-3 py-2 sm:gap-3 sm:px-6">
-        <a href="/provider" class="mr-auto inline-flex min-h-11 items-center gap-2 font-serif text-2xl font-semibold text-primary"><span aria-hidden="true" class="hidden h-9 w-9 items-center sm:flex justify-center rounded-xl bg-primary text-lg text-primary-foreground shadow-md">🐾</span>{t(locale, 'app.name')}</a>
+        <a href="/provider" class="mr-auto inline-flex min-h-11 items-center gap-2 text-primary"><Logo />
+        </a>
         <TopNav tabs={tabs} current={current} label={t(locale, 'a11y.mainNav')} />
         <LanguageToggle locale={locale} current={current} />
         <a href="/provider/inbox" class="inline-flex min-h-11 items-center rounded-md px-2 text-sm font-medium hover:bg-muted sm:px-3">{t(locale, 'nav.inbox')}</a>

@@ -4,7 +4,6 @@ import SearchForm from '@/components/SearchForm.astro';
 import Avatar from '@/components/kit/Avatar.astro';
 import Button from '@/components/kit/Button.astro';
 import Card from '@/components/kit/Card.astro';
-import PetArt from '@/components/kit/PetArt.astro';
 import OwnerShell from '@/layouts/OwnerShell.astro';
 import { addDays, todayInDhaka } from '@/lib/dates';
 import { formatMoney } from '@petcare/shared/locale';
@@ -28,31 +27,30 @@ featured = (found?.providers ?? []).slice(0, 3);
 const why = ['vetted', 'care', 'safe'] as const;
 ---
 <OwnerShell titleKey="screen.home">
-  <div class="space-y-10 py-2">
-    <section class="relative overflow-hidden rounded-3xl bg-primary p-6 text-primary-foreground shadow-xl md:p-12">
-      <div class="grid items-center gap-8 md:grid-cols-[1.15fr_1fr]">
-        <div class="space-y-5">
-          <span class="inline-flex items-center gap-2 rounded-full bg-primary-soft px-4 py-1 text-primary-soft-foreground text-sm font-medium">🐾 {t(locale, 'home.hero.badge')}</span>
-          <h1 class="text-4xl font-semibold leading-tight md:text-5xl">{t(locale, 'home.promise.title')}</h1>
-          <p class="max-w-xl text-lg text-primary-soft">{t(locale, 'home.promise.body')}</p>
-          {!isOwner && (
-            <div class="flex flex-wrap gap-3 pt-1">
-              <a href="/search" data-testid="find-care" class="inline-flex min-h-12 items-center rounded-full bg-accent px-7 text-base font-semibold text-accent-foreground shadow-lg hover:brightness-110 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-foreground">{t(locale, 'home.cta')}</a>
-              {!Astro.locals.user && <a href="/sign-up" class="inline-flex min-h-12 items-center rounded-full border border-primary-foreground/60 px-7 text-base font-semibold hover:bg-primary-foreground/10">{t(locale, 'home.hero.signup')}</a>}
-            </div>
-          )}
-        </div>
-        {isOwner
-          ? <Card variant="elevated" class="text-card-foreground"><SearchForm locale={locale} /></Card>
-          : <PetArt class="mx-auto w-full max-w-md drop-shadow-xl" />}
+  <div class="space-y-20 py-6">
+    <section class="grid items-start gap-12 md:grid-cols-[1.2fr_1fr]">
+      <div class="space-y-6 pt-4">
+        <p class="eyebrow text-muted-foreground">{t(locale, 'home.hero.badge')}</p>
+        <h1 class="text-5xl font-semibold leading-[1.08] md:text-6xl">{t(locale, 'home.promise.title')}</h1>
+        <p class="max-w-xl text-lg leading-relaxed text-muted-foreground">{t(locale, 'home.promise.body')}</p>
+        {!isOwner && (
+          <div class="flex flex-wrap items-center gap-4 pt-2">
+            <Button href="/search" size="lg" data-testid="find-care">{t(locale, 'home.cta')}</Button>
+            {!Astro.locals.user && <a href="/sign-up" class="font-medium text-primary underline underline-offset-4">{t(locale, 'home.hero.signup')}</a>}
+          </div>
+        )}
       </div>
+      {isOwner
+        ? <Card variant="elevated"><SearchForm locale={locale} /></Card>
+        : (
+          <Card class="divide-y divide-border !p-0">
+            {why.map((k, i) => (
+              <div class="flex gap-5 p-6"><span class="font-serif text-3xl text-primary">0{i + 1}</span>
+                <div><p class="text-lg font-semibold">{t(locale, `home.why.${k}` as 'home.why.vetted')}</p><p class="mt-1 text-muted-foreground">{t(locale, `home.why.${k}.body` as 'home.why.vetted.body')}</p></div></div>
+            ))}
+          </Card>
+        )}
     </section>
-
-    <ul class="grid grid-cols-2 gap-3 md:grid-cols-4" data-testid="trust-strip">
-      {(['home.trust.1', 'home.trust.2', 'home.trust.3', 'home.trust.4'] as const).map((key, i) => (
-        <li class="flex items-center gap-3 rounded-xl border border-border bg-card px-4 py-3 shadow-sm"><span aria-hidden="true" class="flex h-9 w-9 flex-none items-center justify-center rounded-full bg-primary-soft text-primary-soft-foreground">{['✓', '📷', '🔒', '📍'][i]}</span><span class="text-sm font-medium">{t(locale, key)}</span></li>
-      ))}
-    </ul>
 
     {latest && (
       <Card class="flex flex-wrap items-center gap-4" data-testid="home-book-again">
@@ -63,48 +61,38 @@ const why = ['vetted', 'care', 'safe'] as const;
     )}
 
     {isOwner && (
-      <section class="space-y-3" data-testid="home-pets">
-        <div class="flex items-center justify-between"><h2 class="text-2xl font-semibold">{t(locale, 'home.pets.title')}</h2><Button href="/pets/new" variant="outline" size="sm">{t(locale, 'home.pets.add')}</Button></div>
+      <section class="space-y-5" data-testid="home-pets">
+        <div class="flex items-center justify-between"><h2 class="text-3xl font-semibold">{t(locale, 'home.pets.title')}</h2><Button href="/pets/new" variant="outline" size="sm">{t(locale, 'home.pets.add')}</Button></div>
         <ul class="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
           {pets.map((pet) => (
-            <li><a href={`/pets/${pet.id}`} class="link-card block rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"><Card class="flex items-center gap-4 !p-4"><Avatar name={pet.name} src={pet.photo} size="md" /><span><span class="block text-lg font-semibold">{pet.name}</span><span class="block text-sm text-muted-foreground">{pet.breed}</span></span></Card></a></li>
+            <li><a href={`/pets/${pet.id}`} class="link-card block rounded-xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"><Card class="flex items-center gap-4 !p-4"><Avatar name={pet.name} src={pet.photo} size="md" /><span><span class="block text-lg font-semibold">{pet.name}</span><span class="block text-sm text-muted-foreground">{pet.breed}</span></span></Card></a></li>
           ))}
         </ul>
       </section>
     )}
 
-    <section class="space-y-4">
-      <h2 class="text-3xl font-semibold">{t(locale, 'home.how.title')}</h2>
-      <ol class="grid gap-4 md:grid-cols-3">
+    <section>
+      <h2 class="mb-8 text-3xl font-semibold">{t(locale, 'home.how.title')}</h2>
+      <ol class="grid gap-10 md:grid-cols-3">
         {(['home.how.1', 'home.how.2', 'home.how.3'] as const).map((key, i) => (
-          <li><Card class="flex h-full items-start gap-4"><span aria-hidden="true" class="flex h-10 w-10 flex-none items-center justify-center rounded-full bg-primary font-serif text-lg font-semibold text-primary-foreground">{i + 1}</span><span class="pt-1 text-lg">{t(locale, key)}</span></Card></li>
+          <li class="border-t-2 border-foreground pt-5"><span class="font-serif text-5xl text-primary">0{i + 1}</span><p class="mt-4 text-xl leading-snug">{t(locale, key)}</p></li>
         ))}
       </ol>
     </section>
 
-    <section class="space-y-4">
-      <h2 class="text-3xl font-semibold">{t(locale, 'home.species.title')}</h2>
-      <div class="grid gap-4 md:grid-cols-2">
-        {(['dog', 'cat'] as const).map((sp) => (
-          <a href={`/search?species=${sp}`} class="link-card flex items-center gap-5 rounded-2xl border border-border bg-card p-6 shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring">
-            <span aria-hidden="true" class={`flex h-20 w-20 flex-none items-center justify-center rounded-2xl text-5xl ${sp === 'dog' ? 'bg-warning-soft' : 'bg-accent-soft'}`}>{sp === 'dog' ? '🐶' : '🐱'}</span>
-            <span><span class="block text-xl font-semibold">{t(locale, `home.species.${sp}` as 'home.species.dog')}</span><span class="block text-muted-foreground">{t(locale, `home.species.${sp}.body` as 'home.species.dog.body')}</span></span>
-          </a>
-        ))}
-      </div>
-    </section>
-
     {featured.length > 0 && (
-      <section class="space-y-4" data-testid="home-featured">
-        <div class="flex items-end justify-between"><h2 class="text-3xl font-semibold">{t(locale, 'home.featured.title')}</h2><a href="/search" class="font-medium text-primary underline-offset-4 hover:underline">{t(locale, 'home.featured.all')} →</a></div>
-        <ul class="grid gap-4 md:grid-cols-3">
+      <section class="space-y-6" data-testid="home-featured">
+        <div class="flex items-end justify-between border-b border-border pb-4"><h2 class="text-3xl font-semibold">{t(locale, 'home.featured.title')}</h2><a href="/search" class="font-medium text-primary underline-offset-4 hover:underline">{t(locale, 'home.featured.all')}</a></div>
+        <ul class="grid gap-5 md:grid-cols-3">
           {featured.map((p) => (
-            <li><a href={`/providers/${p.slug}`} class="link-card block h-full rounded-2xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring">
-              <Card class="flex h-full flex-col items-center gap-3 !p-6 text-center">
-                <Avatar name={p.name[locale]} size="xl" />
-                <p class="text-lg font-semibold">{p.name[locale]}</p>
-                <p class="text-sm text-muted-foreground">{t(locale, `neighbourhood.${p.area}` as 'neighbourhood.gulshan')}</p>
-                {p.pricePerNightPoisha != null && <p class="mt-auto font-serif text-2xl font-semibold">{t(locale, 'provider.price', { price: formatMoney(p.pricePerNightPoisha) })}</p>}
+            <li><a href={`/providers/${p.slug}`} class="link-card block h-full rounded-xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring">
+              <Card class="flex h-full items-center gap-4 !p-5">
+                <Avatar name={p.name[locale]} size="lg" />
+                <div class="min-w-0">
+                  <p class="text-lg font-semibold">{p.name[locale]}</p>
+                  <p class="text-sm text-muted-foreground">{t(locale, `neighbourhood.${p.area}` as 'neighbourhood.gulshan')}</p>
+                  {p.pricePerNightPoisha != null && <p class="mt-2 font-medium">{t(locale, 'provider.price', { price: formatMoney(p.pricePerNightPoisha) })}</p>}
+                </div>
               </Card>
             </a></li>
           ))}
@@ -112,20 +100,10 @@ const why = ['vetted', 'care', 'safe'] as const;
       </section>
     )}
 
-    {isOwner && (
-      <section class="space-y-4">
-        <h2 class="text-2xl font-semibold">{t(locale, 'home.why.title')}</h2>
-        <div class="grid gap-4 md:grid-cols-3">
-          {why.map((k) => (
-            <Card variant="muted" class="space-y-1"><p class="text-lg font-semibold">{t(locale, `home.why.${k}` as 'home.why.vetted')}</p><p class="text-muted-foreground">{t(locale, `home.why.${k}.body` as 'home.why.vetted.body')}</p></Card>
-          ))}
-        </div>
-      </section>
-    )}
     {!Astro.locals.user && (
-      <section class="flex flex-wrap items-center justify-between gap-6 rounded-3xl bg-accent-soft p-8 md:p-10" data-testid="home-host-cta">
-        <div class="max-w-2xl space-y-2"><h2 class="text-3xl font-semibold text-accent-soft-foreground">{t(locale, 'home.host.title')}</h2><p class="text-lg text-accent-soft-foreground">{t(locale, 'home.host.body')}</p></div>
-        <a href="/sign-up" class="inline-flex min-h-12 items-center rounded-full bg-accent px-7 text-base font-semibold text-accent-foreground shadow-lg hover:brightness-110">{t(locale, 'home.host.cta')}</a>
+      <section class="grid items-center gap-6 rounded-xl bg-primary p-10 text-primary-foreground md:grid-cols-[1fr_auto] md:p-14" data-testid="home-host-cta">
+        <div class="max-w-2xl space-y-3"><h2 class="text-3xl font-semibold md:text-4xl">{t(locale, 'home.host.title')}</h2><p class="text-lg text-primary-soft">{t(locale, 'home.host.body')}</p></div>
+        <a href="/sign-up" class="inline-flex h-12 items-center rounded-lg bg-background px-6 text-lg font-medium text-primary hover:bg-card">{t(locale, 'home.host.cta')}</a>
       </section>
     )}
   </div>

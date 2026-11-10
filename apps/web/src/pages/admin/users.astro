@@ -1,4 +1,5 @@
 ---
+import PageHeader from '@/components/kit/PageHeader.astro';
 import Card from '@/components/kit/Card.astro';
 import Button from '@/components/kit/Button.astro';
 import Avatar from '@/components/kit/Avatar.astro';
@@ -19,7 +20,7 @@ const badge: Record<string, string> = { superuser: 'bg-accent text-accent-foregr
 ---
 <AdminShell titleKey="screen.queue">
   <div class="space-y-5 py-4">
-    <h1 class="text-3xl font-semibold">Users & admins</h1>
+    <PageHeader title="Users & admins" />
     <p class="text-muted-foreground">The superuser and any admin can make another user an admin. Only people who signed up with an email can be promoted.</p>
     {notice && <p role="status" data-testid="users-notice" class="rounded-md bg-primary-soft px-4 py-3 text-primary-soft-foreground">{notice}</p>}
     <ul class="grid gap-3 lg:grid-cols-2">{people.map((p) => (

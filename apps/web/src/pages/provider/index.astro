@@ -1,4 +1,5 @@
 ---
+import PageHeader from '@/components/kit/PageHeader.astro';
 import { t } from '@petcare/shared/i18n';
 import BookingCard from '@/components/provider/BookingCard.astro';
 import EmptyState from '@/components/states/EmptyState.astro';
@@ -12,7 +13,7 @@ const empty = data.requests.length === 0 && data.inStay.length === 0 && data.sta
 ---
 <ProviderShell titleKey="screen.today">
   <div class="space-y-6 py-4">
-    <h1 class="text-3xl font-semibold">{t(locale, 'screen.today')}</h1>
+    <PageHeader title={t(locale, 'screen.today')} />
     {empty && <EmptyState title={t(locale, 'today.empty.title')} body={t(locale, 'today.empty.body')} />}
     {data.requests.length > 0 && (
       <section class="space-y-3" data-testid="today-requests">

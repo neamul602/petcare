@@ -1,4 +1,5 @@
 ---
+import Logo from '../kit/Logo.astro';
 import { t } from '@petcare/shared/i18n';
 import type { Locale } from '@petcare/shared/i18n';
 interface Props { locale: Locale }
@@ -8,7 +9,7 @@ const signedIn = Boolean(Astro.locals.user);
 <footer class="mt-12 hidden border-t border-border bg-card md:block" data-testid="site-footer">
   <div class="mx-auto grid max-w-6xl gap-8 px-6 py-10 md:grid-cols-[2fr_1fr_1fr]">
     <div class="space-y-2">
-      <p class="font-serif text-2xl font-semibold text-primary">{t(locale, 'app.name')}</p>
+      <Logo />
       <p class="max-w-xs text-muted-foreground">{t(locale, 'footer.tagline')}</p>
     </div>
     <nav aria-label={t(locale, 'footer.owners')} class="space-y-2">
@@ -18,13 +19,13 @@ const signedIn = Boolean(Astro.locals.user);
         {!signedIn && <li><a class="hover:text-foreground hover:underline" href="/sign-in">{t(locale, 'footer.signin')}</a></li>}
       </ul>
     </nav>
-    <nav aria-label={t(locale, 'footer.hosts')} class="space-y-2">
+    {!signedIn && (    <nav aria-label={t(locale, 'footer.hosts')} class="space-y-2">
       <p class="font-semibold">{t(locale, 'footer.hosts')}</p>
       <ul class="space-y-1 text-muted-foreground">
         {!signedIn && <li><a class="hover:text-foreground hover:underline" href="/sign-up">{t(locale, 'footer.host')}</a></li>}
         {!signedIn && <li><a class="hover:text-foreground hover:underline" href="/sign-up">{t(locale, 'footer.signup')}</a></li>}
       </ul>
-    </nav>
+    </nav>)}
   </div>
   <p class="border-t border-border py-4 text-center text-sm text-muted-foreground">{t(locale, 'footer.rights')}</p>
 </footer>

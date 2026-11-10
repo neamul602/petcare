@@ -14,7 +14,7 @@ const isActive = (href: string) => (href === '/' || href === '/provider' ? curre
     {tabs.map((tab) => (
       <li>
         <a href={tab.href} aria-current={isActive(tab.href) ? 'page' : undefined}
-          class={`nav-pill inline-flex min-h-11 items-center rounded-full px-4 font-medium hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring text-foreground`}>
+          class={`nav-pill inline-flex min-h-11 items-center px-3 font-medium text-muted-foreground hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring `}>
           {tab.label}
         </a>
       </li>

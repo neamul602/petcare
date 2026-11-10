@@ -3,7 +3,8 @@
  * Rich training data for demonstrations (workbook Step 40).
  *   npm run seed            reset the database and load the base training seed
  *   npm run dev             start web, API and Dummy services
- *   npm run seed:demo       add owners, pets with photos, stays in every state, reviews, payouts, reports, an acute event, vetting
+ *   npm run seed:demo       add owners (phone and email sign-up), providers, pets with photos, stays in every state, reviews, payouts, reports, an acute event, vetting
+ * Illustrated pet portraits and home/garden scenes live in packages/shared/seed/demo-images (generated cartoons, no real photos).
  * Everything goes through the real API as the people involved, so every rule runs exactly as in the product. The running
  * servers use the real clock, so stays that "already happened" are placed in the past by editing their dates afterwards.
  * Every record is training data; no rating or count is invented (they come from the completed stays created here).
@@ -60,6 +61,7 @@ async function api<T = any>(
   return json;
 }
 
+const EMAIL_PASSWORD = 'DemoPass123';
 const plus = (days: number) =>
   new Date(Date.now() + days * 86_400_000 + 6 * 3_600_000).toISOString().slice(0, 10);
 const image = (name: string) =>
@@ -76,6 +78,12 @@ async function people() {
     ['imran', '+8801712000012', 'Imran Chowdhury', 'banani', 'en'],
     ['farhana', '+8801712000013', 'Farhana Akter', 'baridhara', 'bn'],
     ['tanvir', '+8801712000014', 'Tanvir Hossain', 'gulshan', 'en'],
+    ['sumaiya', '+8801712000031', 'Sumaiya Islam', 'gulshan', 'en'],
+    ['karim', '+8801712000032', 'Karim Uddin', 'banani', 'bn'],
+    ['anika', '+8801712000033', 'Anika Tabassum', 'baridhara', 'en'],
+    ['rezwan', '+8801712000034', 'Rezwan Kabir', 'gulshan', 'en'],
+    ['tasfia', '+8801712000035', 'Tasfia Nawar', 'banani', 'bn'],
+    ['shahed', '+8801712000036', 'Shahed Alam', 'baridhara', 'en'],
   ];
   for (const [id, phone, name, area, language] of owners)
     await sql(
@@ -111,6 +119,118 @@ async function people() {
       'Baridhara house with a big fenced garden. Dogs of every size are welcome, and I have years of experience with older dogs.',
       'বারিধারার বাড়ি, বড় ঘেরা বাগান। সব আকারের কুকুর স্বাগত, বয়স্ক কুকুরের যত্নে আমার বহু বছরের অভিজ্ঞতা।',
     ],
+    [
+      'sabrina',
+      '+8801712000015',
+      'Sabrina',
+      'সাবরিনা',
+      'A',
+      'gulshan',
+      ['dog', 'cat'],
+      3,
+      300000,
+      ['medication-administration', 'senior-pets'],
+      'Spacious Gulshan apartment with a balcony garden. I am a former vet-clinic assistant, so I am confident giving tablets and injections and caring for older pets.',
+      'গুলশানের প্রশস্ত অ্যাপার্টমেন্ট, বারান্দায় ছোট বাগান। আমি আগে ভেট ক্লিনিকে সহকারী ছিলাম, তাই ওষুধ, ইনজেকশন ও বয়স্ক পোষা প্রাণীর যত্নে আমি আত্মবিশ্বাসী।',
+    ],
+    [
+      'rafiq',
+      '+8801712000016',
+      'Rafiq',
+      'রফিক',
+      'B',
+      'baridhara',
+      ['dog'],
+      5,
+      160000,
+      ['large-yard'],
+      'Family home in Baridhara with a large walled yard. Big energetic dogs are my favourite; we play fetch morning and evening.',
+      'বারিধারায় বড় পাঁচিলঘেরা উঠানসহ পারিবারিক বাড়ি। বড় ও চঞ্চল কুকুর আমার প্রিয়; সকাল-সন্ধ্যা আমরা বল খেলি।',
+    ],
+    [
+      'tasnim',
+      '+8801712000017',
+      'Tasnim',
+      'তাসনিম',
+      'A',
+      'banani',
+      ['cat'],
+      2,
+      280000,
+      ['cats-only', 'anxious-pets'],
+      'A calm cats-only home in Banani with climbing shelves and a sunny window seat. I have fostered shy and rescued cats for eight years.',
+      'বনানীতে শান্ত শুধু-বিড়ালের বাড়ি, উঠার তাক ও রোদেলা জানালার ধারে বসার জায়গা। আট বছর ধরে লাজুক ও উদ্ধার করা বিড়াল লালন-পালন করছি।',
+    ],
+    [
+      'mahfuz',
+      '+8801712000018',
+      'Mahfuz',
+      'মাহফুজ',
+      'B',
+      'gulshan',
+      ['dog', 'cat'],
+      4,
+      150000,
+      [],
+      'Friendly Gulshan household with a rooftop terrace. Our own two dogs love company, and we are home all day.',
+      'গুলশানে হাসিখুশি পরিবার, ছাদে খোলা টেরেস। আমাদের নিজেদের দুটি কুকুর সঙ্গ ভালোবাসে, আমরা সারাদিন বাসায় থাকি।',
+    ],
+    [
+      'shirin',
+      '+8801712000019',
+      'Shirin',
+      'শিরিন',
+      'A',
+      'baridhara',
+      ['dog', 'cat'],
+      3,
+      340000,
+      ['senior-pets', 'medication-administration', 'anxious-pets'],
+      'Retired nurse in Baridhara. I give every pet one-to-one attention, keep a written medication log and send updates three times a day.',
+      'বারিধারার অবসরপ্রাপ্ত নার্স। প্রতিটি পোষা প্রাণীকে আলাদা মনোযোগ দিই, ওষুধের লিখিত খাতা রাখি এবং দিনে তিনবার খবর পাঠাই।',
+    ],
+    [
+      'arif',
+      '+8801712000020',
+      'Arif',
+      'আরিফ',
+      'A',
+      'banani',
+      ['dog'],
+      4,
+      240000,
+      ['large-yard', 'anxious-pets'],
+      'Dog trainer based in Banani with a secure garden. I work gently with nervous dogs and do two proper walks every day.',
+      'বনানীর কুকুর প্রশিক্ষক, নিরাপদ বাগানসহ বাড়ি। ভীতু কুকুরের সঙ্গে নরমভাবে কাজ করি এবং প্রতিদিন দুবার ভালোমতো হাঁটাই।',
+    ],
+    [
+      'mehnaz',
+      '+8801712000021',
+      'Mehnaz',
+      'মেহনাজ',
+      'B',
+      'gulshan',
+      ['cat'],
+      3,
+      180000,
+      ['cats-only'],
+      'Cat lover in Gulshan with a quiet second-floor flat. Cats get their own room, fresh water fountain and lots of play time.',
+      'গুলশানের বিড়ালপ্রেমী, দোতলার শান্ত ফ্ল্যাট। প্রতিটি বিড়াল পায় আলাদা ঘর, পরিষ্কার পানির ফোয়ারা আর অনেকক্ষণ খেলার সময়।',
+    ],
+    [
+      'zubair',
+      '+8801712000022',
+      'Zubair',
+      'জুবায়ের',
+      'B',
+      'banani',
+      ['dog', 'cat'],
+      2,
+      200000,
+      [],
+      'Software engineer working from home in Banani, so your pet is never alone. Small and medium dogs and cats are welcome.',
+      'বনানীতে বাসা থেকে কাজ করা সফটওয়্যার ইঞ্জিনিয়ার, তাই আপনার পোষা প্রাণী কখনো একা থাকে না। ছোট ও মাঝারি কুকুর এবং বিড়াল স্বাগত।',
+    ],
   ];
   for (const [
     id,
@@ -135,7 +255,22 @@ async function people() {
       [id, nameEn, nameBn, tier, area, species, capacity, price, caps, en, bn],
     );
   }
-  log('owners Nadia, Imran, Farhana, Tanvir and providers Lamia, Hasan');
+  // two owners who signed up with email and password, through the public sign-up endpoint
+  for (const [name, email, area] of [
+    ['Ayesha Siddika', 'ayesha.siddika@example.com', 'banani'],
+    ['Farid Ahmed', 'farid.ahmed@example.com', 'gulshan'],
+  ]) {
+    await api(
+      'POST',
+      '/auth/signup',
+      null,
+      { name, email, password: EMAIL_PASSWORD, role: 'owner', neighbourhood: area },
+      [409],
+    );
+  }
+  log(
+    'owners (phone and email sign-up) and eight more providers across Gulshan, Banani, Baridhara',
+  );
 }
 
 // ---- pets with photos
@@ -155,7 +290,13 @@ async function pets() {
     }
     return created.pet.id as string;
   };
-  const ids = {} as { tito: string; mimi: string; max: string; luna: string; bruno: string };
+  const ids = {} as Record<string, string> & {
+    tito: string;
+    mimi: string;
+    max: string;
+    luna: string;
+    bruno: string;
+  };
   ids.tito = 'tito';
   for (const photo of ['tito-1', 'tito-2', 'tito-3']) {
     const form = new FormData();
@@ -270,7 +411,229 @@ async function pets() {
     },
     ['bruno-1'],
   );
-  log('pets with photos: Tito, Mimi, Max, Luna, Bruno');
+
+  // more households: each pet has a distinct look, care needs and one or two portraits
+  const ayesha = (await sql("SELECT id FROM users WHERE email = 'ayesha.siddika@example.com'"))
+    .rows[0].id as string;
+  const farid = (await sql("SELECT id FROM users WHERE email = 'farid.ahmed@example.com'")).rows[0]
+    .id as string;
+  ids.ayesha = ayesha;
+  ids.farid = farid;
+  interface Extra {
+    energy?: string;
+    goodWith?: string[];
+    triggers?: string;
+    walks?: number;
+    outdoor?: string;
+    plan?: Record<string, unknown>;
+    neutered?: boolean;
+  }
+  const dog = (
+    who: string,
+    key: string,
+    name: string,
+    breed: string,
+    age: number,
+    kg: number,
+    sex: string,
+    photos: string[],
+    o: Extra = {},
+  ) =>
+    make(
+      who,
+      {
+        name,
+        species: 'dog',
+        breed,
+        ageYears: age,
+        weightKg: kg,
+        sex,
+        neutered: o.neutered ?? true,
+        vaccination: 'up_to_date',
+        behaviour: behaviour(
+          o.energy ?? 'moderate',
+          o.goodWith ?? ['dogs', 'strangers'],
+          o.triggers,
+        ),
+        dogDetails: { walksPerDay: o.walks ?? 2, outdoorAccess: o.outdoor ?? 'yard' },
+        carePlan: { ...emptyPlan, ...o.plan },
+      },
+      photos,
+    ).then((id) => (ids[key] = id));
+  const cat = (
+    who: string,
+    key: string,
+    name: string,
+    breed: string,
+    age: number,
+    kg: number,
+    sex: string,
+    photos: string[],
+    o: Extra = {},
+  ) =>
+    make(
+      who,
+      {
+        name,
+        species: 'cat',
+        breed,
+        ageYears: age,
+        weightKg: kg,
+        sex,
+        neutered: o.neutered ?? true,
+        vaccination: 'up_to_date',
+        behaviour: behaviour(o.energy ?? 'moderate', o.goodWith ?? ['cats'], o.triggers),
+        catDetails: { litterBox: 'covered', indoorOutdoor: 'indoor', company: 'multi_ok' },
+        carePlan: { ...emptyPlan, ...o.plan },
+      },
+      photos,
+    ).then((id) => (ids[key] = id));
+  const food = (type: string, brand: string, schedule: string, restrictions: string[] = []) => ({
+    type,
+    brand,
+    schedule,
+    treats: 'a few small treats',
+    restrictions,
+  });
+  await cat('sumaiya', 'coco', 'Coco', 'Siamese', 2, 3.6, 'female', ['coco-1', 'coco-2'], {
+    energy: 'moderate',
+    plan: { diet: food('wet', 'Royal Canin Kitten', '08:00 and 19:00') },
+  });
+  await dog('sumaiya', 'bella', 'Bella', 'Beagle', 3, 11, 'female', ['bella-1', 'bella-2'], {
+    energy: 'high',
+    goodWith: ['dogs', 'children', 'strangers'],
+    walks: 2,
+    outdoor: 'garden',
+    plan: {
+      allergies: ['beef'],
+      diet: food('dry', 'Pedigree Adult', '07:30 and 18:30', ['no beef']),
+      instructions: 'Beagles sniff everything: please keep the gate closed.',
+    },
+  });
+  await dog('karim', 'rocky', 'Rocky', 'German Shepherd', 5, 34, 'male', ['rocky-1', 'rocky-2'], {
+    energy: 'high',
+    walks: 3,
+    plan: {
+      conditions: [{ name: 'mild hip dysplasia', notes: 'avoid long jumping games' }],
+      medications: [{ name: 'glucosamine chew', dose: '1 chew', schedule: ['08:00'] }],
+      instructions: 'Loves a morning run; no stairs after dinner.',
+    },
+  });
+  await cat('karim', 'simba', 'Simba', 'Orange Tabby', 4, 5.4, 'male', ['simba-1', 'simba-2'], {
+    energy: 'high',
+    plan: {
+      diet: food('mixed', 'Me-O', '07:00 and 20:00'),
+      instructions: 'Will try to escape through the door.',
+    },
+  });
+  await dog('anika', 'daisy', 'Daisy', 'Shih Tzu', 11, 7.2, 'female', ['daisy-1'], {
+    energy: 'calm',
+    walks: 1,
+    outdoor: 'indoor_only',
+    plan: {
+      conditions: [{ name: 'early kidney disease', notes: 'needs a renal diet' }],
+      medications: [
+        { name: 'renal support tablet', dose: '1 tablet', schedule: ['09:00', '21:00'] },
+      ],
+      diet: food('wet', 'Hill’s Kidney Care', '08:00 and 18:00', ['low protein']),
+      senior: true,
+      extraAttention: true,
+      instructions: 'Hand-feed if she hesitates. Keep her warm at night.',
+      vet: { name: 'Dr. Mahmud', clinic: 'Gulshan Pet Clinic' },
+    },
+  });
+  await cat('anika', 'oreo', 'Oreo', 'Domestic Shorthair', 6, 4.8, 'male', ['oreo-1', 'oreo-2'], {
+    energy: 'calm',
+    triggers: 'fireworks and the vacuum cleaner',
+    plan: {
+      anxiety: { triggers: 'loud noises, strangers', comfort: 'a box to hide in and a quiet room' },
+    },
+  });
+  await dog('anika', 'ginger', 'Ginger', 'Indian Pariah', 3, 18, 'female', ['ginger-1'], {
+    energy: 'high',
+    goodWith: ['dogs', 'cats', 'children', 'strangers'],
+    walks: 3,
+    outdoor: 'garden',
+    plan: { instructions: 'Rescued as a puppy; very friendly and clever.' },
+  });
+  await dog('rezwan', 'zeus', 'Zeus', 'Rottweiler', 5, 42, 'male', ['zeus-1'], {
+    energy: 'moderate',
+    goodWith: ['children'],
+    triggers: 'other male dogs',
+    walks: 3,
+    plan: { extraAttention: true, instructions: 'Strong on the lead; please use his harness.' },
+  });
+  await cat('tasfia', 'chloe', 'Chloe', 'Ragdoll', 3, 5.6, 'female', ['chloe-1'], {
+    energy: 'calm',
+    goodWith: ['cats', 'children'],
+    plan: {
+      diet: food('dry', 'Royal Canin Indoor', '08:00 and 19:00'),
+      instructions: 'Brush her coat daily.',
+    },
+  });
+  await dog(
+    'tasfia',
+    'toffee',
+    'Toffee',
+    'Cocker Spaniel',
+    2,
+    12,
+    'male',
+    ['toffee-1', 'toffee-2'],
+    {
+      energy: 'high',
+      goodWith: ['dogs', 'children', 'strangers'],
+      plan: {
+        conditions: [{ name: 'ear infections', notes: 'clean ears after baths' }],
+        allergies: ['wheat'],
+      },
+    },
+  );
+  await dog('shahed', 'milo', 'Milo', 'Pug', 3, 9, 'male', ['milo-1'], {
+    energy: 'moderate',
+    walks: 2,
+    outdoor: 'indoor_only',
+    plan: {
+      conditions: [{ name: 'brachycephalic breathing', notes: 'keep cool, avoid midday heat' }],
+      instructions: 'Keep him in the air-conditioned room in the afternoon.',
+    },
+  });
+  await dog(
+    ayesha,
+    'pepper',
+    'Pepper',
+    'Border Collie',
+    4,
+    19,
+    'female',
+    ['pepper-1', 'pepper-2'],
+    {
+      energy: 'high',
+      goodWith: ['dogs', 'children'],
+      walks: 4,
+      outdoor: 'garden',
+      plan: { extraAttention: true, instructions: 'Needs mental games: puzzle feeders and fetch.' },
+    },
+  );
+  await cat(ayesha, 'snow', 'Snow', 'Turkish Angora', 5, 4.3, 'female', ['snow-1'], {
+    energy: 'moderate',
+    plan: { diet: food('wet', 'Felix', '08:00 and 18:00') },
+  });
+  await dog(farid, 'charlie', 'Charlie', 'Pomeranian', 5, 3.4, 'male', ['charlie-1'], {
+    energy: 'high',
+    goodWith: ['strangers'],
+    walks: 1,
+    outdoor: 'indoor_only',
+    plan: { instructions: 'Small but bossy; barks at the doorbell.' },
+  });
+  await cat(farid, 'nala', 'Nala', 'Bengal', 2, 4.1, 'female', ['nala-1', 'nala-2'], {
+    energy: 'high',
+    plan: {
+      diet: food('raw', 'home prepared', '07:30 and 19:30'),
+      instructions: 'Loves climbing; needs a tall cat tree.',
+    },
+  });
+  log('pets with photos: 20 dogs and cats across 12 households');
   return ids;
 }
 
@@ -360,11 +723,12 @@ async function pastStay(
     rating?: number;
     review?: string;
     reviewPhotos?: boolean;
-    updates?: Array<{ note: string; photos: string[]; med?: boolean }>;
+    updates?: Array<{ note: string; photos: string[]; med?: boolean; medName?: string }>;
     report?: { category: string; description: string };
     acute?: boolean;
   },
 ) {
+  window = 140; // the nights are freed again below, so every past stay can reuse the same booking window
   const ended = s.endedDaysAgo ?? 10;
   const id = await request(s);
   await api('POST', `/provider/bookings/${id}/confirm`, s.provider);
@@ -376,7 +740,7 @@ async function pastStay(
       s.provider,
       u.note,
       {
-        medicationsGiven: u.med ? [{ name: 'insulin', time: '08:05' }] : [],
+        medicationsGiven: u.med ? [{ name: u.medName ?? 'insulin', time: '08:05' }] : [],
         food: 'ate_well',
         mood: 'happy',
       },
@@ -575,6 +939,473 @@ async function main() {
   });
   log('nine completed stays, one with a removed review, one with an acute event, one disputed');
 
+  // a second wave of completed stays: the new providers and owners build up ratings and reviews
+  const SCENES: Record<string, string[]> = {
+    sabrina: ['scene-1', 'scene-6'],
+    rafiq: ['scene-8', 'scene-6'],
+    tasnim: ['scene-2', 'scene-4'],
+    mahfuz: ['scene-5', 'scene-10'],
+    shirin: ['scene-3', 'scene-9'],
+    arif: ['scene-8', 'scene-10'],
+    mehnaz: ['scene-4', 'scene-7'],
+    zubair: ['scene-2', 'scene-5'],
+    lamia: ['scene-1'],
+    kamrul: ['scene-6'],
+    farzana: ['scene-9'],
+    nusrat: ['scene-7'],
+    hasan: ['scene-8'],
+  };
+  const DOG_NOTES = [
+    'Good morning walk and a long play in the garden.',
+    'Ate all of his dinner and met the other dog at the gate.',
+    'Quiet afternoon nap, then a game of fetch.',
+    'A bit shy at first, but now wagging at everyone.',
+  ];
+  const CAT_NOTES = [
+    'Settled in nicely and found the sunniest spot.',
+    'Played with the feather toy and ate everything.',
+    'Purring on my lap this evening.',
+    'Explored the room, then slept on the window seat.',
+  ];
+  let turn = 0;
+  const dogs = ['walk-1', 'play-1', 'garden-1', 'garden-2', 'meal-1', 'nap-2'];
+  const cats = ['nap-1', 'meal-2', 'play-2'];
+  const auto = (provider: string, species: 'dog' | 'cat', count: number, med?: string) =>
+    Array.from({ length: count }, (_, i) => {
+      turn += 1;
+      const pool = species === 'dog' ? dogs : cats;
+      const notes = species === 'dog' ? DOG_NOTES : CAT_NOTES;
+      const home = SCENES[provider] ?? ['scene-1'];
+      return {
+        note: notes[turn % notes.length]!,
+        photos:
+          i === 0
+            ? [home[turn % home.length]!, pool[turn % pool.length]!]
+            : [pool[turn % pool.length]!],
+        med: med !== undefined && i === 0,
+        medName: med,
+      };
+    });
+  type Past = [
+    owner: string,
+    provider: string,
+    pet: string,
+    species: 'dog' | 'cat',
+    nights: number,
+    endedDaysAgo: number,
+    rating: number,
+    review: string,
+    extra?: { med?: string; photos?: boolean; updates?: number },
+  ];
+  const history: Past[] = [
+    [
+      'sumaiya',
+      'sabrina',
+      'coco',
+      'cat',
+      3,
+      95,
+      5,
+      'Coco came home relaxed and clearly well looked after. Sabrina sent a photo every evening.',
+      { photos: true },
+    ],
+    [
+      'karim',
+      'rafiq',
+      'rocky',
+      'dog',
+      5,
+      92,
+      4,
+      'Rocky had a huge yard and plenty of runs. Pick-up was a little late, otherwise perfect.',
+    ],
+    [
+      'anika',
+      'tasnim',
+      'oreo',
+      'cat',
+      4,
+      88,
+      5,
+      'Tasnim is wonderful with nervous cats. Oreo hides for days elsewhere but was on her lap by day two.',
+      { photos: true },
+    ],
+    [
+      'rezwan',
+      'arif',
+      'zeus',
+      'dog',
+      3,
+      85,
+      4,
+      'Zeus is a big boy and Arif handled him confidently. Good updates and a clean home.',
+    ],
+    [
+      'tasfia',
+      'mehnaz',
+      'chloe',
+      'cat',
+      3,
+      82,
+      5,
+      'Chloe was brushed every day and came back purring. Highly recommend.',
+      { photos: true },
+    ],
+    [
+      'shahed',
+      'mahfuz',
+      'milo',
+      'dog',
+      2,
+      80,
+      3,
+      'Milo was fine, but the house was warm and he struggles in the heat. Mahfuz moved him to the cooler room once I mentioned it.',
+    ],
+    [
+      'ayesha',
+      'shirin',
+      'pepper',
+      'dog',
+      4,
+      78,
+      4,
+      'Pepper got lots of exercise. I would have liked a few more photos, but she was happy.',
+    ],
+    [
+      'farid',
+      'zubair',
+      'charlie',
+      'dog',
+      3,
+      76,
+      5,
+      'Charlie is bossy but Zubair was patient. Working from home means he was never alone.',
+    ],
+    [
+      'anika',
+      'shirin',
+      'daisy',
+      'dog',
+      5,
+      72,
+      5,
+      'Daisy is eleven and needs her tablets on time. Shirin did everything on schedule and treated her like family.',
+      { med: 'renal support tablet', photos: true, updates: 3 },
+    ],
+    [
+      'karim',
+      'sabrina',
+      'simba',
+      'cat',
+      3,
+      70,
+      4,
+      'Simba tried to escape twice but Sabrina was careful. Great communication.',
+    ],
+    [
+      'sumaiya',
+      'mahfuz',
+      'bella',
+      'dog',
+      4,
+      68,
+      3,
+      'Bella enjoyed the walks but the updates were short and came late in the day.',
+    ],
+    [
+      'tasfia',
+      'arif',
+      'toffee',
+      'dog',
+      3,
+      64,
+      5,
+      'Toffee loves Arif. He came home tired and happy, and his ears were clean.',
+      { photos: true },
+    ],
+    [
+      'ayesha',
+      'tasnim',
+      'snow',
+      'cat',
+      4,
+      60,
+      5,
+      'Snow is fussy with strangers but Tasnim won her over. Lovely, quiet home.',
+      { photos: true },
+    ],
+    [
+      'farid',
+      'mehnaz',
+      'nala',
+      'cat',
+      3,
+      58,
+      4,
+      'Nala was active and well fed. The cat tree was a hit.',
+    ],
+    [
+      'rezwan',
+      'rafiq',
+      'zeus',
+      'dog',
+      4,
+      54,
+      5,
+      'Rafiq’s yard is perfect for Zeus. He sent a video call on the second evening, which I appreciated.',
+      { photos: true },
+    ],
+    [
+      'shahed',
+      'zubair',
+      'milo',
+      'dog',
+      3,
+      50,
+      4,
+      'Milo stayed cool and comfortable. Zubair followed the heat instructions to the letter.',
+    ],
+    [
+      'karim',
+      'shirin',
+      'rocky',
+      'dog',
+      3,
+      45,
+      5,
+      'Shirin gave Rocky his glucosamine every morning and kept the walks gentle for his hips.',
+      { med: 'glucosamine chew' },
+    ],
+    [
+      'anika',
+      'sabrina',
+      'ginger',
+      'dog',
+      4,
+      42,
+      5,
+      'Ginger adored the balcony garden. Sabrina is kind and very organised.',
+      { photos: true },
+    ],
+    [
+      'sumaiya',
+      'tasnim',
+      'coco',
+      'cat',
+      3,
+      40,
+      5,
+      'Second time with Tasnim. Coco ran straight to her.',
+    ],
+    [
+      'ayesha',
+      'arif',
+      'pepper',
+      'dog',
+      5,
+      37,
+      5,
+      'Arif plays proper games with Pepper. She came back calm, which is rare.',
+      { photos: true },
+    ],
+    [
+      'sumaiya',
+      'zubair',
+      'bella',
+      'dog',
+      3,
+      33,
+      4,
+      'Bella got on well with Zubair. A good, simple stay.',
+    ],
+    [
+      'tasfia',
+      'sabrina',
+      'chloe',
+      'cat',
+      4,
+      30,
+      4,
+      'Chloe was comfortable. The apartment is lovely; only wish pick-up times were more flexible.',
+    ],
+    [
+      'farid',
+      'shirin',
+      'charlie',
+      'dog',
+      3,
+      27,
+      5,
+      'Shirin kept Charlie calm and the log of his meals was so thorough.',
+      { photos: true },
+    ],
+    [
+      'rezwan',
+      'mahfuz',
+      'zeus',
+      'dog',
+      2,
+      24,
+      3,
+      'Zeus was fine but the house felt busy for him, and I had to ask twice for an update.',
+    ],
+    [
+      'ayesha',
+      'mehnaz',
+      'snow',
+      'cat',
+      3,
+      22,
+      5,
+      'Mehnaz gave Snow her own room and a water fountain. Snow was glossy and calm.',
+      { photos: true },
+    ],
+    [
+      'karim',
+      'mehnaz',
+      'simba',
+      'cat',
+      3,
+      19,
+      4,
+      'Simba had the run of a quiet flat and no complaints.',
+    ],
+    [
+      'shahed',
+      'rafiq',
+      'milo',
+      'dog',
+      4,
+      17,
+      5,
+      'Rafiq’s family doted on Milo. He was kept inside during the hot hours as asked.',
+      { photos: true },
+    ],
+    [
+      'tasfia',
+      'hasan',
+      'toffee',
+      'dog',
+      3,
+      16,
+      5,
+      'Hasan’s garden is wonderful and Toffee came back smelling of grass.',
+    ],
+    [
+      'karim',
+      'farzana',
+      'simba',
+      'cat',
+      3,
+      35,
+      5,
+      'Farzana was gentle and firm with a very clever cat. Great photos.',
+      { photos: true },
+    ],
+    [
+      'anika',
+      'nusrat',
+      'oreo',
+      'cat',
+      3,
+      26,
+      5,
+      'Nusrat kept the house quiet for Oreo, who relaxed within hours.',
+    ],
+    [
+      'tasfia',
+      'farzana',
+      'chloe',
+      'cat',
+      3,
+      15,
+      4,
+      'Chloe was well cared for. Updates were regular.',
+    ],
+    [
+      'ayesha',
+      'nusrat',
+      'snow',
+      'cat',
+      3,
+      10,
+      5,
+      'Nusrat is lovely. Snow was spoiled with attention.',
+    ],
+    ['anika', 'zubair', 'oreo', 'cat', 2, 13, 4, 'Short stay and everything went smoothly.'],
+    [
+      'farid',
+      'tasnim',
+      'nala',
+      'cat',
+      3,
+      11,
+      5,
+      'Tasnim was great with Nala’s energy. Climbing shelves everywhere!',
+      { photos: true },
+    ],
+    [
+      'anika',
+      'rafiq',
+      'ginger',
+      'dog',
+      3,
+      8,
+      4,
+      'Ginger enjoyed the yard. A few more updates would have been nice.',
+    ],
+    [
+      'ayesha',
+      'hasan',
+      'pepper',
+      'dog',
+      4,
+      0,
+      5,
+      'A big garden and a patient host. Pepper was exhausted in the best way.',
+      { photos: true },
+    ],
+    [
+      'sumaiya',
+      'lamia',
+      'coco',
+      'cat',
+      3,
+      1,
+      5,
+      'Lamia is a gem. Coco was relaxed and fed on time.',
+    ],
+    ['sumaiya', 'kamrul', 'bella', 'dog', 3, 2, 4, 'Bella loved the yard and made a new friend.'],
+  ];
+  for (const [owner, provider, pet, species, nights, ended, rating, review, extra] of history)
+    await pastStay({
+      owner: p[owner] ?? owner,
+      provider,
+      pet: p[pet] ?? pet,
+      nights,
+      endedDaysAgo: ended,
+      rating,
+      review,
+      reviewPhotos: extra?.photos,
+      updates: auto(provider, species, extra?.updates ?? 2, extra?.med),
+    });
+  // a second resolved dispute with a partial refund
+  const lateUpdates = await pastStay({
+    owner: 'rezwan',
+    provider: 'mahfuz',
+    pet: p.zeus!,
+    nights: 2,
+    endedDaysAgo: 3,
+    rating: 2,
+    review: 'Almost no updates, and Zeus came back dirty and hungry.',
+    updates: auto('mahfuz', 'dog', 1),
+    report: {
+      category: 'communication',
+      description: 'I asked twice for a photo and only got one short message on the last day.',
+    },
+  });
+  log(`${history.length + 1} more completed stays with reviews across all eleven providers`);
+
   // an open dispute, with the payout frozen and a 2-star review
   await pastStay({
     owner: 'imran',
@@ -642,7 +1473,55 @@ async function main() {
     { medicationsGiven: [], food: 'ate_well', mood: 'happy' },
     ['luna-1'],
   );
-  log('two stays in progress, one with an open acute event and a half-finished runbook');
+
+  const pepperStay = await request({
+    owner: p.ayesha!,
+    provider: 'arif',
+    pet: p.pepper!,
+    nights: 5,
+    instructions: 'Please give her lots of fetch and a puzzle feeder.',
+  });
+  await api('POST', `/provider/bookings/${pepperStay}/confirm`, 'arif');
+  await moveStay(pepperStay, 'arif', plus(-3), plus(2), true);
+  await api('POST', `/provider/bookings/${pepperStay}/start`, 'arif');
+  for (const [note, photos, mood] of [
+    ['Pepper settled in fast and chased the ball for an hour.', ['scene-8', 'play-1'], 'happy'],
+    [
+      'Training game with treats this morning, she is brilliant.',
+      ['pepper-2', 'garden-2'],
+      'happy',
+    ],
+    ['Long evening walk. She is asleep at my feet now.', ['walk-1'], 'calm'],
+  ] as Array<[string, string[], string]>)
+    await update(
+      pepperStay,
+      'arif',
+      note,
+      { medicationsGiven: [], food: 'ate_well', mood },
+      photos,
+    );
+  const dasiyStay = await request({
+    owner: 'anika',
+    provider: 'shirin',
+    pet: p.daisy!,
+    nights: 4,
+    instructions: 'Renal diet and her two daily tablets, please.',
+  });
+  await api('POST', `/provider/bookings/${dasiyStay}/confirm`, 'shirin');
+  await moveStay(dasiyStay, 'shirin', plus(-1), plus(3), true);
+  await api('POST', `/provider/bookings/${dasiyStay}/start`, 'shirin');
+  await update(
+    dasiyStay,
+    'shirin',
+    'Daisy had both tablets and ate half her dinner. Warm blanket for the night.',
+    {
+      medicationsGiven: [{ name: 'renal support tablet', time: '09:05' }],
+      food: 'ate_some',
+      mood: 'calm',
+    },
+    ['scene-3', 'nap-2'],
+  );
+  log('four stays in progress, one with an open acute event and a half-finished runbook');
 
   // upcoming, waiting, declined, cancelled, cancellation request, no-show
   await api(
@@ -691,6 +1570,39 @@ async function main() {
   });
   log('upcoming, waiting, declined, canceled, a cancellation request and a no-show');
 
+  // more upcoming work for the new providers' calendars and requests lists
+  const later = async (
+    owner: string,
+    provider: string,
+    pet: string,
+    from: number,
+    to: number,
+    confirm: boolean,
+  ) => {
+    const id = await request(
+      { owner: p[owner] ?? owner, provider, pet, nights: to - from },
+      { from: plus(from), to: plus(to) },
+    );
+    if (confirm) await api('POST', `/provider/bookings/${id}/confirm`, provider);
+    return id;
+  };
+  await later('sumaiya', 'sabrina', p.bella!, 8, 11, true);
+  await later('karim', 'tasnim', p.simba!, 9, 12, false);
+  await later('rezwan', 'rafiq', p.zeus!, 11, 15, false);
+  await later('tasfia', 'mehnaz', p.chloe!, 14, 17, true);
+  await later('farid', 'zubair', p.nala!, 18, 21, false);
+  await later('shahed', 'mahfuz', p.milo!, 22, 24, true);
+  await later('ayesha', 'shirin', p.snow!, 26, 30, true);
+  await later('farid', 'arif', p.charlie!, 45, 48, true);
+  await later('anika', 'sabrina', p.ginger!, 52, 56, false);
+  const declined2 = await later('rezwan', 'shirin', p.zeus!, 33, 36, false);
+  await api('POST', `/provider/bookings/${declined2}/decline`, 'shirin', {
+    reason: 'care-requirements-exceed-capacity',
+  });
+  const canceled2 = await later('karim', 'zubair', p.rocky!, 38, 41, false);
+  await api('POST', `/owner/bookings/${canceled2}/cancel`, 'karim');
+  log('more upcoming, waiting, declined and canceled stays for the new households');
+
   // admin: finish the handled acute event, moderate, vet, appeal
   const done = ((await api('GET', '/admin/acute-events', 'admin')).events as any[]).find(
     (e) => e.bookingId === acuteDone,
@@ -723,6 +1635,17 @@ async function main() {
     providerAction: 'warning',
     rationale: 'A missed supplement on one day; one night refunded and a warning given.',
   });
+
+  const lateReport = ((await api('GET', '/admin/reports', 'admin')).reports as any[]).find(
+    (r) => r.bookingId === lateUpdates,
+  );
+  if (lateReport)
+    await api('POST', `/admin/reports/${lateReport.id}/resolve`, 'admin', {
+      refundPoisha: 150000,
+      providerAction: 'warning',
+      rationale:
+        'Very few updates were sent; one night refunded and the provider was reminded of the update rule.',
+    });
 
   // vetting queue, a declined provider with an appeal, outreach and a signal
   const sadia = 'sadia';
@@ -796,7 +1719,7 @@ async function main() {
 
   await pool.end();
   console.log(
-    '\nDemo data is ready. Sign in as Bibi (01712000001), Rashid (01712000002), Nadia (01712000011), Imran (01712000012) or the admin.',
+    '\nDemo data is ready. Sign in as Bibi (01712000001), Rashid (01712000002), Nadia (01712000011), Imran (01712000012), Sabrina (01712000015), Sumaiya (01712000031), ayesha.siddika@example.com (password DemoPass123) or the admin.',
   );
 }
 

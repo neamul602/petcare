@@ -1,4 +1,5 @@
 ---
+import PageHeader from '@/components/kit/PageHeader.astro';
 import { t } from '@petcare/shared/i18n';
 import PetForm from '@/components/pets/PetForm';
 import OwnerShell from '@/layouts/OwnerShell.astro';
@@ -13,7 +14,7 @@ const { pet } = (await response.json()) as { pet: { id: string; name: string } &
 ---
 <OwnerShell titleKey="screen.petEdit">
   <div class="space-y-4 py-4">
-    <h1 class="text-2xl font-semibold">{t(locale, 'screen.petEdit')}: {pet.name}</h1>
+    <PageHeader title={`${t(locale, 'screen.petEdit')}: ${pet.name}`} />
     <PetForm client:load mode="edit" pet={pet as never} text={petText(locale)} />
   </div>
 </OwnerShell>

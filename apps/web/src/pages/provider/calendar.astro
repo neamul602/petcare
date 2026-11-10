@@ -1,4 +1,5 @@
 ---
+import PageHeader from '@/components/kit/PageHeader.astro';
 import { t, type MessageKey } from '@petcare/shared/i18n';
 import { formatDate } from '@petcare/shared/locale';
 import Badge from '@/components/kit/Badge.astro';
@@ -23,7 +24,7 @@ const field = 'h-12 w-full rounded-md border border-border bg-input px-4 text-ba
 ---
 <ProviderShell titleKey="screen.calendar">
   <div class="space-y-5 py-4">
-    <h1 class="text-3xl font-semibold">{L('screen.calendar')}</h1>
+    <PageHeader title={L('screen.calendar')} />
     {!data && <EmptyState title={L('calendar.noRecord')} />}
     {data && (
       <>

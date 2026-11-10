@@ -3,6 +3,7 @@
 import { t, type MessageKey } from '@petcare/shared/i18n';
 import LanguageToggle from '../components/shell/LanguageToggle.astro';
 import TabBar from '../components/shell/TabBar.astro';
+import Logo from '../components/kit/Logo.astro';
 import SiteFooter from '../components/shell/SiteFooter.astro';
 import TopNav from '../components/shell/TopNav.astro';
 import { getLocale } from '../lib/locale';
@@ -24,14 +25,15 @@ const tabs = [
 ---
 <BaseLayout title={`${t(locale, titleKey)} · ${t(locale, 'app.name')}`} lang={locale} skipLabel={t(locale, 'a11y.skipToContent')} offlineMessage={t(locale, 'banner.offline')}>
   <div data-shell="owner">
-    <header class="sticky top-0 z-20 border-b border-border bg-background/90 shadow-sm backdrop-blur">
+    <header class="sticky top-0 z-20 border-b border-border bg-background">
       <div class="mx-auto flex max-w-6xl items-center gap-2 px-3 py-2 sm:gap-3 sm:px-6">
-        <a href="/" class="mr-auto inline-flex min-h-11 items-center gap-2 font-serif text-2xl font-semibold text-primary"><span aria-hidden="true" class="hidden h-9 w-9 items-center sm:flex justify-center rounded-xl bg-primary text-lg text-primary-foreground shadow-md">🐾</span>{t(locale, 'app.name')}</a>
+        <a href="/" class="mr-auto inline-flex min-h-11 items-center gap-2 text-primary"><Logo />
+        </a>
         {showTabs && <TopNav tabs={tabs} current={current} label={t(locale, 'a11y.mainNav')} />}
         <LanguageToggle locale={locale} current={current} />
         {showTabs && Astro.locals.user && <a href="/settings" class="inline-flex min-h-11 items-center rounded-md px-2 text-sm font-medium hover:bg-muted sm:px-3">{t(locale, 'nav.settings')}</a>}
-        {showTabs && !Astro.locals.user && <a href={`/sign-up?next=${encodeURIComponent(current)}`} data-testid="sign-up-link" class="inline-flex min-h-11 items-center rounded-full border border-border px-4 text-sm font-medium hover:bg-muted">Sign up</a>}
-        {showTabs && !Astro.locals.user && <a href={`/sign-in?next=${encodeURIComponent(current)}`} data-testid="sign-in-link" class="inline-flex min-h-11 items-center rounded-full bg-primary px-5 text-sm font-medium text-primary-foreground hover:bg-primary/90">{t(locale, 'nav.signIn')}</a>}
+        {showTabs && !Astro.locals.user && <a href={`/sign-up?next=${encodeURIComponent(current)}`} data-testid="sign-up-link" class="inline-flex min-h-11 items-center px-3 text-sm font-medium hover:text-primary">Sign up</a>}
+        {showTabs && !Astro.locals.user && <a href={`/sign-in?next=${encodeURIComponent(current)}`} data-testid="sign-in-link" class="inline-flex min-h-11 items-center rounded-lg bg-primary px-4 text-sm font-medium text-primary-foreground hover:bg-primary/90">{t(locale, 'nav.signIn')}</a>}
       </div>
     </header>
     <main id="main" class={`mx-auto max-w-6xl px-4 py-6 sm:px-6 ${showTabs ? 'pb-24 md:pb-6' : ''}`}>

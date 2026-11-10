@@ -1,4 +1,5 @@
 ---
+import PageHeader from '@/components/kit/PageHeader.astro';
 import { CAPABILITIES } from '@petcare/shared/providers';
 import { t, type MessageKey } from '@petcare/shared/i18n';
 import Button from '@/components/kit/Button.astro';
@@ -17,7 +18,7 @@ const area = 'min-h-24 w-full rounded-md border border-border bg-input p-4 text-
 ---
 <ProviderShell titleKey="screen.profile">
   <div class="space-y-5 py-4">
-    <h1 class="text-2xl font-semibold">{L('profile.title')}</h1>
+    <PageHeader title={L('profile.title')} />
     {Astro.url.searchParams.has('saved') && <p role="status" data-testid="profile-saved" class="rounded-md bg-primary-soft px-4 py-3 text-primary-soft-foreground">{L('profile.saved')}</p>}
     {Astro.url.searchParams.has('failed') && <p role="alert" data-testid="profile-error" class="rounded-md bg-destructive-soft px-4 py-3 text-destructive">{L('profile.error')}</p>}
     {record && (

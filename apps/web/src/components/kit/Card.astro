@@ -8,9 +8,9 @@ interface Props {
 }
 const { variant = 'flat', as: Tag = 'div', class: extra = '', ...rest } = Astro.props;
 const variants = {
-  flat: 'bg-card text-card-foreground border border-border shadow-md',
-  elevated: 'bg-card text-card-foreground border border-border shadow-lg',
+  flat: 'bg-card text-card-foreground border border-border shadow-sm',
+  elevated: 'bg-card text-card-foreground border border-border shadow-md',
   muted: 'bg-muted text-foreground border border-transparent',
 };
 ---
-<Tag class={`rounded-lg p-6 md:p-8 ${variants[variant]} ${extra}`} {...rest}><slot /></Tag>
+<Tag class={`rounded-xl p-6 md:p-7 ${variants[variant]} ${extra}`} {...rest}><slot /></Tag>

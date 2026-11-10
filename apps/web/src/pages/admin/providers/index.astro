@@ -1,4 +1,5 @@
 ---
+import PageHeader from '@/components/kit/PageHeader.astro';
 import { platformRules } from '@petcare/shared/config';
 import { t, ta } from '@petcare/shared/i18n';
 import Badge from '@/components/kit/Badge.astro';
@@ -34,7 +35,7 @@ const field = 'h-12 w-full rounded-md border border-border bg-input px-4 text-ba
 ---
 <AdminShell titleKey="screen.providers">
   <div class="space-y-5 py-4">
-    <h1 class="text-3xl font-semibold">{ta('screen.providers')}</h1>
+    <PageHeader title={ta('screen.providers')} />
     {error && <p role="alert" class="rounded-md bg-destructive-soft px-4 py-3 text-sm text-destructive">{ta('providers.error.generic')}</p>}
     <nav aria-label={ta('providers.col.status')} class="flex flex-wrap gap-2">
       <a href="/admin/providers" class={`inline-flex min-h-11 items-center rounded-md px-4 ${filter === '' ? 'bg-primary text-primary-foreground' : 'bg-muted'}`}>{ta('providers.filter.all')}</a>

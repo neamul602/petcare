@@ -1,0 +1,18 @@
+---
+/** Title block for inner pages: serif title, one quiet line under it, actions on the right, a hairline below. */
+interface Props {
+  title: string;
+  eyebrow?: string;
+  subtitle?: string;
+  testid?: string;
+}
+const { title, eyebrow, subtitle, testid } = Astro.props;
+---
+<header class="flex flex-wrap items-end justify-between gap-4 border-b border-border pb-6">
+  <div class="max-w-2xl space-y-1.5">
+    {eyebrow && <p class="eyebrow text-muted-foreground">{eyebrow}</p>}
+    <h1 class="text-3xl font-semibold leading-tight md:text-4xl" data-testid={testid}>{title}</h1>
+    {subtitle && <p class="text-lg text-muted-foreground">{subtitle}</p>}
+  </div>
+  <div class="flex flex-wrap gap-3"><slot /></div>
+</header>

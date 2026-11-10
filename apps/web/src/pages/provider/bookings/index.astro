@@ -1,4 +1,5 @@
 ---
+import PageHeader from '@/components/kit/PageHeader.astro';
 import { t, type MessageKey } from '@petcare/shared/i18n';
 import BookingCard from '@/components/provider/BookingCard.astro';
 import EmptyState from '@/components/states/EmptyState.astro';
@@ -13,7 +14,7 @@ const empty = groups.every((g) => data[g].length === 0);
 ---
 <ProviderShell titleKey="screen.providerBookings">
   <div class="space-y-6 py-4">
-    <h1 class="text-3xl font-semibold">{t(locale, 'screen.providerBookings')}</h1>
+    <PageHeader title={t(locale, 'screen.providerBookings')} />
     {empty && <EmptyState title={t(locale, 'pbookings.empty')} />}
     {groups.map((g) => data[g].length > 0 && (
       <section class="space-y-3" data-testid={`group-${g}`}>

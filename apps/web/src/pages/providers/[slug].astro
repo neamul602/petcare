@@ -31,12 +31,15 @@ const L = (key: string, params?: Record<string, string | number>) => t(locale, k
 <OwnerShell titleKey="screen.provider">
   <div class="gap-8 py-2 lg:grid lg:grid-cols-[1fr_22rem]">
     <div class="space-y-6">
-      <section class="hero-band flex flex-wrap items-center gap-6 rounded-2xl border border-border p-6 md:p-8">
+      <section class="flex flex-wrap items-center gap-6 border-b border-border pb-8">
         <Avatar name={name} size="xl" />
         <div class="min-w-0 space-y-2">
-          <h1 class="text-3xl font-semibold md:text-4xl" data-testid="provider-title">{name}</h1>
-          <p class="text-lg text-muted-foreground">{provider.area[locale]} · {provider.species.map((s: string) => L(`provider.species.${s}`)).join(', ')}</p>
-          {provider.tier === 'A' && <Badge variant="tier-a" label={L('provider.badge.tierA.label')}>{L('provider.badge.tierA')}</Badge>}
+          <p class="eyebrow text-muted-foreground">{provider.area[locale]} · {provider.species.map((sp: string) => L(`provider.species.${sp}`)).join(', ')}</p>
+          <h1 class="text-4xl font-semibold md:text-5xl" data-testid="provider-title">{name}</h1>
+          <div class="flex flex-wrap items-center gap-3">
+            {provider.tier === 'A' && <Badge variant="tier-a" label={L('provider.badge.tierA.label')}>{L('provider.badge.tierA')}</Badge>}
+            {agg && agg.count > 0 && <span class="text-sm font-medium"><span class="text-warning" aria-hidden="true">★</span> {agg.average} <span class="text-muted-foreground">({agg.count})</span></span>}
+          </div>
         </div>
       </section>
 

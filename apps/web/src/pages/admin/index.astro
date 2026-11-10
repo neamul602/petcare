@@ -1,4 +1,5 @@
 ---
+import PageHeader from '@/components/kit/PageHeader.astro';
 import { ta, type AdminMessageKey } from '@petcare/shared/i18n';
 import Card from '@/components/kit/Card.astro';
 import Stat from '@/components/kit/Stat.astro';
@@ -12,7 +13,7 @@ const A = (key: string, params?: Record<string, string | number>) => ta(key as A
 ---
 <AdminShell titleKey="screen.queue">
   <div class="space-y-5 py-4">
-    <h1 class="text-3xl font-semibold">{A('queue.title')}</h1>
+    <PageHeader title={A('queue.title')} />
     {q.ceilingBanner && <p role="note" data-testid="ceiling-banner" class="rounded-md bg-warning-soft px-4 py-3 text-warning">{q.ceilingBanner.message}</p>}
     {q.postMortemReminders.map((r: any) => <p role="note" data-testid="pm-reminder" class="rounded-md bg-warning-soft px-4 py-3 text-warning"><a class="underline" href={r.href}>{A('queue.pmReminder')}</a></p>)}
     <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-4" data-testid="counts">

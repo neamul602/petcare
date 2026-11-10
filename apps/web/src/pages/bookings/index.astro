@@ -1,4 +1,5 @@
 ---
+import PageHeader from '@/components/kit/PageHeader.astro';
 import { t } from '@petcare/shared/i18n';
 import { formatDate, formatMoney } from '@petcare/shared/locale';
 import Avatar from '@/components/kit/Avatar.astro';
@@ -17,7 +18,7 @@ const groups = [['upcoming', data.upcoming], ['past', data.past]] as const;
 ---
 <OwnerShell titleKey="screen.bookings">
   <div class="space-y-6 py-4">
-    <h1 class="text-3xl font-semibold">{t(locale, 'screen.bookings')}</h1>
+    <PageHeader title={t(locale, 'screen.bookings')} />
     {data.upcoming.length === 0 && data.past.length === 0 && (
       <EmptyState title={t(locale, 'bookings.empty.title')} body={t(locale, 'bookings.empty.body')} actionLabel={t(locale, 'home.cta')} actionHref="/search" />
     )}

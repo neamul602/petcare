@@ -1,4 +1,5 @@
 ---
+import PageHeader from '@/components/kit/PageHeader.astro';
 import { t, type MessageKey } from '@petcare/shared/i18n';
 import { formatDate, formatMoney } from '@petcare/shared/locale';
 import Card from '@/components/kit/Card.astro';
@@ -20,7 +21,7 @@ const reason = (code: string | null) => {
 ---
 <ProviderShell titleKey="screen.earnings">
   <div class="space-y-6 py-4">
-    <h1 class="text-3xl font-semibold">{L('screen.earnings')}</h1>
+    <PageHeader title={L('screen.earnings')} />
     {weeks.length === 0 && <EmptyState title={L('earnings.empty.title')} body={L('earnings.empty.body')} />}
     {weeks.map((w) => (
       <section class="space-y-3" data-testid="earnings-week">

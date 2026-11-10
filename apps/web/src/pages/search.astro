@@ -1,4 +1,5 @@
 ---
+import PageHeader from '@/components/kit/PageHeader.astro';
 import { formatMoney } from '@petcare/shared/locale';
 import { t, type MessageKey } from '@petcare/shared/i18n';
 import SearchForm from '@/components/SearchForm.astro';
@@ -39,8 +40,8 @@ const allLink = `/search?${new URLSearchParams({ from, to, species, ...(area ? {
 const shortLink = `/search?${new URLSearchParams({ from, to, species, ...(area ? { area } : {}) })}`;
 ---
 <OwnerShell titleKey="screen.results">
-  <div class="py-2">
-    <h1 class="mb-6 text-3xl font-semibold">{L('search.title')}</h1>
+  <div class="space-y-8 py-2">
+    <PageHeader title={L('search.title')} />
     <div class="gap-8 md:grid md:grid-cols-[22rem_1fr]">
       <aside class="mb-6 md:mb-0"><Card class="md:sticky md:top-24"><SearchForm locale={locale} from={from} to={to} species={species} area={area} /></Card></aside>
       <div class="space-y-5">
@@ -48,23 +49,24 @@ const shortLink = `/search?${new URLSearchParams({ from, to, species, ...(area ?
         {!searched && !error && <EmptyState title={L('search.title')} body={L('home.promise.body')} />}
         {searched && !error && (
           <section class="space-y-4" data-testid="results">
-            <h2 class="text-xl font-semibold">{L('search.results.title')}</h2>
+            <h2 class="text-2xl font-semibold">{L('search.results.title')}</h2>
             {suggest && hits.length > 0 && !all && <p class="rounded-md bg-muted px-4 py-3" data-testid="suggest">{L('search.suggest')}</p>}
             {hits.length === 0 && <EmptyState title={L('search.empty.title')} body={L('search.empty.body')} />}
-            <ul class="grid gap-4 lg:grid-cols-2">
+            <ul class="space-y-4">
               {hits.map((hit) => (
                 <li>
                   <a href={`/providers/${hit.slug}?${withDates}&species=${species}`} data-testid="result" class="link-card block h-full rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2">
-                    <Card class="flex h-full flex-col gap-4 !p-5">
-                      <div class="flex items-center gap-4">
-                        <Avatar name={hit.name[locale]} size="lg" />
-                        <div class="min-w-0">
-                          <p class="text-xl font-semibold">{hit.name[locale]}</p>
+                    <Card class="flex h-full items-start gap-5 !p-5">
+                      <Avatar name={hit.name[locale]} size="lg" />
+                      <div class="min-w-0 flex-1 space-y-2">
+                        <div class="flex flex-wrap items-center gap-2">
+                          <p class="mr-1 text-xl font-semibold">{hit.name[locale]}</p>
                           {hit.tier === 'A' && <Badge variant="tier-a" label={L('provider.badge.tierA.label')}>{L('provider.badge.tierA')}</Badge>}
                         </div>
+                        <p class="text-sm font-medium text-muted-foreground">{L(`neighbourhood.${hit.area}`)}</p>
+                        <p data-testid="reason" class="text-muted-foreground">{hit.availableAllNights ? L('search.reason', { tier: L(`search.tier.${hit.tier}`), area: L(`neighbourhood.${hit.area}`) }) : L('search.notFree')}</p>
                       </div>
-                      <p data-testid="reason" class="text-muted-foreground">{hit.availableAllNights ? L('search.reason', { tier: L(`search.tier.${hit.tier}`), area: L(`neighbourhood.${hit.area}`) }) : L('search.notFree')}</p>
-                      {hit.pricePerNightPoisha !== null && <p class="mt-auto font-serif text-2xl font-semibold text-primary">{L('provider.price', { price: formatMoney(hit.pricePerNightPoisha) })}</p>}
+                      {hit.pricePerNightPoisha !== null && <p class="shrink-0 text-right font-serif text-xl font-semibold">{L('provider.price', { price: formatMoney(hit.pricePerNightPoisha) })}</p>}
                     </Card>
                   </a>
                 </li>

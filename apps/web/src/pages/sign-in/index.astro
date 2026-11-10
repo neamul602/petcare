@@ -1,7 +1,6 @@
 ---
 import Card from '@/components/kit/Card.astro';
 import Button from '@/components/kit/Button.astro';
-import PetArt from '@/components/kit/PetArt.astro';
 import OwnerShell from '@/layouts/OwnerShell.astro';
 import { apiFetch, copyCookies } from '@/lib/api';
 
@@ -27,12 +26,7 @@ if (Astro.request.method === 'POST') {
 const input = 'h-12 w-full rounded-md border border-border bg-input px-4 text-base focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring';
 ---
 <OwnerShell titleKey="signin.title" showTabs={false}>
-  <section data-screen="O2" class="mx-auto grid max-w-5xl items-center gap-8 pt-4 md:grid-cols-2">
-    <aside class="hidden rounded-3xl bg-primary p-10 text-primary-foreground shadow-xl md:flex md:flex-col md:justify-center md:gap-6">
-      <PetArt class="mx-auto w-full max-w-sm" />
-      <p class="text-center font-serif text-2xl font-semibold">Trusted home care for your pet.</p>
-    </aside>
-
+  <section data-screen="O2" class="mx-auto max-w-md pt-8">
     <Card>
       <h1 class="text-2xl font-semibold">Sign in</h1>
       <p class="mt-1 text-muted-foreground">Welcome back. Sign in to book, manage pets or run your provider account.</p>

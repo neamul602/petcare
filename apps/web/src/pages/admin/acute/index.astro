@@ -1,4 +1,5 @@
 ---
+import PageHeader from '@/components/kit/PageHeader.astro';
 import { ta } from '@petcare/shared/i18n';
 import Button from '@/components/kit/Button.astro';
 import Card from '@/components/kit/Card.astro';
@@ -12,7 +13,7 @@ const field = 'min-h-24 w-full rounded-md border border-border bg-input p-3 text
 ---
 <AdminShell titleKey="screen.acute">
   <div class="space-y-6 py-4">
-    <h1 class="text-2xl font-semibold">{ta('acute.list.title')}</h1>
+    <PageHeader title={ta('acute.list.title')} />
     {(reminders?.reminders ?? []).length > 0 && (
       <section role="note" data-testid="pm-reminders" class="space-y-1 rounded-md bg-warning-soft px-4 py-3 text-warning"><h2 class="font-semibold">{ta('acute.reminders')}</h2>
         <ul>{reminders.reminders.map((r: any) => <li><a class="underline" href={`/admin/acute/${r.eventId}`}>{r.eventId}</a></li>)}</ul></section>
