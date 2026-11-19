@@ -1,44 +1,52 @@
 ---
 import { ta } from '@petcare/shared/i18n';
 import { formatMoney } from '@petcare/shared/locale';
+import Badge from '@/components/kit/Badge.astro';
 import Button from '@/components/kit/Button.astro';
 import Card from '@/components/kit/Card.astro';
+import PageHeader from '@/components/kit/PageHeader.astro';
+import Stat from '@/components/kit/Stat.astro';
 import AdminShell from '@/layouts/AdminShell.astro';
 import { apiFetch } from '@/lib/api';
 const response = await apiFetch('/admin/payouts/overview', { cookie: Astro.request.headers.get('cookie') }).catch(() => null);
-const data: any = response?.ok ? await response.json() : { batches: [], frozen: [], reconciliation: { available: false, matches: false, mismatches: [], localTotalPoisha: 0, gatewayTotalPoisha: 0 } };
-const rec = data.reconciliation;
+const data: any = response?.ok ? await response.json() : { batches: [], frozen: [] };
 const ran = Astro.url.searchParams.get('ran');
+const sent = data.batches.flatMap((b: any) => b.lines.map((l: any) => ({ ...l, note: '' })));
+const frozen = data.frozen.map((f: any) => ({ ...f, status: 'frozen', note: f.reason }));
+const lines: any[] = [...frozen, ...sent];
+const total = (list: any[]) => list.reduce((sum, l) => sum + l.netPoisha, 0);
+const paid = sent.filter((l: any) => l.status === 'paid');
 ---
 <AdminShell titleKey="screen.payouts">
   <div class="space-y-6 py-4">
-    <div class="flex flex-wrap items-center gap-3"><h1 class="mr-auto text-2xl font-semibold">{ta('screen.payouts')}</h1>
-      <form method="post" action="/admin/payouts/run"><Button type="submit" data-testid="run-batch">{ta('payouts.runNow')}</Button></form></div>
+    <PageHeader title={ta('screen.payouts')} subtitle="Weekly payouts to providers.">
+      <form method="post" action="/admin/payouts/run"><Button type="submit" data-testid="run-batch">{ta('payouts.runNow')}</Button></form>
+    </PageHeader>
     {ran !== null && <p role="status" data-testid="batch-result" class="rounded-md bg-primary-soft px-4 py-3 text-primary-soft-foreground">{ran === 'failed' ? ta('payouts.runFailed') : ta('payouts.ran', { n: ran })}</p>}
 
-    <Card class={`space-y-2 ${rec.available && !rec.matches ? 'border-2 border-destructive' : ''}`} data-testid="reconciliation">
-      <h2 class="text-xl font-semibold">{ta('payouts.reconciliation')}</h2>
-      {!rec.available && <p>{ta('payouts.unavailable')}</p>}
-      {rec.available && <p data-testid="reconciliation-result" class={rec.matches ? '' : 'font-semibold text-destructive'}>{rec.matches ? ta('payouts.matches') : ta('payouts.mismatch')}</p>}
-      <p>{ta('payouts.local')}: {formatMoney(rec.localTotalPoisha)} · {ta('payouts.gateway')}: {formatMoney(rec.gatewayTotalPoisha)}</p>
-      <ul>{rec.mismatches.map((m: any) => <li class="text-destructive" data-testid="mismatch">{m.bookingId}: {m.kind}{m.localPoisha !== undefined ? ` · ${formatMoney(m.localPoisha)}` : ''}{m.gatewayPoisha !== undefined ? ` / ${formatMoney(m.gatewayPoisha)}` : ''}</li>)}</ul>
+    <div class="grid gap-4 sm:grid-cols-3">
+      <Stat label="Paid out" value={formatMoney(total(paid))} tone="good" />
+      <Stat label="Payments made" value={paid.length} />
+      <Stat label="On hold" value={frozen.length} tone={frozen.length > 0 ? 'warning' : 'default'} />
+    </div>
+
+    <Card class="!p-0 overflow-hidden" data-testid="batches">
+      {lines.length === 0 && <p class="p-6 text-muted-foreground">No payouts yet.</p>}
+      {lines.length > 0 && (
+        <table class="w-full text-left">
+          <thead class="border-b border-border bg-muted text-sm text-muted-foreground"><tr><th class="px-5 py-3 font-medium">Booking</th><th class="px-5 py-3 font-medium">Provider</th><th class="px-5 py-3 text-right font-medium">Amount</th><th class="px-5 py-3 font-medium">Status</th></tr></thead>
+          <tbody class="divide-y divide-border">
+            {lines.map((l) => (
+              <tr data-testid={l.status === 'frozen' ? 'frozen-line' : 'payout-line'}>
+                <td class="max-w-36 truncate px-5 py-3 font-mono text-sm" title={l.bookingId}>{l.bookingId}</td>
+                <td class="px-5 py-3">{l.providerId}</td>
+                <td class="px-5 py-3 text-right font-medium">{formatMoney(l.netPoisha)}</td>
+                <td class="px-5 py-3"><Badge variant={l.status === 'paid' ? 'verified' : l.status === 'frozen' ? 'warning' : 'info'}>{l.status === 'frozen' ? 'On hold' : l.status === 'paid' ? 'Paid' : 'Queued'}</Badge>{l.note && <span class="ml-2 text-sm text-muted-foreground">{l.note}</span>}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      )}
     </Card>
-
-    <section class="space-y-3" data-testid="batches">
-      <h2 class="text-xl font-semibold">{ta('payouts.batches')}</h2>
-      {data.batches.length === 0 && <p class="text-muted-foreground">{ta('payouts.noBatches')}</p>}
-      {data.batches.map((b: any) => (
-        <Card class="space-y-1" data-testid="batch">
-          <p class="font-semibold">{b.runKey} · {ta('payouts.lines', { n: b.lineCount })} · {formatMoney(b.totalPoisha)}</p>
-          <ul class="text-sm">{b.lines.map((l: any) => <li>{l.bookingId} · {l.providerId} · {formatMoney(l.netPoisha)} · {l.status}</li>)}</ul>
-        </Card>
-      ))}
-    </section>
-
-    <section class="space-y-3" data-testid="frozen">
-      <h2 class="text-xl font-semibold">{ta('payouts.frozen')}</h2>
-      {data.frozen.length === 0 && <p class="text-muted-foreground">{ta('payouts.noFrozen')}</p>}
-      <ul class="space-y-2">{data.frozen.map((f: any) => <li data-testid="frozen-line">{f.bookingId} · {f.providerId} · {formatMoney(f.netPoisha)} · {f.reason}</li>)}</ul>
-    </section>
   </div>
 </AdminShell>

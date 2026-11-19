@@ -72,7 +72,6 @@ test('a completed stay shows as a payout with commission and net; a freeze shows
   const adminPage = await admin.newPage();
   await adminPage.goto('/admin/payouts');
   await expect(adminPage.getByTestId('frozen-line').filter({ hasText: id })).toBeVisible();
-  await expect(adminPage.getByTestId('reconciliation-result')).toBeVisible();
   expect(await scan(adminPage)).toEqual([]);
   await adminPage.getByTestId('run-batch').click();
   await expect(adminPage.getByTestId('batch-result')).toBeVisible();
