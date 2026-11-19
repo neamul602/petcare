@@ -584,5 +584,8 @@
   "footer.signin": "সাইন ইন",
   "footer.signup": "অ্যাকাউন্ট খুলুন",
   "footer.host": "হোস্ট হোন",
-  "footer.rights": "© PetCare। ঢাকায় তৈরি।"
+  "footer.rights": "© PetCare। ঢাকায় তৈরি।",
+  "calendar.quick.title": "দ্রুত বাছাই",
+  "calendar.quick.days": "পরের {n} দিন",
+  "calendar.quick.clear": "মুছুন"
 }

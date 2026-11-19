@@ -9,7 +9,13 @@ import { recordAdminAction } from '../auth/audit.ts';
 import type { Database } from '../db/client.ts';
 import { neighbourhoods, providerStatusEvents, providers } from '../db/schema/index.ts';
 import type { ReviewService } from '../reviews/service.ts';
-import { changeTier, moveStatus, slugFor, type ProviderRow } from './provider-records.ts';
+import {
+  approveProvider,
+  changeTier,
+  moveStatus,
+  slugFor,
+  type ProviderRow,
+} from './provider-records.ts';
 
 const refuse = (reply: FastifyReply, status: number, code: string, message: string) =>
   reply.code(status).send({ error: { code, message } });
@@ -156,6 +162,15 @@ export function registerProviderRoutes(
     if (result.code === 'profile_incomplete')
       return refuse(reply, 409, 'profile_incomplete', 'Add a price and capacity before approving');
     return refuse(reply, 409, 'invalid_transition', 'That status change is not allowed');
+  });
+
+  app.post('/admin/providers/:id/approve', admin, async (request, reply) => {
+    const { id } = request.params as { id: string };
+    const result = await approveProvider(db, request.currentUser!.id, id);
+    if (result.ok) return { provider: summary(result.provider) };
+    if (result.code === 'not_found')
+      return refuse(reply, 404, 'provider_not_found', 'No such provider');
+    return refuse(reply, 409, 'already_approved', 'That provider is already approved');
   });
 
   app.post('/admin/providers/:id/tier', admin, async (request, reply) => {

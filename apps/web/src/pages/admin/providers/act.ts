@@ -44,6 +44,22 @@ export const POST: APIRoute = async ({ request }) => {
       }
       return fail(response, '/admin/providers');
     }
+    case 'approve': {
+      const response = await send(`/admin/providers/${id}/approve`, {});
+      return response?.ok
+        ? back(text('from') || '/admin/providers')
+        : fail(response, '/admin/providers');
+    }
+    case 'reject':
+    case 'suspend': {
+      const response = await send(`/admin/providers/${id}/status`, {
+        to: text('intent') === 'reject' ? 'removed' : 'suspended',
+        reason: text('intent') === 'reject' ? 'Rejected' : 'Suspended',
+      });
+      return response?.ok
+        ? back(text('from') || '/admin/providers')
+        : fail(response, '/admin/providers');
+    }
     case 'status': {
       const response = await send(`/admin/providers/${id}/status`, {
         to: text('to'),

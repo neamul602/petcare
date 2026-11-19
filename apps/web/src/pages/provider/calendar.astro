@@ -48,6 +48,11 @@ const field = 'h-12 w-full rounded-md border border-border bg-input px-4 text-ba
         <form method="post" action="/provider/calendar/save" class="space-y-4" data-testid="calendar-form">
           <input type="hidden" name="from" value={from} />
           <p>{L('calendar.set.pick')}</p>
+          <div class="flex flex-wrap items-center gap-2" data-testid="quick-select">
+            <span class="mr-1 text-sm font-medium text-muted-foreground">{L('calendar.quick.title')}</span>
+            {[5, 7, 10].map((n) => <button type="button" data-days={n} data-testid={`quick-${n}`} class="inline-flex min-h-10 items-center rounded-lg border border-border bg-card px-4 text-sm font-medium hover:border-primary hover:bg-primary-soft focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring">{L('calendar.quick.days', { n })}</button>)}
+            <button type="button" data-days="0" data-testid="quick-clear" class="inline-flex min-h-10 items-center rounded-lg px-3 text-sm font-medium text-muted-foreground hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring">{L('calendar.quick.clear')}</button>
+          </div>
           <ul class="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
             {data.nights.map((night) => (
               <li>
@@ -78,3 +83,14 @@ const field = 'h-12 w-full rounded-md border border-border bg-input px-4 text-ba
     )}
   </div>
 </ProviderShell>
+<script>
+  // One click ticks the first N nights shown; the provider can still untick or add single nights.
+  document.querySelectorAll<HTMLButtonElement>('[data-days]').forEach((button) => {
+    button.addEventListener('click', () => {
+      const n = Number(button.dataset.days);
+      document.querySelectorAll<HTMLInputElement>('input[name="dates"]').forEach((box, i) => {
+        box.checked = i < n;
+      });
+    });
+  });
+</script>

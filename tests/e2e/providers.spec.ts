@@ -51,52 +51,28 @@ test.describe('public provider page', () => {
 });
 
 test.describe('admin provider records', () => {
-  test('the admin adds a record, sees the vetting rules, moves status and tier with reasons', async ({
+  test('the admin approves a pending provider in one click, then suspends them again', async ({
     browser,
     baseURL,
   }) => {
     const admin = await contextAs(browser, 'admin', { baseURL });
     const page = await admin.newPage();
     await page.goto('/admin/providers');
-    await expect(page.getByTestId('provider-row').filter({ hasText: 'Rashid' })).toBeVisible();
-    await page.getByTestId('filter-applied').click();
-    await expect(page.getByTestId('provider-row').filter({ hasText: 'Sadia' })).toBeVisible();
-    await page.goto('/admin/providers');
+    const sadia = () => page.getByTestId('provider-row').filter({ hasText: 'Sadia' });
+    await expect(sadia()).toBeVisible();
     expect(await scan(page)).toEqual([]);
 
-    await page.getByText('Add provider record').click();
-    await page.locator('#nameEn').fill('E2E Sitter');
-    await page.locator('#nameBn').fill('ই-টু-ই');
-    await page.getByTestId('create-submit').click();
-    await expect(page.getByTestId('provider-name')).toHaveText('E2E Sitter');
-    await expect(page.getByTestId('provider-status')).toHaveText('Applied');
-    expect(await scan(page)).toEqual([]);
+    await sadia().getByTestId('approve').click();
+    await expect(sadia()).toHaveCount(0);
+    await page.getByTestId('tab-approved').click();
+    await expect(sadia().getByTestId('row-status')).toHaveText('Approved');
 
-    await page.locator('#status-reason').fill('Documents received');
-    await page.getByTestId('status-submit').click();
-    await expect(page.getByTestId('provider-status')).toHaveText('Vetting');
-
-    await page.locator('#to').selectOption('approved');
-    await page.locator('#status-reason').fill('Visit went well');
-    await page.getByTestId('status-submit').click();
-    await expect(page.getByTestId('action-error')).toContainText(
-      'Missing: identity, address, capability',
-    );
-    await page.getByTestId('vet-identity').check();
-    await page.getByTestId('vet-address').check();
-    await page.getByTestId('vet-capability').check();
-    await page.getByTestId('vet-outreach').fill('Introduced in person');
-    await page.getByTestId('vet-save').click();
-    await page.locator('#to').selectOption('approved');
-    await page.locator('#status-reason').fill('Visit went well');
-    await page.getByTestId('status-submit').click();
-    await expect(page.getByTestId('action-error')).toHaveText(
-      'Add a price and capacity before approving.',
-    );
-
-    await page.locator('#tier-reason').fill('Introduced by the admin');
-    await page.getByTestId('tier-submit').click();
-    await expect(page.getByTestId('provider-history')).toContainText('tier: A → B');
+    await sadia().getByTestId('suspend').click();
+    await page.getByTestId('tab-inactive').click();
+    await expect(sadia().getByTestId('row-status')).toHaveText('Suspended');
+    await sadia().getByRole('link', { name: /Sadia/ }).click();
+    await expect(page.getByTestId('provider-status')).toHaveText('Suspended');
+    await expect(page.getByTestId('provider-history')).toContainText('approved');
     await admin.close();
   });
 

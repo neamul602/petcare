@@ -99,6 +99,47 @@ export async function moveStatus(
   return { ok: true, provider: updated! };
 }
 
+/**
+ * One-click approval for the admin list: no checklist. A provider who has not set a price or capacity yet gets
+ * starter values so the profile can be listed and booked; the provider can change them from their own profile.
+ */
+export async function approveProvider(
+  db: Database,
+  adminId: string,
+  id: string,
+): Promise<MoveResult> {
+  const row = await findProvider(db, id);
+  if (!row) return { ok: false, code: 'not_found' };
+  if (row.status === 'approved') return { ok: false, code: 'invalid_transition' };
+  const [updated] = await db
+    .update(providers)
+    .set({
+      status: 'approved',
+      pricePerNightPoisha: row.pricePerNightPoisha ?? 200_000,
+      capacitySmall: row.capacitySmall > 0 ? row.capacitySmall : 2,
+      updatedAt: new Date(),
+    })
+    .where(eq(providers.id, id))
+    .returning();
+  await db.insert(providerStatusEvents).values({
+    id: `pse_${randomUUID()}`,
+    providerId: id,
+    kind: 'status',
+    fromValue: row.status,
+    toValue: 'approved',
+    reason: 'Approved',
+    adminId,
+  });
+  await recordAdminAction(db, {
+    adminId,
+    action: 'provider.status_changed',
+    targetType: 'provider',
+    targetId: id,
+    payload: { from: row.status, to: 'approved', reason: 'Approved' },
+  });
+  return { ok: true, provider: updated! };
+}
+
 export async function changeTier(
   db: Database,
   adminId: string,

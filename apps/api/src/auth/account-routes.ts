@@ -90,15 +90,13 @@ export async function registerAccountRoutes(app: FastifyInstance, deps: AuthDeps
       }
     });
     const token = issue(reply, { sub: id, kind: 'user', role: body.role });
-    return reply
-      .code(201)
-      .send({
-        status: 'signed_in',
-        token,
-        role: body.role,
-        name: body.name,
-        redirect: home(body.role),
-      });
+    return reply.code(201).send({
+      status: 'signed_in',
+      token,
+      role: body.role,
+      name: body.name,
+      redirect: home(body.role),
+    });
   });
 
   app.post('/auth/signin', async (request, reply) => {

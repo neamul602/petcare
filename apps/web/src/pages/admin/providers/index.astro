@@ -1,9 +1,9 @@
 ---
+import { ta } from '@petcare/shared/i18n';
+import { t } from '@petcare/shared/i18n';
 import PageHeader from '@/components/kit/PageHeader.astro';
-import { platformRules } from '@petcare/shared/config';
-import { t, ta } from '@petcare/shared/i18n';
-import Badge from '@/components/kit/Badge.astro';
 import Avatar from '@/components/kit/Avatar.astro';
+import Badge from '@/components/kit/Badge.astro';
 import Button from '@/components/kit/Button.astro';
 import Card from '@/components/kit/Card.astro';
 import EmptyState from '@/components/states/EmptyState.astro';
@@ -12,74 +12,62 @@ import AdminShell from '@/layouts/AdminShell.astro';
 import { apiFetch } from '@/lib/api';
 interface Row { id: string; name: { en: string }; tier: 'A' | 'B'; status: string; neighbourhood: string }
 const cookie = Astro.request.headers.get('cookie');
-const filter = Astro.url.searchParams.get('status') ?? '';
-const error = Astro.url.searchParams.get('error');
-let rows: Row[] = [];
-const areas = platformRules.launchNeighbourhoods.map((id) => ({ id, nameEn: t('en', `neighbourhood.${id}` as never) }));
+const filter = Astro.url.searchParams.get('show') ?? 'pending';
+let all: Row[] = [];
 let failed = false;
-let health: Record<string, { flags: string[]; signals: number }> = {};
-let decisions: Array<{ providerId: string; name: string; tier: string; neighbourhood: string; decision: string; reason: string }> = [];
 try {
-  const response = await apiFetch(`/admin/providers${filter ? `?status=${encodeURIComponent(filter)}` : ''}`, { cookie });
-  if (response.ok) rows = ((await response.json()) as { providers: Row[] }).providers;
+  const response = await apiFetch('/admin/providers', { cookie });
+  if (response.ok) all = ((await response.json()) as { providers: Row[] }).providers;
   else failed = true;
-  const hl = await apiFetch('/admin/providers-health', { cookie });
-  if (hl.ok) health = Object.fromEntries(((await hl.json()) as { providers: Array<{ providerId: string; flags: string[]; signals: number }> }).providers.map((p) => [p.providerId, { flags: p.flags, signals: p.signals }]));
-  const dec = await apiFetch('/admin/vetting/decisions', { cookie });
-  if (dec.ok) decisions = ((await dec.json()) as { decisions: typeof decisions }).decisions;
 } catch {
   failed = true;
 }
-const statuses = ['applied', 'vetting', 'approved', 'suspended', 'removed'] as const;
-const field = 'h-12 w-full rounded-md border border-border bg-input px-4 text-base';
+const groups: Record<string, (r: Row) => boolean> = {
+  pending: (r) => r.status === 'applied' || r.status === 'vetting',
+  approved: (r) => r.status === 'approved',
+  inactive: (r) => r.status === 'suspended' || r.status === 'removed',
+  all: () => true,
+};
+const rows = all.filter(groups[filter] ?? groups.pending!);
+const count = (key: string) => all.filter(groups[key]!).length;
+const tabs = [['pending', 'Pending approval'], ['approved', 'Approved'], ['inactive', 'Suspended / rejected'], ['all', 'All']] as const;
+const statusText = (s: string) => (s === 'applied' || s === 'vetting' ? 'Pending' : s === 'approved' ? 'Approved' : s === 'suspended' ? 'Suspended' : 'Rejected');
+const here = `/admin/providers?show=${filter}`;
 ---
 <AdminShell titleKey="screen.providers">
-  <div class="space-y-5 py-4">
-    <PageHeader title={ta('screen.providers')} />
-    {error && <p role="alert" class="rounded-md bg-destructive-soft px-4 py-3 text-sm text-destructive">{ta('providers.error.generic')}</p>}
-    <nav aria-label={ta('providers.col.status')} class="flex flex-wrap gap-2">
-      <a href="/admin/providers" class={`inline-flex min-h-11 items-center rounded-md px-4 ${filter === '' ? 'bg-primary text-primary-foreground' : 'bg-muted'}`}>{ta('providers.filter.all')}</a>
-      {statuses.map((status) => (
-        <a href={`/admin/providers?status=${status}`} data-testid={`filter-${status}`} class={`inline-flex min-h-11 items-center rounded-md px-4 ${filter === status ? 'bg-primary text-primary-foreground' : 'bg-muted'}`}>{ta(`providers.status.${status}` as never)}</a>
+  <div class="space-y-6 py-4">
+    <PageHeader title={ta('screen.providers')} subtitle="Approve or reject hosts who have signed up." />
+    <nav aria-label="Provider list" class="flex flex-wrap gap-2">
+      {tabs.map(([key, label]) => (
+        <a href={`/admin/providers?show=${key}`} data-testid={`tab-${key}`} aria-current={filter === key ? 'page' : undefined} class={`inline-flex min-h-10 items-center gap-2 rounded-lg px-4 font-medium ${filter === key ? 'bg-primary text-primary-foreground' : 'bg-muted text-foreground hover:bg-border'}`}>{label} <span class="text-sm opacity-90">{count(key)}</span></a>
       ))}
     </nav>
     {failed && <ErrorState variant="server" locale="en" admin />}
-    {!failed && rows.length === 0 && <EmptyState title={ta('providers.empty')} />}
-    <form method="post" action="/admin/providers/evaluate"><Button type="submit" variant="secondary" data-testid="evaluate-now">{ta('health.evaluate')}</Button></form>
-    <ul class="grid gap-3 lg:grid-cols-2">
+    {!failed && rows.length === 0 && <EmptyState title="Nothing here" body="No providers in this list." />}
+    <ul class="space-y-3">
       {rows.map((row) => (
-        <li>
-          <a href={`/admin/providers/${row.id}`} data-testid="provider-row" class="link-card block h-full rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2">
-            <Card class="flex h-full flex-wrap items-center gap-3 !p-5">
-              <Avatar name={row.name.en} size="sm" />
-              <span class="mr-auto text-lg font-semibold">{row.name.en}</span>
-              <Badge variant={row.tier === 'A' ? 'tier-a' : 'neutral'}>{ta('providers.col.tier')} {row.tier}</Badge>
-              <Badge variant={row.status === 'approved' ? 'verified' : row.status === 'suspended' || row.status === 'removed' ? 'warning' : 'info'}>{ta(`providers.status.${row.status}` as never)}</Badge>
-            {(health[row.id]?.flags ?? []).length > 0 && <p class="w-full text-sm text-warning" data-testid="provider-flags">{health[row.id]!.flags.map((f) => ta(`health.flag.${f}` as 'health.flag.low_confirmation')).join(' · ')}{health[row.id]!.signals > 0 ? ' ⚑' : ''}</p>}
-            </Card>
-          </a>
+        <li data-testid="provider-row" data-status={row.status}>
+          <Card class="flex flex-wrap items-center gap-4 !p-4">
+            <Avatar name={row.name.en} size="md" />
+            <a href={`/admin/providers/${row.id}`} class="mr-auto min-w-0 hover:underline">
+              <span class="block text-lg font-semibold">{row.name.en}</span>
+              <span class="block text-sm text-muted-foreground">{t('en', `neighbourhood.${row.neighbourhood}` as never)} · Tier {row.tier}</span>
+            </a>
+            <Badge variant={row.status === 'approved' ? 'verified' : row.status === 'suspended' || row.status === 'removed' ? 'warning' : 'info'}><span data-testid="row-status">{statusText(row.status)}</span></Badge>
+            <div class="flex gap-2">
+              {row.status !== 'approved' && (
+                <form method="post" action="/admin/providers/act"><input type="hidden" name="intent" value="approve" /><input type="hidden" name="id" value={row.id} /><input type="hidden" name="from" value={here} /><Button type="submit" size="sm" data-testid="approve">Approve</Button></form>
+              )}
+              {(row.status === 'applied' || row.status === 'vetting' || row.status === 'suspended') && (
+                <form method="post" action="/admin/providers/act"><input type="hidden" name="intent" value="reject" /><input type="hidden" name="id" value={row.id} /><input type="hidden" name="from" value={here} /><Button type="submit" size="sm" variant="outline" data-testid="reject">Reject</Button></form>
+              )}
+              {row.status === 'approved' && (
+                <form method="post" action="/admin/providers/act"><input type="hidden" name="intent" value="suspend" /><input type="hidden" name="id" value={row.id} /><input type="hidden" name="from" value={here} /><Button type="submit" size="sm" variant="outline" data-testid="suspend">Suspend</Button></form>
+              )}
+            </div>
+          </Card>
         </li>
       ))}
     </ul>
-    <section class="space-y-3" data-testid="decisions">
-      <h2 class="text-xl font-semibold">{ta('decisions.title')}</h2>
-      {decisions.length === 0 && <p class="text-muted-foreground">{ta('decisions.none')}</p>}
-      <ul class="space-y-2">{decisions.map((d) => <li data-testid="decision">{d.name} · {d.tier} · {d.neighbourhood} · <strong>{d.decision}</strong> — {d.reason}</li>)}</ul>
-    </section>
-    <details class="rounded-lg border border-border bg-card p-5">
-      <summary class="min-h-11 cursor-pointer text-lg font-semibold">{ta('providers.new')}</summary>
-      <form method="post" action="/admin/providers/act" class="mt-4 space-y-4" data-testid="create-provider">
-        <input type="hidden" name="intent" value="create" />
-        <div class="space-y-2"><label for="nameEn" class="block text-sm font-medium">{ta('providers.form.nameEn')}</label><input id="nameEn" name="nameEn" required class={field} /></div>
-        <div class="space-y-2"><label for="nameBn" class="block text-sm font-medium">{ta('providers.form.nameBn')}</label><input id="nameBn" name="nameBn" required class={field} /></div>
-        <div class="space-y-2"><label for="tier" class="block text-sm font-medium">{ta('providers.form.tier')}</label><select id="tier" name="tier" class={field}><option value="A">A</option><option value="B">B</option></select></div>
-        <div class="space-y-2"><label for="area" class="block text-sm font-medium">{ta('providers.form.area')}</label><select id="area" name="area" class={field}>{areas.map((a) => <option value={a.id}>{a.nameEn}</option>)}</select></div>
-        <fieldset class="space-y-1"><legend class="text-sm font-medium">{ta('providers.form.species')}</legend>
-          <label class="flex min-h-11 items-center gap-3"><input type="checkbox" name="species" value="dog" checked class="h-5 w-5 accent-primary" /><span>Dogs</span></label>
-          <label class="flex min-h-11 items-center gap-3"><input type="checkbox" name="species" value="cat" class="h-5 w-5 accent-primary" /><span>Cats</span></label>
-        </fieldset>
-        <Button type="submit" data-testid="create-submit">{ta('providers.form.create')}</Button>
-      </form>
-    </details>
   </div>
 </AdminShell>

@@ -584,5 +584,8 @@
   "footer.signin": "Sign in",
   "footer.signup": "Create account",
   "footer.host": "Become a host",
-  "footer.rights": "© PetCare. Made in Dhaka."
+  "footer.rights": "© PetCare. Made in Dhaka.",
+  "calendar.quick.title": "Quick select",
+  "calendar.quick.days": "Next {n} days",
+  "calendar.quick.clear": "Clear"
 }
